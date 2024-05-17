@@ -1,0 +1,54 @@
+import type { Meta, StoryObj } from '@storybook/react';
+import { PhysicalLayout } from './PhysicalLayout';
+
+// More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
+const meta = {
+  title: 'Keyboard/PhysicalLayout',
+  component: PhysicalLayout,
+  parameters: {
+    // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
+  },
+  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
+  tags: ['autodocs'],
+  // More on argTypes: https://storybook.js.org/docs/api/argtypes
+  argTypes: {
+  },
+  args: {  },
+} satisfies Meta<typeof PhysicalLayout>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+const TOP = ["Esc", ..."QWERTYUIOP"];
+const MIDDLE = [..."ASDFGHJKL;"];
+const LOWER = [..."ZXCVBNM<>", "Up", "Shift"];
+
+// More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
+export const Minivan: Story = {
+  args: {
+    positions: [
+      ...TOP.map((k,i) => ({
+        width: 1,
+        height: 1,
+        x: i,
+        y: 0,
+        label: k
+      }))
+      , { x: TOP.length, y: 0, width: 1.75, height: 1, label: "Backspace"}
+      , { x: 0, y: 1, width: 1.25, height: 1, label: "Tab"}
+      , ...MIDDLE.map((k,i) => ({ x: i+1.25, y: 1, width: 1, height: 1, label: k}))
+      , { x: MIDDLE.length + 1.25, y: 1, width: 1.5, height: 1, label: "Enter"}
+      , { x: 0, y: 2, width: 1.75, height: 1, label: "Shift"}
+      , ...LOWER.map((k,i) => ({ x: i+1.75, y: 2, width: 1, height: 1, label: k}))
+      , { x: 0, y: 3, width: 1.25, height: 1, label: "Control"}
+      , { x: 1.25, y: 3, width: 1.5, height: 1, label: "Code"}
+      , { x: 2.75, y: 3, width: 1.25, height: 1, label: "Alt"}
+      , { x: 4, y: 3, width: 2.25, height: 1, label: ""}
+      , { x: 6.25, y: 3, width: 2, height: 1, label: ""}
+      , { x: 8.25, y: 3, width: 1.5, height: 1, label: "Alt"}
+      , { x: 9.75, y: 3, width: 1, height: 1, label: "Left"}
+      , { x: 10.75, y: 3, width: 1, height: 1, label: "Down"}
+      , { x: 11.75, y: 3, width: 1, height: 1, label: "Right"}
+    ]
+  },
+};

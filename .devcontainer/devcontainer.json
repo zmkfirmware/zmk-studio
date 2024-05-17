@@ -1,0 +1,16 @@
+{
+  "name": "ZMK Development",
+  "dockerFile": "Dockerfile",
+  "runArgs": ["--security-opt", "label=disable", "--security-opt", "label=type:container_runtime_t", "-u", "0", "--userns", "keep-id"],
+  "mounts": [
+    "type=bind,source=/tmp/.X11-unix,target=/tmp/.X11-unix",
+    "type=bind,source=../zmk,target=/opt/zmk"
+  ],
+  "containerEnv": {
+    "DISPLAY": "${localEnv:DISPLAY}",
+    "DBUS_SESSION_BUS_ADDRESS": "${localEnv:DBUS_SESSION_BUS_ADDRESS}",
+    "LIBGL_ALWAYS_SOFTWARE": "1"
+  },
+  "forwardPorts": [5173, 6006],
+  "appPort": 5173
+}
