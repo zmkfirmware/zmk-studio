@@ -5,6 +5,7 @@ use futures::lock::Mutex;
 
 mod transport;
 use transport::commands::{ transport_send_data, ActiveConnection};
+
 use transport::gatt::{ gatt_list_devices, gatt_connect };
 use transport::serial::{ serial_list_devices, serial_connect };
 

@@ -1,132 +1,118 @@
-
-use futures::stream;
-use futures::StreamExt;
 use futures::channel::mpsc::channel;
+use futures::future::ready;
+use futures::StreamExt;
 
+use std::time::Duration;
 use uuid::Uuid;
-use std::{
-    time::Duration,
-};
 
-use btleplug::api::{BDAddr, Central, Characteristic, Manager as _, Peripheral, ScanFilter, WriteType};
-use btleplug::platform::Manager;
+use bluest::Adapter;
 
-use serde::{Deserialize, Serialize};
-use tauri::{
-  AppHandle,
-  command,
-  State,
-};
-
-async fn find_peripheral(addr: BDAddr) -> Result<btleplug::platform::Peripheral, ()> {
-  let manager = Manager::new().await.expect("TODO");
-  let adapter_list = manager.adapters().await.expect("TODO");
-  if adapter_list.is_empty() {
-      eprintln!("No Bluetooth adapters found");
-  }
-
-  let a = BDAddr::from_str_delim(addr.to_string().as_str()).expect("Got a valid addr");
-
-  for adapter in adapter_list.iter() {
-    for p in adapter.peripherals().await.expect("GOT PERIPHERALS") {
-      let is_connected = p.is_connected().await.expect("To find if connected");
-
-
-      if is_connected && p.address() == a {
-          return Ok(p);
-      }
-    }
-  }
-
-  Err(())
-}
+use tauri::{command, AppHandle, State};
 
 const SVC_UUID: &str = "00000000-0196-6107-c967-c5cfb1c2482a";
 const RPC_CHRC_UUID: &str = "00000001-0196-6107-c967-c5cfb1c2482a";
 
+#[command]
+pub async fn gatt_connect(
+    id: String,
+    app_handle: AppHandle,
+    state: State<'_, super::commands::ActiveConnection<'_>>,
+) -> Result<bool, ()> {
+    let uuid = Uuid::parse_str(SVC_UUID).expect("Valid UUID");
 
-pub fn find_rpc_char(p: &impl Peripheral) -> Result<Characteristic, ()> {
-    Ok(p.characteristics().into_iter().find(|c| c.uuid == Uuid::parse_str(RPC_CHRC_UUID).unwrap()).expect("Has an RPC characteristic"))
+    let adapter = Adapter::default().await.ok_or(())?;
+
+    let mut devices: Vec<_> = adapter
+        .discover_devices(&[uuid])
+        .await
+        .expect("GET DEVICES!")
+        .take_until(async_std::task::sleep(Duration::from_secs(2)))
+        .filter_map(|d| ready(d.ok()))
+        .filter(|d| ready(d.name().unwrap_or("Unknown".to_string()).eq(&id)))
+        .collect()
+        .await;
+
+    match devices.get(0).cloned() {
+        Some(d) => {
+            if !d.is_connected().await {
+                adapter.connect_device(&d).await.map_err(|_| ())?;
+            }
+
+            let service = d
+                .discover_services_with_uuid(uuid)
+                .await
+                .map_err(|e| ())?
+                .get(0)
+                .cloned();
+            match service {
+                Some(s) => {
+                    let char_uuid = Uuid::parse_str(RPC_CHRC_UUID).expect("Valid UUID");
+                    let char = s
+                        .discover_characteristics_with_uuid(char_uuid)
+                        .await
+                        .map_err(|_| ())?
+                        .get(0)
+                        .cloned();
+
+                    match char {
+                        Some(c) => {
+                            let c2 = c.clone();
+                            tauri::async_runtime::spawn(async move {
+                                if let Ok(mut n) = c.notify().await {
+                                    while let Some(Ok(vn)) = n.next().await {
+                                        use tauri::Manager;
+
+                                        app_handle.emit("connection_data", vn.clone());
+                                    }
+                                }
+                            });
+
+                            let (send, mut recv) = channel(5);
+                            *state.conn.lock().await = Some(Box::new(send));
+                            tauri::async_runtime::spawn(async move {
+                                while let Some(data) = recv.next().await {
+                                    c2.write(&data).await.expect("Write uneventfully");
+                                }
+                            });
+                            Ok(true)
+                        }
+                        _ => Err(()),
+                    }
+                }
+                _ => Err(()),
+            }
+        }
+        _ => Err(()),
+    }
 }
 
 #[command]
-pub async fn gatt_connect(id: String, app_handle: AppHandle, state: State<'_, super::commands::ActiveConnection<'_>>) -> Result<bool, ()> {
-  let a = BDAddr::from_str_delim(id.as_str()).expect("Got a valid addr");
+pub async fn gatt_list_devices() -> Result<Vec<super::commands::AvailableDevice>, ()> {
+    let uuid = Uuid::parse_str(SVC_UUID).expect("Valid UUID");
 
-  let p = find_peripheral(a).await;
+    let adapter = Adapter::default().await.ok_or(())?;
 
-  if let Ok(peripheral) = p {
-      peripheral.connect().await;
-      peripheral.discover_services().await;
-      let c = find_rpc_char(&peripheral).unwrap();
-      peripheral.subscribe(&c).await.expect("Subscribed!");
+    let devices = adapter
+        .discover_devices(&[uuid])
+        .await
+        .expect("GET DEVICES!")
+        .take_until(async_std::task::sleep(Duration::from_secs(2)))
+        .collect::<Vec<_>>()
+        .await;
 
-      if let Ok(mut n) = peripheral.notifications().await {
-          tauri::async_runtime::spawn(async move {
-              while let Some(vn) = n.next().await {
-                use tauri::Manager;
-                
-                app_handle.emit("connection_data", vn.value);
-              }
-          });
-      }
-      let (send, mut recv) = channel(5);
-      *state.conn.lock().await = Some(Box::new(send));
-      tauri::async_runtime::spawn(async move {
-        while let Some(data) = recv.next().await {
-          peripheral.write(&c, &data, WriteType::WithoutResponse).await.expect("Write uneventfully");
-        }
-      });
+    let candidates: Vec<super::commands::AvailableDevice> = devices
+        .into_iter()
+        .filter_map(|d| {
+            d.map(|device| {
+                let name = device.name().unwrap_or("Unknown".to_string());
+                super::commands::AvailableDevice {
+                    label: name.clone(),
+                    id: name,
+                }
+            })
+            .ok()
+        })
+        .collect();
 
-      return Ok(true);
-  }
-
-  Err(())
+    Ok(candidates)
 }
-
-#[command]
-pub async fn gatt_list_devices(
-) -> Result<Vec<super::commands::AvailableDevice>, ()> {
-  let manager = Manager::new().await.expect("TODO");
-  let adapter_list = manager.adapters().await.expect("TODO");
-  if adapter_list.is_empty() {
-      eprintln!("No Bluetooth adapters found");
-  }
-
-  let uuid = Uuid::parse_str(SVC_UUID).expect("Valid UUID");
-
-  let candidates = stream::iter(adapter_list.iter()).then(|adapter| async move {
-      adapter
-          .start_scan(ScanFilter { services: vec![uuid] })
-          .await
-          .expect("Can't scan BLE adapter for connected devices...");
-      async_std::task::sleep(Duration::from_secs(2)).await;
-      let peripherals = adapter.peripherals().await.expect("To find peripherals");
-
-      stream::iter(peripherals).filter_map(|peripheral| async move {
-        let is_connected = peripheral.is_connected().await.expect("To find if connected");
-
-        if !is_connected {
-            return None;
-        }
-
-        peripheral.discover_services().await;
-
-
-        if !peripheral.services().iter().any(|s| s.uuid == uuid) {
-            return None;
-        }
-
-        let properties = peripheral.properties().await.expect("To load props");
-        let local_name = properties
-            .unwrap()
-            .local_name
-            .unwrap_or(String::from("(peripheral name unknown)"));
-
-        Some(super::commands::AvailableDevice { label: local_name, id: peripheral.address().to_string() })
-      }).collect::<Vec<_>>().await
-  }).collect::<Vec<_>>().await.into_iter().flatten().collect();
-
-  Ok(candidates)
-}
-
