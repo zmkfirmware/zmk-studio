@@ -9,8 +9,8 @@ use bluest::{Adapter, DeviceId};
 
 use tauri::{command, AppHandle, State};
 
-const SVC_UUID: &str = "00000000-0196-6107-c967-c5cfb1c2482a";
-const RPC_CHRC_UUID: &str = "00000001-0196-6107-c967-c5cfb1c2482a";
+const SVC_UUID: Uuid = Uuid::from_u128(0x00000000_0196_6107_c967_c5cfb1c2482a);
+const RPC_CHRC_UUID: Uuid = Uuid::from_u128(0x00000001_0196_6107_c967_c5cfb1c2482a);
 
 #[command]
 pub async fn gatt_connect(
@@ -18,8 +18,6 @@ pub async fn gatt_connect(
     app_handle: AppHandle,
     state: State<'_, super::commands::ActiveConnection<'_>>,
 ) -> Result<bool, ()> {
-    let uuid = Uuid::parse_str(SVC_UUID).expect("Valid UUID");
-
     let adapter = Adapter::default().await.ok_or(())?;
 
     adapter.wait_available().await.map_err(|_| ())?;
@@ -32,16 +30,15 @@ pub async fn gatt_connect(
     }
 
     let service = d
-        .discover_services_with_uuid(uuid)
+        .discover_services_with_uuid(SVC_UUID)
         .await
         .map_err(|e| ())?
         .get(0)
         .cloned();
 
     if let Some(s) = service {
-        let char_uuid = Uuid::parse_str(RPC_CHRC_UUID).expect("Valid UUID");
         let char = s
-            .discover_characteristics_with_uuid(char_uuid)
+            .discover_characteristics_with_uuid(RPC_CHRC_UUID)
             .await
             .map_err(|_| ())?
             .get(0)
@@ -81,32 +78,24 @@ pub async fn gatt_connect(
 
 #[command]
 pub async fn gatt_list_devices() -> Result<Vec<super::commands::AvailableDevice>, ()> {
-    let uuid = Uuid::parse_str(SVC_UUID).expect("Valid UUID");
-
     let adapter = Adapter::default().await.ok_or(())?;
 
     adapter.wait_available().await.map_err(|_| ())?;
 
     let devices = adapter
-        .discover_devices(&[uuid])
+        .discover_devices(&[SVC_UUID])
         .await
         .expect("GET DEVICES!")
         .take_until(async_std::task::sleep(Duration::from_secs(2)))
-        .collect::<Vec<_>>()
-        .await;
-
-    let candidates: Vec<super::commands::AvailableDevice> = devices
-        .into_iter()
-        .filter_map(|d| {
-            d.map(|device| {
-                let label = device.name().unwrap_or("Unknown".to_string());
+        .filter_map(|d| ready(d.ok()))
+        .then(move |device| async move {
+                let label = device.name_async().await.unwrap_or("Unknown".to_string());
                 let id = serde_json::to_string(&device.id()).unwrap();
 
                 super::commands::AvailableDevice { label, id }
-            })
-            .ok()
         })
-        .collect();
+        .collect::<Vec<_>>()
+        .await;
 
-    Ok(candidates)
+    Ok(devices)
 }
