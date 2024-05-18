@@ -5,7 +5,7 @@ use futures::StreamExt;
 use std::time::Duration;
 use uuid::Uuid;
 
-use bluest::Adapter;
+use bluest::{Adapter, DeviceId};
 
 use tauri::{command, AppHandle, State};
 
@@ -22,67 +22,60 @@ pub async fn gatt_connect(
 
     let adapter = Adapter::default().await.ok_or(())?;
 
-    let mut devices: Vec<_> = adapter
-        .discover_devices(&[uuid])
+    adapter.wait_available().await.map_err(|_| ())?;
+
+    let device_id: DeviceId = serde_json::from_str(&id).unwrap();
+    let mut d = adapter.open_device(&device_id).await.map_err(|_| ())?;
+
+    if !d.is_connected().await {
+        adapter.connect_device(&d).await.map_err(|_| ())?;
+    }
+
+    let service = d
+        .discover_services_with_uuid(uuid)
         .await
-        .expect("GET DEVICES!")
-        .take_until(async_std::task::sleep(Duration::from_secs(2)))
-        .filter_map(|d| ready(d.ok()))
-        .filter(|d| ready(d.name().unwrap_or("Unknown".to_string()).eq(&id)))
-        .collect()
-        .await;
+        .map_err(|e| ())?
+        .get(0)
+        .cloned();
 
-    match devices.get(0).cloned() {
-        Some(d) => {
-            if !d.is_connected().await {
-                adapter.connect_device(&d).await.map_err(|_| ())?;
-            }
+    if let Some(s) = service {
+        let char_uuid = Uuid::parse_str(RPC_CHRC_UUID).expect("Valid UUID");
+        let char = s
+            .discover_characteristics_with_uuid(char_uuid)
+            .await
+            .map_err(|_| ())?
+            .get(0)
+            .cloned();
 
-            let service = d
-                .discover_services_with_uuid(uuid)
-                .await
-                .map_err(|e| ())?
-                .get(0)
-                .cloned();
-            match service {
-                Some(s) => {
-                    let char_uuid = Uuid::parse_str(RPC_CHRC_UUID).expect("Valid UUID");
-                    let char = s
-                        .discover_characteristics_with_uuid(char_uuid)
-                        .await
-                        .map_err(|_| ())?
-                        .get(0)
-                        .cloned();
+        if let Some(c) = char {
+            let c2 = c.clone();
+            tauri::async_runtime::spawn(async move {
+                if let Ok(mut n) = c2.notify().await {
+                    // Need to keep adapter from being dropped while active/connected
+                    let a = adapter;
 
-                    match char {
-                        Some(c) => {
-                            let c2 = c.clone();
-                            tauri::async_runtime::spawn(async move {
-                                if let Ok(mut n) = c.notify().await {
-                                    while let Some(Ok(vn)) = n.next().await {
-                                        use tauri::Manager;
+                    while let Some(Ok(vn)) = n.next().await {
+                        use tauri::Manager;
 
-                                        app_handle.emit("connection_data", vn.clone());
-                                    }
-                                }
-                            });
-
-                            let (send, mut recv) = channel(5);
-                            *state.conn.lock().await = Some(Box::new(send));
-                            tauri::async_runtime::spawn(async move {
-                                while let Some(data) = recv.next().await {
-                                    c2.write(&data).await.expect("Write uneventfully");
-                                }
-                            });
-                            Ok(true)
-                        }
-                        _ => Err(()),
+                        app_handle.emit("connection_data", vn.clone());
                     }
                 }
-                _ => Err(()),
-            }
+            });
+
+            let (send, mut recv) = channel(5);
+            *state.conn.lock().await = Some(Box::new(send));
+            tauri::async_runtime::spawn(async move {
+                while let Some(data) = recv.next().await {
+                    c.write(&data).await.expect("Write uneventfully");
+                }
+            });
+
+            Ok(true)
+        } else {
+            Err(())
         }
-        _ => Err(()),
+    } else {
+        Err(())
     }
 }
 
@@ -91,6 +84,8 @@ pub async fn gatt_list_devices() -> Result<Vec<super::commands::AvailableDevice>
     let uuid = Uuid::parse_str(SVC_UUID).expect("Valid UUID");
 
     let adapter = Adapter::default().await.ok_or(())?;
+
+    adapter.wait_available().await.map_err(|_| ())?;
 
     let devices = adapter
         .discover_devices(&[uuid])
@@ -104,11 +99,10 @@ pub async fn gatt_list_devices() -> Result<Vec<super::commands::AvailableDevice>
         .into_iter()
         .filter_map(|d| {
             d.map(|device| {
-                let name = device.name().unwrap_or("Unknown".to_string());
-                super::commands::AvailableDevice {
-                    label: name.clone(),
-                    id: name,
-                }
+                let label = device.name().unwrap_or("Unknown".to_string());
+                let id = serde_json::to_string(&device.id()).unwrap();
+
+                super::commands::AvailableDevice { label, id }
             })
             .ok()
         })
