@@ -15,4 +15,5 @@ RUN dnf install -y \
   wget \
   file \
   libappindicator-gtk3-devel \
-  librsvg2-devel
+  librsvg2-devel \
+  libgudev-devel

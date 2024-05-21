@@ -11,6 +11,5 @@
     "DBUS_SESSION_BUS_ADDRESS": "${localEnv:DBUS_SESSION_BUS_ADDRESS}",
     "LIBGL_ALWAYS_SOFTWARE": "1"
   },
-  "forwardPorts": [5173, 6006],
-  "appPort": 5173
+  "forwardPorts": [5173, 6006]
 }
