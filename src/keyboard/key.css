@@ -10,27 +10,59 @@
   align-items: center;
 }
 
+.zmk-key:hover {
+  transform: translate(calc(-1em + 2px), calc(-1em + 2px));
+}
+
 .zmk-key__button {
   border-radius: 5px;
   cursor: pointer;
-  display: inline-block;
+  display: grid;
   box-sizing: border-box;
   line-height: 1;
   margin: auto;
   background-color: transparent;
   border: 0;
-  height: calc(100% - 4px);
-  width: calc(100% - 4px);
   padding: 0;
+  grid-template-rows: 0 var(--zmk-key-center-height) 0;
+  grid-template-columns: 0 var(--zmk-key-center-width) 0;
+}
+
+.zmk-key__button:hover {
+  background-color: light-dark(white, black);
+  grid-template-rows: 1em var(--zmk-key-center-height) 1em;
+  grid-template-columns: 1em var(--zmk-key-center-width) 1em;
+}
+
+.zmk-key__button__header {
+  justify-self: start;
+  padding: 0 4px 0 4px;
+  grid-row: 1 / 2;
+  grid-column: 1/4;
+  text-wrap: nowrap;
+  display: none;
+}
+
+
+.zmk-key:hover .zmk-key__button__header {
+  display: inherit;
+  text-overflow: ellipsis;
+}
+
+.zmk-key__button__child {
+  justify-self: center;
+  align-self: center;
+  grid-row: 2 / 3;
+  grid-column: 2 / 3;
 }
 
 .zmk-key__button--primary {
-  color: #333;
+  color: light-dark( #333, white);
   background-color: transparent;
   
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px inset;
+  box-shadow: light-dark(rgba(0, 0, 0, 0.15), white) 0px 0px 0px 1px inset;
 }
 .zmk-key__button--secondary {
-  color: white;
-  background-color: #8c8c8c;
+  color: light-dark(black, white);
+  background-color: light-dark(white, #8c8c8c);
 }

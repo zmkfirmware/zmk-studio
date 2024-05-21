@@ -1,5 +1,6 @@
 import './key.css';
 
+import { PropsWithChildren, Children } from 'react';
 import { scale } from './geometry';
 
 interface KeyProps {
@@ -15,7 +16,7 @@ interface KeyProps {
   /**
    * Button contents
    */
-  label: string;
+  header: string;
   /**
    * Optional click handler
    */
@@ -27,13 +28,13 @@ interface KeyDimension {
   height: number,
 };
 
-function makeSize({ width, height}: KeyDimension): KeyDimension {
+function makeSize({ width, height}: KeyDimension) {
   width = scale(width);
   height = scale(height);
 
   return {
-    width,
-    height
+    '--zmk-key-center-width': 'calc(' + width + 'px - 2px)',
+    '--zmk-key-center-height': 'calc(' + height + 'px - 2px)'
   };
 }
 
@@ -42,11 +43,13 @@ function makeSize({ width, height}: KeyDimension): KeyDimension {
  */
 export const Key = ({
   primary = false,
-  label,
+  header,
   ...props
-}: KeyProps) => {
+}: PropsWithChildren<KeyProps>) => {
   const mode = primary ? 'zmk-key__button--primary' : 'zmk-key__button--secondary';
   const size = makeSize(props);
+  const children = Children.map(props.children, (c) => <div className="zmk-key__button__child">{c}</div>);
+
   return (
     <div
     className='zmk-key'
@@ -56,7 +59,8 @@ export const Key = ({
         type="button"
         className={['zmk-key__button', mode].join(' ')}
       >
-        {label}
+        <span className="zmk-key__button__header">{header}</span>
+        {children}
       </button>
     </div>
   );

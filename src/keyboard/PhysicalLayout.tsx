@@ -1,15 +1,16 @@
 
 import './physical-layout.css';
+import { PropsWithChildren } from 'react';
 import { Key } from './Key';
 import { scale } from './geometry';
 
-interface KeyPosition {
-  label: string,
+type KeyPosition = PropsWithChildren<{
+  header: string,
   width: number,
   height: number,
   x: number,
   y: number,
-}
+}>;
 
 interface PhysicalLayoutProps {
   positions: Array<KeyPosition>;

@@ -7,3 +7,8 @@
 .zmk-physical-layout__position {
   position: absolute;
 }
+
+
+.zmk-physical-layout__position:hover {
+  z-index: 1000;
+}
