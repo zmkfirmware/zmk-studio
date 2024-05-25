@@ -4,6 +4,7 @@ import { useState, Dispatch } from 'react';
 import { create_rpc_connection, call_rpc, Request } from "ts-zmk-rpc-core";
 
 import type { RpcTransport } from "ts-zmk-rpc-core/transport/index";
+import type { Notification } from "ts-zmk-rpc-core/transport/core";
 import type { PhysicalLayout, Keymap } from "ts-zmk-rpc-core/keymap";
 import type { GetBehaviorDetailsResponse } from "ts-zmk-rpc-core/behaviors";
 import { connect as gatt_connect } from "ts-zmk-rpc-core/transport/gatt";
@@ -30,6 +31,26 @@ const TRANSPORTS: TransportFactory[] = [
   ... window.__TAURI_INTERNALS__ ? [{ label: "Serial", pick_and_connect: { connect: tauri_serial_connect, list: serial_list_devices }}] : [],
 ];
 
+async function listen_for_notifications(notification_stream: ReadableStream<Notification>): Promise<void> {
+  let reader = notification_stream.getReader();
+  do {
+    try {
+      let { done, value } = await reader.read();
+      if (done) {
+        break;
+      }
+
+      // TODO: Do something with the notifications 
+      console.log("Notification", value);
+    } catch (e) {
+      reader.releaseLock();
+      throw e;
+    }
+  } while (true)
+
+  reader.releaseLock();
+}
+
 async function test(factory: TransportFactory, setPhysicalLayout: Dispatch<PhysicalLayout | undefined>, setKeymap: Dispatch<Keymap | undefined>, setBehaviors: Dispatch<BehaviorMap>) {
   let transport = null;
   if (factory.connect) {
@@ -45,6 +66,11 @@ async function test(factory: TransportFactory, setPhysicalLayout: Dispatch<Physi
   }
   
   let rpc_conn = await create_rpc_connection(transport);
+
+  listen_for_notifications(rpc_conn.notification_readable).then(() => {
+    console.log("NO MORE NOTPIFICATIONS");
+    // TODO: Process disconnect here!
+  });
 
   // let req: Request =  { core: { getLockState: true }, requestId: 0 };
   // let resp = await call_rpc(rpc_conn, req);

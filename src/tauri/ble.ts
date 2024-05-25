@@ -21,11 +21,17 @@ export async function connect(dev: AvailableDevice): Promise<RpcTransport> {
 
   let { writable: response_writable, readable } = new TransformStream();
 
-  /* const unlisten = */ await listen('connection_data', async (event: { payload: Array<number> }) => {
+  const unlisten_data = await listen('connection_data', async (event: { payload: Array<number> }) => {
     let writer = response_writable.getWriter();
     await writer.write(new Uint8Array(event.payload));
     writer.releaseLock();
-  })
+  });
+
+  const unlisten_disconnected = await listen('connection_disconnected', async (event: any) => {
+    unlisten_data();
+    unlisten_disconnected();
+    readable.cancel();
+  });
 
   return { readable, writable };
 }

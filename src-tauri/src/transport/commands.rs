@@ -18,7 +18,7 @@ pub struct AvailableDevice {
     pub id: String
 }
 
-#[derive(Default)]
+#[derive(Debug, Default)]
 pub struct ActiveConnection<'a> { pub conn: Mutex<Option<Box<dyn Sink<Vec<u8>, Error = SendError> + Unpin + Send + 'a>>> }
 
 #[command]

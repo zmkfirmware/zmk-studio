@@ -51,11 +51,16 @@ pub async fn gatt_connect(
                     // Need to keep adapter from being dropped while active/connected
                     let a = adapter;
 
-                    while let Some(Ok(vn)) = n.next().await {
-                        use tauri::Manager;
+                    use tauri::Manager;
 
+                    while let Some(Ok(vn)) = n.next().await {
                         app_handle.emit("connection_data", vn.clone());
                     }
+
+                    let state = app_handle.state::<super::commands::ActiveConnection>();
+                    *state.conn.lock().await = None;
+
+                    app_handle.emit("connection_disconnected", ());
                 }
             });
 
@@ -89,10 +94,10 @@ pub async fn gatt_list_devices() -> Result<Vec<super::commands::AvailableDevice>
         .take_until(async_std::task::sleep(Duration::from_secs(2)))
         .filter_map(|d| ready(d.ok()))
         .then(move |device| async move {
-                let label = device.name_async().await.unwrap_or("Unknown".to_string());
-                let id = serde_json::to_string(&device.id()).unwrap();
+            let label = device.name_async().await.unwrap_or("Unknown".to_string());
+            let id = serde_json::to_string(&device.id()).unwrap();
 
-                super::commands::AvailableDevice { label, id }
+            super::commands::AvailableDevice { label, id }
         })
         .collect::<Vec<_>>()
         .await;
