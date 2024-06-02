@@ -1,0 +1,42 @@
+.zmk-physical-layout-picker {
+  border: 0;
+  cursor: pointer;
+  display: inline-block;
+  line-height: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  display: grid;
+  grid-auto-flow: row;
+  grid-auto-rows: auto;
+}
+
+.zmk-physical-layout-picker__item {
+  padding: 0.25em;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+}
+
+.zmk-physical-layout-picker__item--selected {
+  background-color: gray;
+}
+
+.zmk-physical-layout-picker__item:hover {
+  border-radius: 2px;
+  border-color: black;
+}
+
+
+/* 
+.zmk-key__button--primary {
+  color: #333;
+  background-color: transparent;
+  
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px inset;
+}
+.zmk-key__button--secondary {
+  color: white;
+  background-color: #8c8c8c;
+} */
