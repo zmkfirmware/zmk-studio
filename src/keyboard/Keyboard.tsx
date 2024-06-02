@@ -1,3 +1,5 @@
+import "./keyboard.css";
+
 import { SetStateAction, useContext, useEffect, useState } from "react";
 
 import { call_rpc, Request, Response } from "ts-zmk-rpc-core";
@@ -118,12 +120,10 @@ export default function Keyboard() {
   const behaviors = useBehaviors();
 
   return (
-    <div>
-      <div>
-        {layouts && (<PhysicalLayoutPicker layouts={layouts} selectedPhysicalLayoutIndex={selectedPhysicalLayoutIndex} onPhysicalLayoutClicked={setSelectedPhysicalLayoutIndex} />)}
-        {keymap && (<LayerPicker layers={keymap.layers} selectedLayerIndex={selectedLayerIndex} onLayerClicked={setSelectedLayerIndex} />) }
-        {layouts && keymap && behaviors && (<div>{renderLayout(layouts[selectedPhysicalLayoutIndex], keymap, behaviors, selectedLayerIndex)}</div>)}
-      </div>
+    <div className="zmk-keyboard">
+        {keymap && (<div className="zmk-keyboard__layer-picker"><LayerPicker layers={keymap.layers} selectedLayerIndex={selectedLayerIndex} onLayerClicked={setSelectedLayerIndex} /></div>) }
+        {layouts && keymap && behaviors && (<div className="zmk-keyboard__keymap">{renderLayout(layouts[selectedPhysicalLayoutIndex], keymap, behaviors, selectedLayerIndex)}</div>)}
+        {layouts && (<div className="zmk-keyboard__layout-picker"><PhysicalLayoutPicker layouts={layouts} selectedPhysicalLayoutIndex={selectedPhysicalLayoutIndex} onPhysicalLayoutClicked={setSelectedPhysicalLayoutIndex} /></div>)}
     </div>
   )
 }

@@ -33,5 +33,5 @@ export async function connect(dev: AvailableDevice): Promise<RpcTransport> {
     readable.cancel();
   });
 
-  return { readable, writable };
+  return { label: dev.label, readable, writable };
 }

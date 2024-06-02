@@ -1,0 +1,20 @@
+
+.zmk-app-header {
+    /* position: fixed; */
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 0 1em 0 1em;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto;
+    column-gap: 1em;
+    align-content: space-between;
+    justify-content: center; 
+
+    border-bottom: 1px solid light-dark(black, white);
+}
+
+.zmk-app-header__connected-device {
+    text-align: center;
+}

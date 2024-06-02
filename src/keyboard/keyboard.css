@@ -1,0 +1,19 @@
+
+.zmk-keyboard {
+    height: 100%;
+    width: auto;
+    display: grid;
+    grid-template-columns: 1fr 5fr 1fr;
+}
+
+.zmk-keyboard__layout-picker {
+}
+
+.zmk-keyboard__layer-picker {
+}
+
+.zmk-keyboard__keymap {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+}

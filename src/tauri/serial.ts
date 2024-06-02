@@ -36,5 +36,5 @@ export async function connect(dev: AvailableDevice): Promise<RpcTransport> {
     response_writable.close();
   });
 
-  return { readable, writable };
+  return { label: dev.label, readable, writable };
 }
