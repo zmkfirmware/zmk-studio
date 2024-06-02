@@ -13,7 +13,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@tauri-apps/api": "^2.0.0-beta.11",
+    "@tauri-apps/api": "^2.0.0-beta.13",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "ts-zmk-rpc-core": "file:../zmk/rpc-clients/typescript/ts-zmk-rpc-core"
@@ -28,7 +28,7 @@
     "@storybook/react": "^8.0.10",
     "@storybook/react-vite": "^8.0.10",
     "@storybook/test": "^8.0.10",
-    "@tauri-apps/cli": "^2.0.0-beta.17",
+    "@tauri-apps/cli": "^2.0.0-beta.20",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@types/web-bluetooth": "^0.0.20",
