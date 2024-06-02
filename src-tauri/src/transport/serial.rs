@@ -66,17 +66,16 @@ pub async fn serial_list_devices() -> Result<Vec<super::commands::AvailableDevic
     let candidates = ports
         .into_iter()
         .filter_map(|pi| {
-            println!("port {:?}", pi);
-            match pi.port_type {
-                SerialPortType::UsbPort(u) => Some(super::commands::AvailableDevice {
+            if let SerialPortType::UsbPort(u) = pi.port_type {
+                Some(super::commands::AvailableDevice {
                     id: pi.port_name,
                     label: u.product.unwrap_or("TODO".to_string()),
-                }),
-                _ => None,
+                })
+            } else {
+                None
             }
         })
         .collect();
 
-    println!("Candidates {:?}", candidates);
     Ok(candidates)
 }
