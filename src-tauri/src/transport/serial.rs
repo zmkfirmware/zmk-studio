@@ -1,19 +1,14 @@
 use blocking::unblock;
 use futures::channel::mpsc::channel;
-use futures::lock::Mutex;
-use futures::stream;
 use futures::StreamExt;
 
-use std::time::Duration;
 
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio_serial::{available_ports, SerialPort, SerialPortBuilderExt, SerialPortType};
 
-use serde::{Deserialize, Serialize};
 use tauri::{
     command,
-    ipc::{Request, Response},
-    AppHandle, State, Window,
+    AppHandle, State,
 };
 
 const READ_BUF_SIZE: usize = 1024;

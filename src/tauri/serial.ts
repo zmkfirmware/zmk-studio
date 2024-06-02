@@ -15,7 +15,7 @@ export async function connect(dev: AvailableDevice): Promise<RpcTransport> {
 
   let writable = new WritableStream({
     async write(chunk, _controller) {
-      await invoke("transport_send_data", { data: Array.from(chunk) });
+      await invoke("transport_send_data", new Uint8Array(chunk));
     }
   });
 
