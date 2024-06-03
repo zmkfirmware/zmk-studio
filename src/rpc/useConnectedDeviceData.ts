@@ -2,20 +2,24 @@
 import React, { SetStateAction, useContext, useEffect, useState } from "react";
 import { ConnectionContext } from "./ConnectionContext";
 
-import { call_rpc, Request, Response } from "ts-zmk-rpc-core";
+import { call_rpc, Request, RequestResponse } from "ts-zmk-rpc-core";
 
-export function useConnectedDeviceData<T>(req: Request, response_mapper: (resp: Response) => T): [T | null, React.Dispatch<SetStateAction<T | null>>] {
+export function useConnectedDeviceData<T>(req: Omit<Request, "requestId">, response_mapper: (resp: RequestResponse) => T | undefined): [T | undefined, React.Dispatch<SetStateAction<T | undefined>>] {
     let connection = useContext(ConnectionContext);
-    let [data, setData] = useState<T | null>(null);
+    let [data, setData] = useState<T | undefined>(undefined);
 
     useEffect(() => {
         if (!connection) {
-            setData(null);
+            setData(undefined);
             return;
         }
 
         async function startRequest() {
-            setData(null);
+            setData(undefined);
+            if (!connection) {
+                return;
+            }
+            
             let response = response_mapper(await call_rpc(connection, req));
             
             if (!ignore) {

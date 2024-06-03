@@ -2,7 +2,7 @@ import "./keyboard.css";
 
 import { SetStateAction, useContext, useEffect, useState } from "react";
 
-import { call_rpc, Request, Response } from "ts-zmk-rpc-core";
+import { call_rpc, Request } from "ts-zmk-rpc-core";
 import type { PhysicalLayout, Keymap } from "ts-zmk-rpc-core/keymap";
 import type { GetBehaviorDetailsResponse } from "ts-zmk-rpc-core/behaviors";
 
@@ -47,6 +47,10 @@ function useBehaviors(): BehaviorMap {
 
         async function startRequest() {
             setBehaviors({});
+
+            if (!connection) {
+                return;
+            }
             
             let get_behaviors: Request = { behaviors: { listAllBehaviors: true, }, requestId: 0 };
 
@@ -81,20 +85,25 @@ function useBehaviors(): BehaviorMap {
     return behaviors;
 }
 
-function useLayouts(): [PhysicalLayout[] | null, React.Dispatch<SetStateAction<PhysicalLayout[] | null>>, number, React.Dispatch<SetStateAction<number>> ] {
+function useLayouts(): [PhysicalLayout[] | undefined, React.Dispatch<SetStateAction<PhysicalLayout[] | undefined>>, number, React.Dispatch<SetStateAction<number>> ] {
     let connection = useContext(ConnectionContext);
 
-    const [layouts, setLayouts] = useState<PhysicalLayout[] | null>(null);
+    const [layouts, setLayouts] = useState<PhysicalLayout[] | undefined>(undefined);
     const [selectedPhysicalLayoutIndex, setSelectedPhysicalLayoutIndex] = useState<number>(0);
 
     useEffect(() => {
         if (!connection) {
-            setLayouts(null);
+            setLayouts(undefined);
             return;
         }
 
         async function startRequest() {
-            setLayouts(null);
+            setLayouts(undefined);
+
+            if (!connection) {
+                return;
+            }
+            
             let response = await call_rpc(connection, { keymap: { getPhysicalLayouts: true } });
             
             if (!ignore) {

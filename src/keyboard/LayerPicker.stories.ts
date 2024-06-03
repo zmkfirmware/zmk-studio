@@ -17,7 +17,9 @@ const meta = {
     // backgroundColor: { control: 'color' },
   },
   // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
-  args: {  },
+  args: {
+    onLayerClicked: fn(),
+  },
 } satisfies Meta<typeof LayerPicker>;
 
 export default meta;
@@ -26,24 +28,23 @@ type Story = StoryObj<typeof meta>;
 export const Named: Story = {
   args: {
     layers: [
-      { label: "Base"},
-      { label: "Num"},
-      { label: "Nav"},
-      { label: "Symbol"},
+      { name: "Base"},
+      { name: "Num"},
+      { name: "Nav"},
+      { name: "Symbol"},
     ],
     selectedLayerIndex: 2,
-    onLayerClicked: (layer, index) => console.log("Layer clicked", layer),
-    onAddClicked: () => console.log("add item!"),
+    onAddClicked: fn(),
   },
 };
 
 export const NoAdd: Story = {
   args: {
     layers: [
-      { label: "Base"},
-      { label: "Num"},
-      { label: "Nav"},
-      { label: "Symbol"},
+      { name: "Base"},
+      { name: "Num"},
+      { name: "Nav"},
+      { name: "Symbol"},
     ],
     selectedLayerIndex: 2,
   },

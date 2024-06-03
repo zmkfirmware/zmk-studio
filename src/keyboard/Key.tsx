@@ -1,6 +1,6 @@
 import './key.css';
 
-import { PropsWithChildren, Children } from 'react';
+import { PropsWithChildren, Children, CSSProperties } from 'react';
 import { scale } from './geometry';
 
 interface KeyProps {
@@ -28,7 +28,7 @@ interface KeyDimension {
   height: number,
 };
 
-function makeSize({ width, height}: KeyDimension) {
+function makeSize({ width, height}: KeyDimension): CSSProperties {
   width = scale(width);
   height = scale(height);
 

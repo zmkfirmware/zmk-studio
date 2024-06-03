@@ -27,7 +27,7 @@ export async function connect(dev: AvailableDevice): Promise<RpcTransport> {
     writer.releaseLock();
   });
 
-  const unlisten_disconnected = await listen('connection_disconnected', async (event: any) => {
+  const unlisten_disconnected = await listen('connection_disconnected', async (_ev: any) => {
     unlisten_data();
     unlisten_disconnected();
     readable.cancel();

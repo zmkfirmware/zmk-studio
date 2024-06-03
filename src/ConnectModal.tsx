@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { RpcTransport } from "ts-zmk-rpc-core/transport/index";
 import type { AvailableDevice } from './tauri/index';
@@ -11,22 +11,14 @@ export interface ConnectModalProps {
     onTransportCreated: (t: RpcTransport) => void;
 }
 
-async function transportClicked(t: RpcTransport, setAvailableDevices: React.Dispatch<AvailableDevice[] | null>, onTransportCreated: (t: RpcTransport) => void) {
-    if (t.pick_and_connect) {
-        setAvailableDevices(await t.pick_and_connect.list());
-    } else {
-        onTransportCreated(await t.connect());
-    }
-}
-
 export const ConnectModal = ({ open, transports, onTransportCreated }: ConnectModalProps) => {
     const dialog = useRef<HTMLDialogElement | null>(null);
-    const [availableDevices, setAvailableDevices] = useState<AvailableDevice[] | null>(null);
-    const [selectedTransport, setSelectedTransport] = useState<RpcTransport | null>(null);
+    const [availableDevices, setAvailableDevices] = useState<AvailableDevice[] | undefined>(undefined);
+    const [selectedTransport, setSelectedTransport] = useState<TransportFactory | undefined>(undefined);
 
     useEffect(() => {
         if (!selectedTransport) {
-            setAvailableDevices(null);
+            setAvailableDevices(undefined);
             return;
         }
 
@@ -34,18 +26,20 @@ export const ConnectModal = ({ open, transports, onTransportCreated }: ConnectMo
 
         if (selectedTransport.connect) {
             async function connectTransport() {
-                const transport = await selectedTransport.connect();
+                const transport = await selectedTransport?.connect?.();
     
                 if (!ignore) {
-                    onTransportCreated(transport);
-                    setSelectedTransport(null);
+                    if (transport) {
+                        onTransportCreated(transport);
+                    }
+                    setSelectedTransport(undefined);
                 }
             }
     
             connectTransport();
         } else {
             async function loadAvailableDevices() {
-                const devices = await selectedTransport.pick_and_connect.list();
+                const devices = await selectedTransport?.pick_and_connect?.list();
     
                 if (!ignore) {
                     setAvailableDevices(devices);
@@ -78,7 +72,7 @@ export const ConnectModal = ({ open, transports, onTransportCreated }: ConnectMo
             <h1>Welcome to ZMK Studio</h1>
             <p>Select a connection type:</p>
             <ul>{connections}</ul>
-            {selectedTransport && availableDevices && (<ul>{availableDevices.map((d) => <li key={d.id} onClick={async () => {onTransportCreated(await selectedTransport.pick_and_connect.connect(d)); setSelectedTransport(null);}}>{d.label}</li>)}</ul>)}
+            {selectedTransport && availableDevices && (<ul>{availableDevices.map((d) => <li key={d.id} onClick={async () => {onTransportCreated(await selectedTransport!.pick_and_connect!.connect(d)); setSelectedTransport(undefined);}}>{d.label}</li>)}</ul>)}
         </dialog>
     );
 }

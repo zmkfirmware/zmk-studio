@@ -17,7 +17,9 @@ const meta = {
     // backgroundColor: { control: 'color' },
   },
   // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
-  args: {  },
+  args: {
+    onPhysicalLayoutClicked: fn(),
+  },
 } satisfies Meta<typeof PhysicalLayoutPicker>;
 
 export default meta;
@@ -30,6 +32,5 @@ export const Standard: Story = {
       { name: "ANSI"},
     ],
     selectedPhysicalLayoutIndex: 1,
-    onPhysicalLayoutClicked: (index) => console.log("Layer clicked", index),
   },
 };

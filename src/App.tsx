@@ -2,8 +2,9 @@ import './App.css'
 import { AppHeader } from './AppHeader';
 
 import { create_rpc_connection, RpcConnection } from "ts-zmk-rpc-core";
+import type { Notification } from "ts-zmk-rpc-core/studio";
 import { ConnectionContext } from './rpc/ConnectionContext';
-import React, { useState } from 'react';
+import { Dispatch, useState } from 'react';
 import { ConnectModal, TransportFactory } from './ConnectModal';
 
 import type { RpcTransport } from "ts-zmk-rpc-core/transport/index";
@@ -44,7 +45,7 @@ async function listen_for_notifications(notification_stream: ReadableStream<Noti
   reader.releaseLock();
 }
 
-async function connect(transport: RpcTransport, setConn: React.Dispatch<RpcConnection | null>) {
+async function connect(transport: RpcTransport, setConn: Dispatch<RpcConnection | null>) {
   let rpc_conn = await create_rpc_connection(transport);
 
   listen_for_notifications(rpc_conn.notification_readable).then(() => {
