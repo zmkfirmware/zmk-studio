@@ -128,6 +128,26 @@ export default function Keyboard() {
   const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0);
   const behaviors = useBehaviors();
 
+  const conn = useContext(ConnectionContext);
+
+  useEffect(() => {
+    if (!conn) {
+        return;
+    }
+
+    async function performSetRequest() {
+        if (!conn) { return; }
+
+        let resp = await call_rpc(conn, { keymap: { setActivePhysicalLayout: selectedPhysicalLayoutIndex }});
+        
+        if (!resp?.keymap?.setActivePhysicalLayout) {
+            console.error("Failed to set the active physical layout to ", selectedPhysicalLayoutIndex);
+        }
+    }
+
+    performSetRequest();
+  }, [selectedPhysicalLayoutIndex]);
+
   return (
     <div className="zmk-keyboard">
         {keymap && (<div className="zmk-keyboard__layer-picker"><LayerPicker layers={keymap.layers} selectedLayerIndex={selectedLayerIndex} onLayerClicked={setSelectedLayerIndex} /></div>) }
