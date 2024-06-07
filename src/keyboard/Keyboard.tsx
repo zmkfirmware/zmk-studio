@@ -124,7 +124,7 @@ function useLayouts(): [PhysicalLayout[] | undefined, React.Dispatch<SetStateAct
 
 export default function Keyboard() {
   const [layouts, _setLayouts, selectedPhysicalLayoutIndex, setSelectedPhysicalLayoutIndex] = useLayouts();
-  const [keymap, _setKeymap] = useConnectedDeviceData<Keymap>({ keymap: { getKeymap: true } }, keymap => keymap?.keymap?.getKeymap);
+  const [keymap, setKeymap] = useConnectedDeviceData<Keymap>({ keymap: { getKeymap: true } }, keymap => keymap?.keymap?.getKeymap);
   const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0);
   const behaviors = useBehaviors();
 
@@ -132,12 +132,15 @@ export default function Keyboard() {
 
   useEffect(() => {
     async function performSetRequest() {
-        if (!conn) { return; }
+        if (!conn && !layouts) { return; }
 
         let resp = await call_rpc(conn, { keymap: { setActivePhysicalLayout: selectedPhysicalLayoutIndex }});
 
-        if (!resp?.keymap?.setActivePhysicalLayout) {
-            console.error("Failed to set the active physical layout to ", selectedPhysicalLayoutIndex);
+        let new_keymap = resp?.keymap?.setActivePhysicalLayout?.ok;
+        if (new_keymap) {
+            setKeymap(new_keymap);
+        } else {
+            console.error("Failed to set the active physical layout err:", resp?.keymap?.setActivePhysicalLayout?.err);
         }
     }
 
