@@ -131,15 +131,11 @@ export default function Keyboard() {
   const conn = useContext(ConnectionContext);
 
   useEffect(() => {
-    if (!conn) {
-        return;
-    }
-
     async function performSetRequest() {
         if (!conn) { return; }
 
         let resp = await call_rpc(conn, { keymap: { setActivePhysicalLayout: selectedPhysicalLayoutIndex }});
-        
+
         if (!resp?.keymap?.setActivePhysicalLayout) {
             console.error("Failed to set the active physical layout to ", selectedPhysicalLayoutIndex);
         }
