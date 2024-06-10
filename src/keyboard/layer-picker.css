@@ -20,23 +20,10 @@
 }
 
 .zmk-layer-picker__item--selected {
-  background-color: gray;
+  background-color: var(--secondary);
 }
 
 .zmk-layer-picker__item:hover {
   border-radius: 2px;
-  border-color: black;
+  border-color: var(--accent);
 }
-
-
-/* 
-.zmk-key__button--primary {
-  color: #333;
-  background-color: transparent;
-  
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px inset;
-}
-.zmk-key__button--secondary {
-  color: white;
-  background-color: #8c8c8c;
-} */

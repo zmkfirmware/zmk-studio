@@ -26,10 +26,12 @@
   padding: 0;
   grid-template-rows: 0 var(--zmk-key-center-height) 0;
   grid-template-columns: 0 var(--zmk-key-center-width) 0;
+
+  box-shadow: var(--text) 0px 0px 0px 1px inset;
 }
 
 .zmk-key__button:hover {
-  background-color: light-dark(white, black);
+  background-color: var(--background);
   grid-template-rows: 1em var(--zmk-key-center-height) 1em;
   grid-template-columns: 1em var(--zmk-key-center-width) 1em;
 }
@@ -57,12 +59,8 @@
 }
 
 .zmk-key__button--primary {
-  color: light-dark( #333, white);
-  background-color: transparent;
+
   
-  box-shadow: light-dark(rgba(0, 0, 0, 0.15), white) 0px 0px 0px 1px inset;
 }
 .zmk-key__button--secondary {
-  color: light-dark(black, white);
-  background-color: light-dark(white, #8c8c8c);
 }
