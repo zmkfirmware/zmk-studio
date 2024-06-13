@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 import { PhysicalLayout } from './PhysicalLayout';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
@@ -13,7 +14,9 @@ const meta = {
   // More on argTypes: https://storybook.js.org/docs/api/argtypes
   argTypes: {
   },
-  args: {  },
+  args: {
+    onPositionClicked: fn(),
+  },
 } satisfies Meta<typeof PhysicalLayout>;
 
 export default meta;

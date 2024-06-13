@@ -18,3 +18,8 @@
 .zmk-app-header__connected-device {
     text-align: center;
 }
+
+
+.zmk-app-header__actions {
+    display: flex;
+}

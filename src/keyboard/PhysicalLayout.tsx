@@ -14,6 +14,7 @@ type KeyPosition = PropsWithChildren<{
 
 interface PhysicalLayoutProps {
   positions: Array<KeyPosition>;
+  onPositionClicked?: (position: number) => void,
 }
 
 interface PhysicalLayoutPositionLocation {
@@ -33,6 +34,7 @@ function scalePosition({ x, y }: PhysicalLayoutPositionLocation): { top: number,
 
 export const PhysicalLayout = ({
   positions,
+  onPositionClicked,
   ...props
 }: PhysicalLayoutProps) => {
 
@@ -40,7 +42,7 @@ export const PhysicalLayout = ({
   let rightMost = positions.map(k => k.x + k.width).reduce((a,b) => Math.max(a,b), 0);
   let bottomMost = positions.map(k => k.y + k.height).reduce((a,b) => Math.max(a,b), 0);
   
-  const positionItems = positions.map((p, idx) => <div key={idx} className='zmk-physical-layout__position' style={scalePosition(p)}><Key primary={true} {...p} /></div>);
+  const positionItems = positions.map((p, idx) => <div key={idx} onClick={() => onPositionClicked?.(idx) } className='zmk-physical-layout__position' style={scalePosition(p)}><Key primary={true} {...p} /></div>);
 
   return (
     <div
