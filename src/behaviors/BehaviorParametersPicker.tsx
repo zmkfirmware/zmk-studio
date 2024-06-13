@@ -24,6 +24,4 @@ export const BehaviorParametersPicker = ({param1, param2, metadata, layerNames, 
             </div>
         );
     }
-    
-    return (<></>);
 }
