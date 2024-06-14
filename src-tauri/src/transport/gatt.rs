@@ -5,7 +5,7 @@ use futures::StreamExt;
 use std::time::Duration;
 use uuid::Uuid;
 
-use bluest::{Adapter, DeviceId};
+use bluest::{Adapter, ConnectionEvent, DeviceId};
 
 use tauri::{command, AppHandle, State};
 
@@ -46,22 +46,38 @@ pub async fn gatt_connect(
 
         if let Some(c) = char {
             let c2 = c.clone();
-            tauri::async_runtime::spawn(async move {
+            let ah1 = app_handle.clone();
+            let notify_handle = tauri::async_runtime::spawn(async move {
                 if let Ok(mut n) = c2.notify().await {
-                    // Need to keep adapter from being dropped while active/connected
-                    let a = adapter;
-
                     use tauri::Manager;
 
                     while let Some(Ok(vn)) = n.next().await {
-                        app_handle.emit("connection_data", vn.clone());
+                        ah1.emit("connection_data", vn.clone());
                     }
-
-                    let state = app_handle.state::<super::commands::ActiveConnection>();
-                    *state.conn.lock().await = None;
-
-                    app_handle.emit("connection_disconnected", ());
                 }
+            });
+
+            let ah2 = app_handle.clone();
+            tauri::async_runtime::spawn(async move {
+                // Need to keep adapter from being dropped while active/connected
+                let a = adapter;
+
+                use tauri::Manager;
+
+                if let Ok(mut events) = a.device_connection_events(&d).await {
+                    while let Some(ev) = events.next().await {
+                        if ev == ConnectionEvent::Disconnected {
+                            let state = ah2.state::<super::commands::ActiveConnection>();
+                            *state.conn.lock().await = None;
+
+                            if let Err(e) = ah2.emit("connection_disconnected", ()) {
+                                println!("ERROR RAISING! {:?}", e);
+                            }
+
+                            notify_handle.abort();
+                        }
+                    }
+                };
             });
 
             let (send, mut recv) = channel(5);

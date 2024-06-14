@@ -30,7 +30,7 @@ export async function connect(dev: AvailableDevice): Promise<RpcTransport> {
   const unlisten_disconnected = await listen('connection_disconnected', async (_ev: any) => {
     unlisten_data();
     unlisten_disconnected();
-    readable.cancel();
+    response_writable.close();
   });
 
   return { label: dev.label, readable, writable };
