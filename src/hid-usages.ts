@@ -1,6 +1,6 @@
 
 import { UsagePages } from './HidUsageTables-1.5.json';
-
+import { default as HidOverrides } from './hid-usage-name-overrides.json';
 
 export interface UsageId {
     Id: number;
@@ -15,5 +15,5 @@ export const hid_usage_page_and_id_from_usage = (usage: number): [number, number
 export const hid_usage_page_get_ids = (usage_page: number): {Id: number, Name: string}[] => UsagePages.find((p) => p.Id === usage_page)?.UsageIds || []
 
 export const hid_usage_get_label = (usage_page: number, usage_id: number): string | undefined => 
-    UsagePages.find((p) => p.Id === usage_page)?.UsageIds?.find((u) => u.Id === usage_id)?.Name;
+    HidOverrides[usage_page.toString()]?.[usage_id.toString()] || UsagePages.find((p) => p.Id === usage_page)?.UsageIds?.find((u) => u.Id === usage_id)?.Name;
 
