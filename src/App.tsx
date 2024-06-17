@@ -75,6 +75,8 @@ async function connect(transport: RpcTransport, setConn: Dispatch<RpcConnection 
 
   listen_for_notifications(rpc_conn.notification_readable).then(() => {
     setConn(null);
+  }).catch((_e) => {
+    setConn(null);
   });
 
   setConn(rpc_conn);
