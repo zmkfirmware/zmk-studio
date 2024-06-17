@@ -22,9 +22,9 @@ declare global {
 
 const TRANSPORTS: TransportFactory[] = [
   navigator.bluetooth && { label: "BLE", connect: gatt_connect },
-  navigator.serial && { label: "Serial", connect: serial_connect },
+  navigator.serial && { label: "USB", connect: serial_connect },
   ... window.__TAURI_INTERNALS__ ? [{ label: "BLE", pick_and_connect: {connect: tauri_ble_connect, list: ble_list_devices } }] : [],
-  ... window.__TAURI_INTERNALS__ ? [{ label: "Serial", pick_and_connect: { connect: tauri_serial_connect, list: serial_list_devices }}] : [],
+  ... window.__TAURI_INTERNALS__ ? [{ label: "USB", pick_and_connect: { connect: tauri_serial_connect, list: serial_list_devices }}] : [],
 ].filter((t) => t !== undefined);
 
 async function listen_for_notifications(notification_stream: ReadableStream<Notification>): Promise<void> {
