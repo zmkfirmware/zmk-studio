@@ -1,18 +1,18 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
+import type { Meta, StoryObj } from "@storybook/react";
+import { fn } from "@storybook/test";
 
-import { BehaviorParametersPicker } from './BehaviorParametersPicker';
+import { BehaviorParametersPicker } from "./BehaviorParametersPicker";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
-  title: 'Behaviors/BehaviorParametersPicker',
+  title: "Behaviors/BehaviorParametersPicker",
   component: BehaviorParametersPicker,
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
-    layout: 'centered',
+    layout: "centered",
   },
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   // More on argTypes: https://storybook.js.org/docs/api/argtypes
   argTypes: {
     // backgroundColor: { control: 'color' },
@@ -32,25 +32,30 @@ export const Example: Story = {
   args: {
     metadata: [
       {
-        param1: [{ name: "Const #1", constant: 1 }, { name: "Const #2", constant: 2 }],
-        param2: []
-      }
+        param1: [
+          { name: "Const #1", constant: 1 },
+          { name: "Const #2", constant: 2 },
+        ],
+        param2: [],
+      },
     ],
   },
 };
-
 
 export const SecondParamBasedOnFirst: Story = {
   args: {
     param1: 3,
     metadata: [
       {
-        param1: [{ name: "Const #1", constant: 1 }, { name: "Const #2", constant: 2 }],
-        param2: []
+        param1: [
+          { name: "Const #1", constant: 1 },
+          { name: "Const #2", constant: 2 },
+        ],
+        param2: [],
       },
       {
-        param1: [{ name: "Const #3", constant: 3}],
-        param2: [{ name: "Second Range", range: { min: 0, max: 4 }}],
+        param1: [{ name: "Const #3", constant: 3 }],
+        param2: [{ name: "Second Range", range: { min: 0, max: 4 } }],
       },
     ],
   },

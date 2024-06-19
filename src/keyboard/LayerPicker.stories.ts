@@ -1,17 +1,17 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
-import { LayerPicker } from './LayerPicker';
+import type { Meta, StoryObj } from "@storybook/react";
+import { fn } from "@storybook/test";
+import { LayerPicker } from "./LayerPicker";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
-  title: 'Keyboard/LayerPicker',
+  title: "Keyboard/LayerPicker",
   component: LayerPicker,
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
-    layout: 'centered',
+    layout: "centered",
   },
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   // More on argTypes: https://storybook.js.org/docs/api/argtypes
   argTypes: {
     // backgroundColor: { control: 'color' },
@@ -28,10 +28,10 @@ type Story = StoryObj<typeof meta>;
 export const Named: Story = {
   args: {
     layers: [
-      { name: "Base"},
-      { name: "Num"},
-      { name: "Nav"},
-      { name: "Symbol"},
+      { name: "Base" },
+      { name: "Num" },
+      { name: "Nav" },
+      { name: "Symbol" },
     ],
     selectedLayerIndex: 2,
     onAddClicked: fn(),
@@ -41,10 +41,10 @@ export const Named: Story = {
 export const NoAdd: Story = {
   args: {
     layers: [
-      { name: "Base"},
-      { name: "Num"},
-      { name: "Nav"},
-      { name: "Symbol"},
+      { name: "Base" },
+      { name: "Num" },
+      { name: "Nav" },
+      { name: "Symbol" },
     ],
     selectedLayerIndex: 2,
   },
@@ -52,12 +52,7 @@ export const NoAdd: Story = {
 
 export const NoNames: Story = {
   args: {
-    layers: [
-      { },
-      { },
-      { },
-    ],
+    layers: [{}, {}, {}],
     selectedLayerIndex: 0,
   },
 };
-

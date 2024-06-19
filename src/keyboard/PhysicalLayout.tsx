@@ -1,28 +1,29 @@
-
-import './physical-layout.css';
-import { PropsWithChildren } from 'react';
-import { Key } from './Key';
-import { scale } from './geometry';
+import { PropsWithChildren } from "react";
+import { Key } from "./Key";
+import { scale } from "./geometry";
 
 type KeyPosition = PropsWithChildren<{
-  header: string,
-  width: number,
-  height: number,
-  x: number,
-  y: number,
+  header: string;
+  width: number;
+  height: number;
+  x: number;
+  y: number;
 }>;
 
 interface PhysicalLayoutProps {
   positions: Array<KeyPosition>;
-  onPositionClicked?: (position: number) => void,
+  onPositionClicked?: (position: number) => void;
 }
 
 interface PhysicalLayoutPositionLocation {
-  x: number,
-  y: number,
+  x: number;
+  y: number;
 }
 
-function scalePosition({ x, y }: PhysicalLayoutPositionLocation): { top: number, left: number } {
+function scalePosition({ x, y }: PhysicalLayoutPositionLocation): {
+  top: number;
+  left: number;
+} {
   x = scale(x);
   y = scale(y);
 
@@ -37,17 +38,32 @@ export const PhysicalLayout = ({
   onPositionClicked,
   ...props
 }: PhysicalLayoutProps) => {
-
   // TODO: Add a bit of padding for rotation when supported
-  let rightMost = positions.map(k => k.x + k.width).reduce((a,b) => Math.max(a,b), 0);
-  let bottomMost = positions.map(k => k.y + k.height).reduce((a,b) => Math.max(a,b), 0);
-  
-  const positionItems = positions.map((p, idx) => <div key={idx} onClick={() => onPositionClicked?.(idx) } className='zmk-physical-layout__position' style={scalePosition(p)}><Key primary={true} {...p} /></div>);
+  let rightMost = positions
+    .map((k) => k.x + k.width)
+    .reduce((a, b) => Math.max(a, b), 0);
+  let bottomMost = positions
+    .map((k) => k.y + k.height)
+    .reduce((a, b) => Math.max(a, b), 0);
+
+  const positionItems = positions.map((p, idx) => (
+    <div
+      key={idx}
+      onClick={() => onPositionClicked?.(idx)}
+      className="absolute hover:z-[1000]"
+      style={scalePosition(p)}
+    >
+      <Key primary={true} {...p} />
+    </div>
+  ));
 
   return (
     <div
-      className={'zmk-physical-layout'}
-      style={{ height: scale(bottomMost) + 'px', width: scale(rightMost) + 'px'}}
+      className="relative"
+      style={{
+        height: scale(bottomMost) + "px",
+        width: scale(rightMost) + "px",
+      }}
       {...props}
     >
       {positionItems}

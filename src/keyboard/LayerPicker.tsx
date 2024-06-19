@@ -1,5 +1,3 @@
-import './layer-picker.css';
-
 interface Layer {
   name?: string;
 }
@@ -15,12 +13,21 @@ interface LayerPickerProps {
   onLayerClicked?: LayerClickCallback;
 }
 
-function renderItem(layer: Layer, index: number, selected: boolean, onClick?: LayerClickCallback) {
-  let className = "zmk-layer-picker__item";
-  if (selected) {
-    className += " zmk-layer-picker__item--selected";
-  }
-  return <li className={className} onClick={() => onClick?.(index)}>{layer.name || index.toLocaleString() }</li>;
+function renderItem(
+  layer: Layer,
+  index: number,
+  selected: boolean,
+  onClick?: LayerClickCallback,
+) {
+  return (
+    <li
+      aria-selected={selected}
+      className="p-1 b-1 aria-selected:bg-secondary border rounded border-transparent border-solid hover:border-text-base"
+      onClick={() => onClick?.(index)}
+    >
+      {layer.name || index.toLocaleString()}
+    </li>
+  );
 }
 
 /**
@@ -33,14 +40,17 @@ export const LayerPicker = ({
   onLayerClicked,
   ...props
 }: LayerPickerProps) => {
-  let layer_items = layers.map((layer, index) => renderItem(layer, index, index === selectedLayerIndex, onLayerClicked));
+  let layer_items = layers.map((layer, index) =>
+    renderItem(layer, index, index === selectedLayerIndex, onLayerClicked),
+  );
 
   return (
     <ul
-    className='zmk-layer-picker'
-    {...props}>
+      className="grid b-0 grid-flow-row auto-rows-auto list-none items-center justify-center cursor-pointer"
+      {...props}
+    >
       {layer_items}
-      {onAddClicked && <li className="zmk-layer-picker__add" onClick={onAddClicked}>+</li>}
+      {onAddClicked && <li onClick={onAddClicked}>+</li>}
     </ul>
   );
 };

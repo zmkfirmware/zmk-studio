@@ -1,0 +1,5 @@
+src-tauri/
+dist/
+public/
+*.rs
+src/HidUsageTables-1.5.json

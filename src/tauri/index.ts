@@ -1,1 +1,1 @@
-export type AvailableDevice = { label: string, id: string }
+export type AvailableDevice = { label: string; id: string };
