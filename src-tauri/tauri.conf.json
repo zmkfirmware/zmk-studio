@@ -43,6 +43,18 @@
       "timestampUrl": ""
     }
   },
+  "plugins": {
+    "cli": {
+      "description": "Tauri CLI Plugin Example",
+      "args": [
+        {
+          "name": "serial-port",
+	  "takesValue": true,
+          "description": "Specefic serial port to connect to"
+        }
+      ]
+    }
+  },
   "app": {
     "security": {
       "csp": {

@@ -2,14 +2,11 @@ use blocking::unblock;
 use futures::channel::mpsc::channel;
 use futures::StreamExt;
 
-
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio_serial::{available_ports, SerialPort, SerialPortBuilderExt, SerialPortType};
 
-use tauri::{
-    command,
-    AppHandle, State,
-};
+use tauri::{command, AppHandle, State};
+use tauri_plugin_cli::CliExt;
 
 const READ_BUF_SIZE: usize = 1024;
 
@@ -31,7 +28,7 @@ pub async fn serial_connect(
             *state.conn.lock().await = Some(Box::new(send));
             tauri::async_runtime::spawn(async move {
                 while let Some(data) = recv.next().await {
-                    writer.write(&data).await;
+                    let _res = writer.write(&data).await;
                 }
             });
 
@@ -55,15 +52,17 @@ pub async fn serial_connect(
 
             Ok(true)
         }
-        Err(_) => Err(()),
+        Err(e) => {
+            Err(())
+        }
     }
 }
 
 #[command]
-pub async fn serial_list_devices() -> Result<Vec<super::commands::AvailableDevice>, ()> {
+pub async fn serial_list_devices(app_handle: AppHandle) -> Result<Vec<super::commands::AvailableDevice>, ()> {
     let ports = unblock(|| available_ports()).await.unwrap();
 
-    let candidates = ports
+    let mut candidates = ports
         .into_iter()
         .filter_map(|pi| {
             if let SerialPortType::UsbPort(u) = pi.port_type {
@@ -75,7 +74,21 @@ pub async fn serial_list_devices() -> Result<Vec<super::commands::AvailableDevic
                 None
             }
         })
-        .collect();
+        .collect::<Vec<_>>();
+
+    match app_handle.cli().matches() {
+        Ok(m) => {
+            if let Some(p) = m.args.get("serial-port") {
+                if let serde_json::Value::String(path) = &p.value {
+                    candidates.push(super::commands::AvailableDevice {
+                        id: path.to_string(),
+                        label: format!("CLI Port: {path}").to_string(),
+                    })
+                }
+            }
+        },
+        Err(_) => {},
+    }
 
     Ok(candidates)
 }
