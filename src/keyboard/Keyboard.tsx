@@ -308,6 +308,26 @@ export default function Keyboard() {
     return keymap.layers[selectedLayerIndex].bindings[selectedKeyPosition];
   }, [keymap, selectedLayerIndex, selectedKeyPosition]);
 
+  const moveLayer = useCallback((start: number, end: number) => {
+    const doMove = async (layer: number, dest: number) => {
+      if (!conn) {
+        return;
+      }
+      
+      let resp = await call_rpc(conn, { keymap: { moveLayer: { layer, dest}}})
+      if (resp.keymap?.moveLayer?.ok) {
+        setKeymap(resp.keymap?.moveLayer?.ok);
+        setSelectedLayerIndex(dest);
+      } else {
+        console.error("Error moving", resp);
+      }
+    }
+    undoRedo?.(async () => {
+      await doMove(start, end);
+      return () => doMove(end, start);
+    });
+  }, [undoRedo]);
+
   return (
     <div className="py-2 h-full grid grid-cols-[1fr_5fr_1fr] grid-rows-[1fr_auto]">
       {keymap && (
@@ -316,6 +336,7 @@ export default function Keyboard() {
             layers={keymap.layers}
             selectedLayerIndex={selectedLayerIndex}
             onLayerClicked={setSelectedLayerIndex}
+            onLayerMoved={moveLayer}
           />
         </div>
       )}

@@ -34,19 +34,6 @@ export const Named: Story = {
       { name: "Symbol" },
     ],
     selectedLayerIndex: 2,
-    onAddClicked: fn(),
-  },
-};
-
-export const NoAdd: Story = {
-  args: {
-    layers: [
-      { name: "Base" },
-      { name: "Num" },
-      { name: "Nav" },
-      { name: "Symbol" },
-    ],
-    selectedLayerIndex: 2,
   },
 };
 

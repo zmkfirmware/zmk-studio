@@ -1,56 +1,64 @@
+import { useCallback, useMemo } from "react";
+import { DropIndicator, ListBox, ListBoxItem, Selection, useDragAndDrop } from "react-aria-components";
+
 interface Layer {
   name?: string;
 }
 
-type LayerClickCallback = (index: number) => void;
+export type LayerClickCallback = (index: number) => void;
+export type LayerMovedCallback = (index: number, destination: number) => void;
 
 interface LayerPickerProps {
   layers: Array<Layer>;
   selectedLayerIndex: number;
 
-  onAddClicked?: () => void;
-
   onLayerClicked?: LayerClickCallback;
+  onLayerMoved?: LayerMovedCallback;
 }
 
-function renderItem(
-  layer: Layer,
-  index: number,
-  selected: boolean,
-  onClick?: LayerClickCallback,
-) {
-  return (
-    <li
-      aria-selected={selected}
-      className="p-1 b-1 aria-selected:bg-secondary border rounded border-transparent border-solid hover:border-text-base"
-      onClick={() => onClick?.(index)}
-    >
-      {layer.name || index.toLocaleString()}
-    </li>
-  );
-}
-
-/**
- * Primary UI component for user interaction
- */
 export const LayerPicker = ({
   layers,
   selectedLayerIndex,
-  onAddClicked,
   onLayerClicked,
+  onLayerMoved,
   ...props
 }: LayerPickerProps) => {
-  let layer_items = layers.map((layer, index) =>
-    renderItem(layer, index, index === selectedLayerIndex, onLayerClicked),
-  );
+  const layer_items = useMemo(() => {
+    return layers.map((l, i) => ({ id: (l.name || i.toLocaleString()), index: i, selected: (i === selectedLayerIndex)}))
+  }, [layers]);
+
+  const selectionChanged = useCallback((s: Selection) => {
+    if (s === "all") {
+      return;
+    }
+
+    onLayerClicked?.(layer_items.findIndex(l => s.has(l.id)));
+  }, [onLayerClicked, layer_items]);
+
+  let { dragAndDropHooks } = useDragAndDrop({
+    renderDropIndicator(target) {
+      return (
+        <DropIndicator
+          target={target}
+          className={'data-[drop-target]:outline outline-1 outline-accent'}
+        />
+      );
+    },
+    getItems: (keys) =>
+      [...keys].map((key) => ({ 'text/plain': key.toLocaleString() })),
+    onReorder(e) {
+      let startIndex = layer_items.findIndex(l => e.keys.has(l.id));
+      let endIndex = layer_items.findIndex(l => l.id === e.target.key);
+      onLayerMoved?.(startIndex, endIndex);
+    }
+  });
 
   return (
-    <ul
-      className="grid b-0 grid-flow-row auto-rows-auto list-none items-center justify-center cursor-pointer"
+    <ListBox aria-label="Keymap Layer" selectionMode="single" items={layer_items} disallowEmptySelection={true} selectedKeys={[layer_items[selectedLayerIndex].id]}
+      className="items-center justify-center cursor-pointer" onSelectionChange={selectionChanged} dragAndDropHooks={dragAndDropHooks}
       {...props}
     >
-      {layer_items}
-      {onAddClicked && <li onClick={onAddClicked}>+</li>}
-    </ul>
+      {layer_item => <ListBoxItem className="p-1 b-1 aria-selected:bg-secondary border rounded border-transparent border-solid hover:border-text-base">{layer_item.id}</ListBoxItem>}
+    </ListBox>
   );
 };
