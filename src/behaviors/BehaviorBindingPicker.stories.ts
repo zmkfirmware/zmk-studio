@@ -33,7 +33,7 @@ export const Example: Story = {
     behaviors: [
       {
         id: 0,
-        friendlyName: "Key Press",
+        displayName: "Key Press",
         metadata: [{ param1: [{ name: "Key", hidUsage: {} }], param2: [] }],
       },
     ],

@@ -130,7 +130,7 @@ export const BehaviorBindingPicker = ({
         }}
       >
         {behaviors.map((b) => (
-          <option value={b.id}>{b.friendlyName}</option>
+          <option value={b.id}>{b.displayName}</option>
         ))}
       </select>
       {metadata && (

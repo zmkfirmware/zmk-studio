@@ -55,7 +55,7 @@ function renderLayout(
     return {
       header:
         behaviors[keymap.layers[selectedLayoutIndex].bindings[i].behaviorId]
-          ?.friendlyName || "Unknown",
+          ?.displayName || "Unknown",
       x: k.x / 100.0,
       y: k.y / 100.0,
       width: k.width / 100,
