@@ -1,5 +1,9 @@
-import { UsagePages } from "./HidUsageTables-1.5.json";
-import { default as HidOverrides } from "./hid-usage-name-overrides.json";
+// import { UsagePages } from "./HidUsageTables-1.5.json";
+// Filtered with `cat src/HidUsageTables-1.5.json | jq '{ UsagePages: [.UsagePages[] | select([.Id] |inside([7, 12]))] }' > src/keyboard-and-consumer-usage-tables.json`
+import { UsagePages } from "./keyboard-and-consumer-usage-tables.json";
+import HidOverrides from "./hid-usage-name-overrides.json";
+
+const overrides: Record<string, Record<string, string>> = HidOverrides;
 
 export interface UsageId {
   Id: number;
@@ -23,7 +27,7 @@ export const hid_usage_get_label = (
   usage_page: number,
   usage_id: number,
 ): string | undefined =>
-  HidOverrides[usage_page.toString()]?.[usage_id.toString()] ||
+  overrides[usage_page.toString()]?.[usage_id.toString()] ||
   UsagePages.find((p) => p.Id === usage_page)?.UsageIds?.find(
     (u) => u.Id === usage_id,
   )?.Name;

@@ -1,0 +1,4696 @@
+{
+  "UsagePages": [
+    {
+      "Kind": "Defined",
+      "Id": 12,
+      "Name": "Consumer",
+      "UsageIds": [
+        {
+          "Id": 1,
+          "Name": "Consumer Control",
+          "Kinds": [
+            "CA"
+          ]
+        },
+        {
+          "Id": 2,
+          "Name": "Numeric Key Pad",
+          "Kinds": [
+            "NAry"
+          ]
+        },
+        {
+          "Id": 3,
+          "Name": "Programmable Buttons",
+          "Kinds": [
+            "NAry"
+          ]
+        },
+        {
+          "Id": 4,
+          "Name": "Microphone",
+          "Kinds": [
+            "CA"
+          ]
+        },
+        {
+          "Id": 5,
+          "Name": "Headphone",
+          "Kinds": [
+            "CA"
+          ]
+        },
+        {
+          "Id": 6,
+          "Name": "Graphic Equalizer",
+          "Kinds": [
+            "CA"
+          ]
+        },
+        {
+          "Id": 32,
+          "Name": "+10",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 33,
+          "Name": "+100",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 34,
+          "Name": "AM/PM",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 48,
+          "Name": "Power",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 49,
+          "Name": "Reset",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 50,
+          "Name": "Sleep",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 51,
+          "Name": "Sleep After",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 52,
+          "Name": "Sleep Mode",
+          "Kinds": [
+            "RTC"
+          ]
+        },
+        {
+          "Id": 53,
+          "Name": "Illumination",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 54,
+          "Name": "Function Buttons",
+          "Kinds": [
+            "NAry"
+          ]
+        },
+        {
+          "Id": 64,
+          "Name": "Menu",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 65,
+          "Name": "Menu Pick",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 66,
+          "Name": "Menu Up",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 67,
+          "Name": "Menu Down",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 68,
+          "Name": "Menu Left",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 69,
+          "Name": "Menu Right",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 70,
+          "Name": "Menu Escape",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 71,
+          "Name": "Menu Value Increase",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 72,
+          "Name": "Menu Value Decrease",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 96,
+          "Name": "Data On Screen",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 97,
+          "Name": "Closed Caption",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 98,
+          "Name": "Closed Caption Select",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 99,
+          "Name": "VCR/TV",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 100,
+          "Name": "Broadcast Mode",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 101,
+          "Name": "Snapshot",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 102,
+          "Name": "Still",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 103,
+          "Name": "Picture-in-Picture Toggle",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 104,
+          "Name": "Picture-in-Picture Swap",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 105,
+          "Name": "Red Menu Button",
+          "Kinds": [
+            "MC"
+          ]
+        },
+        {
+          "Id": 106,
+          "Name": "Green Menu Button",
+          "Kinds": [
+            "MC"
+          ]
+        },
+        {
+          "Id": 107,
+          "Name": "Blue Menu Button",
+          "Kinds": [
+            "MC"
+          ]
+        },
+        {
+          "Id": 108,
+          "Name": "Yellow Menu Button",
+          "Kinds": [
+            "MC"
+          ]
+        },
+        {
+          "Id": 109,
+          "Name": "Aspect",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 110,
+          "Name": "3D Mode Select",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 111,
+          "Name": "Display Brightness Increment",
+          "Kinds": [
+            "RTC"
+          ]
+        },
+        {
+          "Id": 112,
+          "Name": "Display Brightness Decrement",
+          "Kinds": [
+            "RTC"
+          ]
+        },
+        {
+          "Id": 113,
+          "Name": "Display Brightness",
+          "Kinds": [
+            "LC"
+          ]
+        },
+        {
+          "Id": 114,
+          "Name": "Display Backlight Toggle",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 115,
+          "Name": "Display Set Brightness to Minimum",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 116,
+          "Name": "Display Set Brightness to Maximum",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 117,
+          "Name": "Display Set Auto Brightness",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 118,
+          "Name": "Camera Access Enabled",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 119,
+          "Name": "Camera Access Disabled",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 120,
+          "Name": "Camera Access Toggle",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 121,
+          "Name": "Keyboard Brightness Increment",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 122,
+          "Name": "Keyboard Brightness Decrement",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 123,
+          "Name": "Keyboard Backlight Set Level",
+          "Kinds": [
+            "LC"
+          ]
+        },
+        {
+          "Id": 124,
+          "Name": "Keyboard Backlight OOC",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 125,
+          "Name": "Keyboard Backlight Set Minimum",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 126,
+          "Name": "Keyboard Backlight Set Maximum",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 127,
+          "Name": "Keyboard Backlight Auto",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 128,
+          "Name": "Selection",
+          "Kinds": [
+            "NAry"
+          ]
+        },
+        {
+          "Id": 129,
+          "Name": "Assign Selection",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 130,
+          "Name": "Mode Step",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 131,
+          "Name": "Recall Last",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 132,
+          "Name": "Enter Channel",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 133,
+          "Name": "Order Movie",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 134,
+          "Name": "Channel",
+          "Kinds": [
+            "LC"
+          ]
+        },
+        {
+          "Id": 135,
+          "Name": "Media Selection",
+          "Kinds": [
+            "NAry"
+          ]
+        },
+        {
+          "Id": 136,
+          "Name": "Media Select Computer",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 137,
+          "Name": "Media Select TV",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 138,
+          "Name": "Media Select WWW",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 139,
+          "Name": "Media Select DVD",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 140,
+          "Name": "Media Select Telephone",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 141,
+          "Name": "Media Select Program Guide",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 142,
+          "Name": "Media Select Video Phone",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 143,
+          "Name": "Media Select Games",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 144,
+          "Name": "Media Select Messages",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 145,
+          "Name": "Media Select CD",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 146,
+          "Name": "Media Select VCR",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 147,
+          "Name": "Media Select Tuner",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 148,
+          "Name": "Quit",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 149,
+          "Name": "Help",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 150,
+          "Name": "Media Select Tape",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 151,
+          "Name": "Media Select Cable",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 152,
+          "Name": "Media Select Satellite",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 153,
+          "Name": "Media Select Security",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 154,
+          "Name": "Media Select Home",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 155,
+          "Name": "Media Select Call",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 156,
+          "Name": "Channel Increment",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 157,
+          "Name": "Channel Decrement",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 158,
+          "Name": "Media Select SAP",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 160,
+          "Name": "VCR Plus",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 161,
+          "Name": "Once",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 162,
+          "Name": "Daily",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 163,
+          "Name": "Weekly",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 164,
+          "Name": "Monthly",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 176,
+          "Name": "Play",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 177,
+          "Name": "Pause",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 178,
+          "Name": "Record",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 179,
+          "Name": "Fast Forward",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 180,
+          "Name": "Rewind",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 181,
+          "Name": "Scan Next Track",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 182,
+          "Name": "Scan Previous Track",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 183,
+          "Name": "Stop",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 184,
+          "Name": "Eject",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 185,
+          "Name": "Random Play",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 186,
+          "Name": "Select Disc",
+          "Kinds": [
+            "NAry"
+          ]
+        },
+        {
+          "Id": 187,
+          "Name": "Enter Disc",
+          "Kinds": [
+            "MC"
+          ]
+        },
+        {
+          "Id": 188,
+          "Name": "Repeat",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 189,
+          "Name": "Tracking",
+          "Kinds": [
+            "LC"
+          ]
+        },
+        {
+          "Id": 190,
+          "Name": "Track Normal",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 191,
+          "Name": "Slow Tracking",
+          "Kinds": [
+            "LC"
+          ]
+        },
+        {
+          "Id": 192,
+          "Name": "Frame Forward",
+          "Kinds": [
+            "RTC"
+          ]
+        },
+        {
+          "Id": 193,
+          "Name": "Frame Back",
+          "Kinds": [
+            "RTC"
+          ]
+        },
+        {
+          "Id": 194,
+          "Name": "Mark",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 195,
+          "Name": "Clear Mark",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 196,
+          "Name": "Repeat From Mark",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 197,
+          "Name": "Return To Mark",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 198,
+          "Name": "Search Mark Forward",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 199,
+          "Name": "Search Mark Backwards",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 200,
+          "Name": "Counter Reset",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 201,
+          "Name": "Show Counter",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 202,
+          "Name": "Tracking Increment",
+          "Kinds": [
+            "RTC"
+          ]
+        },
+        {
+          "Id": 203,
+          "Name": "Tracking Decrement",
+          "Kinds": [
+            "RTC"
+          ]
+        },
+        {
+          "Id": 204,
+          "Name": "Stop/Eject",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 205,
+          "Name": "Play/Pause",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 206,
+          "Name": "Play/Skip",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 207,
+          "Name": "Voice Command",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 208,
+          "Name": "Invoke Capture Interface",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 209,
+          "Name": "Start or Stop Game Recording",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 210,
+          "Name": "Historical Game Capture",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 211,
+          "Name": "Capture Game Screenshot",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 212,
+          "Name": "Show or Hide Recording Indicator",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 213,
+          "Name": "Start or Stop Microphone Capture",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 214,
+          "Name": "Start or Stop Camera Capture",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 215,
+          "Name": "Start or Stop Game Broadcast",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 216,
+          "Name": "Start or Stop Voice Dictation Session",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 217,
+          "Name": "Invoke/Dismiss Emoji Picker",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 224,
+          "Name": "Volume",
+          "Kinds": [
+            "LC"
+          ]
+        },
+        {
+          "Id": 225,
+          "Name": "Balance",
+          "Kinds": [
+            "LC"
+          ]
+        },
+        {
+          "Id": 226,
+          "Name": "Mute",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 227,
+          "Name": "Bass",
+          "Kinds": [
+            "LC"
+          ]
+        },
+        {
+          "Id": 228,
+          "Name": "Treble",
+          "Kinds": [
+            "LC"
+          ]
+        },
+        {
+          "Id": 229,
+          "Name": "Bass Boost",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 230,
+          "Name": "Surround Mode",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 231,
+          "Name": "Loudness",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 232,
+          "Name": "MPX",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 233,
+          "Name": "Volume Increment",
+          "Kinds": [
+            "RTC"
+          ]
+        },
+        {
+          "Id": 234,
+          "Name": "Volume Decrement",
+          "Kinds": [
+            "RTC"
+          ]
+        },
+        {
+          "Id": 240,
+          "Name": "Speed Select",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 241,
+          "Name": "Playback Speed",
+          "Kinds": [
+            "NAry"
+          ]
+        },
+        {
+          "Id": 242,
+          "Name": "Standard Play",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 243,
+          "Name": "Long Play",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 244,
+          "Name": "Extended Play",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 245,
+          "Name": "Slow",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 256,
+          "Name": "Fan Enable",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 257,
+          "Name": "Fan Speed",
+          "Kinds": [
+            "LC"
+          ]
+        },
+        {
+          "Id": 258,
+          "Name": "Light Enable",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 259,
+          "Name": "Light Illumination Level",
+          "Kinds": [
+            "LC"
+          ]
+        },
+        {
+          "Id": 260,
+          "Name": "Climate Control Enable",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 261,
+          "Name": "Room Temperature",
+          "Kinds": [
+            "LC"
+          ]
+        },
+        {
+          "Id": 262,
+          "Name": "Security Enable",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 263,
+          "Name": "Fire Alarm",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 264,
+          "Name": "Police Alarm",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 265,
+          "Name": "Proximity",
+          "Kinds": [
+            "LC"
+          ]
+        },
+        {
+          "Id": 266,
+          "Name": "Motion",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 267,
+          "Name": "Duress Alarm",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 268,
+          "Name": "Holdup Alarm",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 269,
+          "Name": "Medical Alarm",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 336,
+          "Name": "Balance Right",
+          "Kinds": [
+            "RTC"
+          ]
+        },
+        {
+          "Id": 337,
+          "Name": "Balance Left",
+          "Kinds": [
+            "RTC"
+          ]
+        },
+        {
+          "Id": 338,
+          "Name": "Bass Increment",
+          "Kinds": [
+            "RTC"
+          ]
+        },
+        {
+          "Id": 339,
+          "Name": "Bass Decrement",
+          "Kinds": [
+            "RTC"
+          ]
+        },
+        {
+          "Id": 340,
+          "Name": "Treble Increment",
+          "Kinds": [
+            "RTC"
+          ]
+        },
+        {
+          "Id": 341,
+          "Name": "Treble Decrement",
+          "Kinds": [
+            "RTC"
+          ]
+        },
+        {
+          "Id": 352,
+          "Name": "Speaker System",
+          "Kinds": [
+            "CL"
+          ]
+        },
+        {
+          "Id": 353,
+          "Name": "Channel Left",
+          "Kinds": [
+            "CL"
+          ]
+        },
+        {
+          "Id": 354,
+          "Name": "Channel Right",
+          "Kinds": [
+            "CL"
+          ]
+        },
+        {
+          "Id": 355,
+          "Name": "Channel Center",
+          "Kinds": [
+            "CL"
+          ]
+        },
+        {
+          "Id": 356,
+          "Name": "Channel Front",
+          "Kinds": [
+            "CL"
+          ]
+        },
+        {
+          "Id": 357,
+          "Name": "Channel Center Front",
+          "Kinds": [
+            "CL"
+          ]
+        },
+        {
+          "Id": 358,
+          "Name": "Channel Side",
+          "Kinds": [
+            "CL"
+          ]
+        },
+        {
+          "Id": 359,
+          "Name": "Channel Surround",
+          "Kinds": [
+            "CL"
+          ]
+        },
+        {
+          "Id": 360,
+          "Name": "Channel Low Frequency Enhancement",
+          "Kinds": [
+            "CL"
+          ]
+        },
+        {
+          "Id": 361,
+          "Name": "Channel Top",
+          "Kinds": [
+            "CL"
+          ]
+        },
+        {
+          "Id": 362,
+          "Name": "Channel Unknown",
+          "Kinds": [
+            "CL"
+          ]
+        },
+        {
+          "Id": 368,
+          "Name": "Sub-channel",
+          "Kinds": [
+            "LC"
+          ]
+        },
+        {
+          "Id": 369,
+          "Name": "Sub-channel Increment",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 370,
+          "Name": "Sub-channel Decrement",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 371,
+          "Name": "Alternate Audio Increment",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 372,
+          "Name": "Alternate Audio Decrement",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 384,
+          "Name": "Application Launch Buttons",
+          "Kinds": [
+            "NAry"
+          ]
+        },
+        {
+          "Id": 385,
+          "Name": "AL Launch Button Configuration Tool",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 386,
+          "Name": "AL Programmable Button Configuration",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 387,
+          "Name": "AL Consumer Control Configuration",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 388,
+          "Name": "AL Word Processor",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 389,
+          "Name": "AL Text Editor",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 390,
+          "Name": "AL Spreadsheet",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 391,
+          "Name": "AL Graphics Editor",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 392,
+          "Name": "AL Presentation App",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 393,
+          "Name": "AL Database App",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 394,
+          "Name": "AL Email Reader",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 395,
+          "Name": "AL Newsreader",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 396,
+          "Name": "AL Voicemail",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 397,
+          "Name": "AL Contacts/Address Book",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 398,
+          "Name": "AL Calendar/Schedule",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 399,
+          "Name": "AL Task/Project Manager",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 400,
+          "Name": "AL Log/Journal/Timecard",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 401,
+          "Name": "AL Checkbook/Finance",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 402,
+          "Name": "AL Calculator",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 403,
+          "Name": "AL A/V Capture/Playback",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 404,
+          "Name": "AL Local Machine Browser",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 405,
+          "Name": "AL LAN/WAN Browser",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 406,
+          "Name": "AL Internet Browser",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 407,
+          "Name": "AL Remote Networking/ISP Connect",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 408,
+          "Name": "AL Network Conference",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 409,
+          "Name": "AL Network Chat",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 410,
+          "Name": "AL Telephony/Dialer",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 411,
+          "Name": "AL Logon",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 412,
+          "Name": "AL Logoff",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 413,
+          "Name": "AL Logon/Logoff",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 414,
+          "Name": "AL Terminal Lock/Screensaver",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 415,
+          "Name": "AL Control Panel",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 416,
+          "Name": "AL Command Line Processor/Run",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 417,
+          "Name": "AL Process/Task Manager",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 418,
+          "Name": "AL Select Task/Application",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 419,
+          "Name": "AL Next Task/Application",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 420,
+          "Name": "AL Previous Task/Application",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 421,
+          "Name": "AL Preemptive Halt Task/Application",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 422,
+          "Name": "AL Integrated Help Center",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 423,
+          "Name": "AL Documents",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 424,
+          "Name": "AL Thesaurus",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 425,
+          "Name": "AL Dictionary",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 426,
+          "Name": "AL Desktop",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 427,
+          "Name": "AL Spell Check",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 428,
+          "Name": "AL Grammar Check",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 429,
+          "Name": "AL Wireless Status",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 430,
+          "Name": "AL Keyboard Layout",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 431,
+          "Name": "AL Virus Protection",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 432,
+          "Name": "AL Encryption",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 433,
+          "Name": "AL Screen Saver",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 434,
+          "Name": "AL Alarms",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 435,
+          "Name": "AL Clock",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 436,
+          "Name": "AL File Browser",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 437,
+          "Name": "AL Power Status",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 438,
+          "Name": "AL Image Browser",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 439,
+          "Name": "AL Audio Browser",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 440,
+          "Name": "AL Movie Browser",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 441,
+          "Name": "AL Digital Rights Manager",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 442,
+          "Name": "AL Digital Wallet",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 444,
+          "Name": "AL Instant Messaging",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 445,
+          "Name": "AL OEM Features/ Tips/Tutorial Browser",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 446,
+          "Name": "AL OEM Help",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 447,
+          "Name": "AL Online Community",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 448,
+          "Name": "AL Entertainment Content Browser",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 449,
+          "Name": "AL Online Shopping Browser",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 450,
+          "Name": "AL SmartCard Information/Help",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 451,
+          "Name": "AL Market Monitor/Finance Browser",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 452,
+          "Name": "AL Customized Corporate News Browser",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 453,
+          "Name": "AL Online Activity Browser",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 454,
+          "Name": "AL Research/Search Browser",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 455,
+          "Name": "AL Audio Player",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 456,
+          "Name": "AL Message Status",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 457,
+          "Name": "AL Contact Sync",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 458,
+          "Name": "AL Navigation",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 459,
+          "Name": "AL Context‐aware Desktop Assistant",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 512,
+          "Name": "Generic GUI Application Controls",
+          "Kinds": [
+            "NAry"
+          ]
+        },
+        {
+          "Id": 513,
+          "Name": "AC New",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 514,
+          "Name": "AC Open",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 515,
+          "Name": "AC Close",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 516,
+          "Name": "AC Exit",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 517,
+          "Name": "AC Maximize",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 518,
+          "Name": "AC Minimize",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 519,
+          "Name": "AC Save",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 520,
+          "Name": "AC Print",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 521,
+          "Name": "AC Properties",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 538,
+          "Name": "AC Undo",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 539,
+          "Name": "AC Copy",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 540,
+          "Name": "AC Cut",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 541,
+          "Name": "AC Paste",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 542,
+          "Name": "AC Select All",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 543,
+          "Name": "AC Find",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 544,
+          "Name": "AC Find and Replace",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 545,
+          "Name": "AC Search",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 546,
+          "Name": "AC Go To",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 547,
+          "Name": "AC Home",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 548,
+          "Name": "AC Back",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 549,
+          "Name": "AC Forward",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 550,
+          "Name": "AC Stop",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 551,
+          "Name": "AC Refresh",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 552,
+          "Name": "AC Previous Link",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 553,
+          "Name": "AC Next Link",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 554,
+          "Name": "AC Bookmarks",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 555,
+          "Name": "AC History",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 556,
+          "Name": "AC Subscriptions",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 557,
+          "Name": "AC Zoom In",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 558,
+          "Name": "AC Zoom Out",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 559,
+          "Name": "AC Zoom",
+          "Kinds": [
+            "LC"
+          ]
+        },
+        {
+          "Id": 560,
+          "Name": "AC Full Screen View",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 561,
+          "Name": "AC Normal View",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 562,
+          "Name": "AC View Toggle",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 563,
+          "Name": "AC Scroll Up",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 564,
+          "Name": "AC Scroll Down",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 565,
+          "Name": "AC Scroll",
+          "Kinds": [
+            "LC"
+          ]
+        },
+        {
+          "Id": 566,
+          "Name": "AC Pan Left",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 567,
+          "Name": "AC Pan Right",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 568,
+          "Name": "AC Pan",
+          "Kinds": [
+            "LC"
+          ]
+        },
+        {
+          "Id": 569,
+          "Name": "AC New Window",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 570,
+          "Name": "AC Tile Horizontally",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 571,
+          "Name": "AC Tile Vertically",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 572,
+          "Name": "AC Format",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 573,
+          "Name": "AC Edit",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 574,
+          "Name": "AC Bold",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 575,
+          "Name": "AC Italics",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 576,
+          "Name": "AC Underline",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 577,
+          "Name": "AC Strikethrough",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 578,
+          "Name": "AC Subscript",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 579,
+          "Name": "AC Superscript",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 580,
+          "Name": "AC All Caps",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 581,
+          "Name": "AC Rotate",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 582,
+          "Name": "AC Resize",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 583,
+          "Name": "AC Flip Horizontal",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 584,
+          "Name": "AC Flip Vertical",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 585,
+          "Name": "AC Mirror Horizontal",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 586,
+          "Name": "AC Mirror Vertical",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 587,
+          "Name": "AC Font Select",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 588,
+          "Name": "AC Font Color",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 589,
+          "Name": "AC Font Size",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 590,
+          "Name": "AC Justify Left",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 591,
+          "Name": "AC Justify Center H",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 592,
+          "Name": "AC Justify Right",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 593,
+          "Name": "AC Justify Block H",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 594,
+          "Name": "AC Justify Top",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 595,
+          "Name": "AC Justify Center V",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 596,
+          "Name": "AC Justify Bottom",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 597,
+          "Name": "AC Justify Block V",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 598,
+          "Name": "AC Indent Decrease",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 599,
+          "Name": "AC Indent Increase",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 600,
+          "Name": "AC Numbered List",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 601,
+          "Name": "AC Restart Numbering",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 602,
+          "Name": "AC Bulleted List",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 603,
+          "Name": "AC Promote",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 604,
+          "Name": "AC Demote",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 605,
+          "Name": "AC Yes",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 606,
+          "Name": "AC No",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 607,
+          "Name": "AC Cancel",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 608,
+          "Name": "AC Catalog",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 609,
+          "Name": "AC Buy/Checkout",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 610,
+          "Name": "AC Add to Cart",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 611,
+          "Name": "AC Expand",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 612,
+          "Name": "AC Expand All",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 613,
+          "Name": "AC Collapse",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 614,
+          "Name": "AC Collapse All",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 615,
+          "Name": "AC Print Preview",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 616,
+          "Name": "AC Paste Special",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 617,
+          "Name": "AC Insert Mode",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 618,
+          "Name": "AC Delete",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 619,
+          "Name": "AC Lock",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 620,
+          "Name": "AC Unlock",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 621,
+          "Name": "AC Protect",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 622,
+          "Name": "AC Unprotect",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 623,
+          "Name": "AC Attach Comment",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 624,
+          "Name": "AC Delete Comment",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 625,
+          "Name": "AC View Comment",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 626,
+          "Name": "AC Select Word",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 627,
+          "Name": "AC Select Sentence",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 628,
+          "Name": "AC Select Paragraph",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 629,
+          "Name": "AC Select Column",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 630,
+          "Name": "AC Select Row",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 631,
+          "Name": "AC Select Table",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 632,
+          "Name": "AC Select Object",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 633,
+          "Name": "AC Redo/Repeat",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 634,
+          "Name": "AC Sort",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 635,
+          "Name": "AC Sort Ascending",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 636,
+          "Name": "AC Sort Descending",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 637,
+          "Name": "AC Filter",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 638,
+          "Name": "AC Set Clock",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 639,
+          "Name": "AC View Clock",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 640,
+          "Name": "AC Select Time Zone",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 641,
+          "Name": "AC Edit Time Zones",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 642,
+          "Name": "AC Set Alarm",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 643,
+          "Name": "AC Clear Alarm",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 644,
+          "Name": "AC Snooze Alarm",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 645,
+          "Name": "AC Reset Alarm",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 646,
+          "Name": "AC Synchronize",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 647,
+          "Name": "AC Send/Receive",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 648,
+          "Name": "AC Send To",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 649,
+          "Name": "AC Reply",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 650,
+          "Name": "AC Reply All",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 651,
+          "Name": "AC Forward Msg",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 652,
+          "Name": "AC Send",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 653,
+          "Name": "AC Attach File",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 654,
+          "Name": "AC Upload",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 655,
+          "Name": "AC Download (Save Target As)",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 656,
+          "Name": "AC Set Borders",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 657,
+          "Name": "AC Insert Row",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 658,
+          "Name": "AC Insert Column",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 659,
+          "Name": "AC Insert File",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 660,
+          "Name": "AC Insert Picture",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 661,
+          "Name": "AC Insert Object",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 662,
+          "Name": "AC Insert Symbol",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 663,
+          "Name": "AC Save and Close",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 664,
+          "Name": "AC Rename",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 665,
+          "Name": "AC Merge",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 666,
+          "Name": "AC Split",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 667,
+          "Name": "AC Disribute Horizontally",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 668,
+          "Name": "AC Distribute Vertically",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 669,
+          "Name": "AC Next Keyboard Layout Select",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 670,
+          "Name": "AC Navigation Guidance",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 671,
+          "Name": "AC Desktop Show All Windows",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 672,
+          "Name": "AC Soft Key Left",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 673,
+          "Name": "AC Soft Key Right",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 674,
+          "Name": "AC Desktop Show All Applications",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 688,
+          "Name": "AC Idle Keep Alive",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 704,
+          "Name": "Extended Keyboard Attributes Collection",
+          "Kinds": [
+            "CL"
+          ]
+        },
+        {
+          "Id": 705,
+          "Name": "Keyboard Form Factor",
+          "Kinds": [
+            "SV"
+          ]
+        },
+        {
+          "Id": 706,
+          "Name": "Keyboard Key Type",
+          "Kinds": [
+            "SV"
+          ]
+        },
+        {
+          "Id": 707,
+          "Name": "Keyboard Physical Layout",
+          "Kinds": [
+            "SV"
+          ]
+        },
+        {
+          "Id": 708,
+          "Name": "Vendor‐Specific Keyboard Physical Layout",
+          "Kinds": [
+            "SV"
+          ]
+        },
+        {
+          "Id": 709,
+          "Name": "Keyboard IETF Language Tag Index",
+          "Kinds": [
+            "SV"
+          ]
+        },
+        {
+          "Id": 710,
+          "Name": "Implemented Keyboard Input Assist Controls",
+          "Kinds": [
+            "SV"
+          ]
+        },
+        {
+          "Id": 711,
+          "Name": "Keyboard Input Assist Previous",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 712,
+          "Name": "Keyboard Input Assist Next",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 713,
+          "Name": "Keyboard Input Assist Previous Group",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 714,
+          "Name": "Keyboard Input Assist Next Group",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 715,
+          "Name": "Keyboard Input Assist Accept",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 716,
+          "Name": "Keyboard Input Assist Cancel",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 720,
+          "Name": "Privacy Screen Toggle",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 721,
+          "Name": "Privacy Screen Level Decrement",
+          "Kinds": [
+            "RTC"
+          ]
+        },
+        {
+          "Id": 722,
+          "Name": "Privacy Screen Level Increment",
+          "Kinds": [
+            "RTC"
+          ]
+        },
+        {
+          "Id": 723,
+          "Name": "Privacy Screen Level Minimum",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 724,
+          "Name": "Privacy Screen Level Maximum",
+          "Kinds": [
+            "OSC"
+          ]
+        },
+        {
+          "Id": 1280,
+          "Name": "Contact Edited",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 1281,
+          "Name": "Contact Added",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 1282,
+          "Name": "Contact Record Active",
+          "Kinds": [
+            "OOC"
+          ]
+        },
+        {
+          "Id": 1283,
+          "Name": "Contact Index",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 1284,
+          "Name": "Contact Nickname",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 1285,
+          "Name": "Contact First Name",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 1286,
+          "Name": "Contact Last Name",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 1287,
+          "Name": "Contact Full Name",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 1288,
+          "Name": "Contact Phone Number Personal",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 1289,
+          "Name": "Contact Phone Number Business",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 1290,
+          "Name": "Contact Phone Number Mobile",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 1291,
+          "Name": "Contact Phone Number Pager",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 1292,
+          "Name": "Contact Phone Number Fax",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 1293,
+          "Name": "Contact Phone Number Other",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 1294,
+          "Name": "Contact Email Personal",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 1295,
+          "Name": "Contact Email Business",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 1296,
+          "Name": "Contact Email Other",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 1297,
+          "Name": "Contact Email Main",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 1298,
+          "Name": "Contact Speed Dial Number",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 1299,
+          "Name": "Contact Status Flag",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 1300,
+          "Name": "Contact Misc.",
+          "Kinds": [
+            "DV"
+          ]
+        }
+      ],
+      "UsageIdGenerator": null
+    },
+    {
+      "Kind": "Defined",
+      "Id": 7,
+      "Name": "Keyboard/Keypad",
+      "UsageIds": [
+        {
+          "Id": 1,
+          "Name": "ErrorRollOver",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 2,
+          "Name": "POSTFail",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 3,
+          "Name": "ErrorUndefined",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 4,
+          "Name": "Keyboard A",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 5,
+          "Name": "Keyboard B",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 6,
+          "Name": "Keyboard C",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 7,
+          "Name": "Keyboard D",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 8,
+          "Name": "Keyboard E",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 9,
+          "Name": "Keyboard F",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 10,
+          "Name": "Keyboard G",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 11,
+          "Name": "Keyboard H",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 12,
+          "Name": "Keyboard I",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 13,
+          "Name": "Keyboard J",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 14,
+          "Name": "Keyboard K",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 15,
+          "Name": "Keyboard L",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 16,
+          "Name": "Keyboard M",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 17,
+          "Name": "Keyboard N",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 18,
+          "Name": "Keyboard O",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 19,
+          "Name": "Keyboard P",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 20,
+          "Name": "Keyboard Q",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 21,
+          "Name": "Keyboard R",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 22,
+          "Name": "Keyboard S",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 23,
+          "Name": "Keyboard T",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 24,
+          "Name": "Keyboard U",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 25,
+          "Name": "Keyboard V",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 26,
+          "Name": "Keyboard W",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 27,
+          "Name": "Keyboard X",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 28,
+          "Name": "Keyboard Y",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 29,
+          "Name": "Keyboard Z",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 30,
+          "Name": "Keyboard 1 and Bang",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 31,
+          "Name": "Keyboard 2 and At",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 32,
+          "Name": "Keyboard 3 and Hash",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 33,
+          "Name": "Keyboard 4 and Dollar",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 34,
+          "Name": "Keyboard 5 and Percent",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 35,
+          "Name": "Keyboard 6 and Caret",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 36,
+          "Name": "Keyboard 7 and Ampersand",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 37,
+          "Name": "Keyboard 8 and Star",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 38,
+          "Name": "Keyboard 9 and Left Bracket",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 39,
+          "Name": "Keyboard 0 and Right Bracket",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 40,
+          "Name": "Keyboard Return Enter",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 41,
+          "Name": "Keyboard Escape",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 42,
+          "Name": "Keyboard Delete",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 43,
+          "Name": "Keyboard Tab",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 44,
+          "Name": "Keyboard Spacebar",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 45,
+          "Name": "Keyboard Dash and Underscore",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 46,
+          "Name": "Keyboard Equals and Plus",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 47,
+          "Name": "Keyboard Left Brace",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 48,
+          "Name": "Keyboard Right Brace",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 49,
+          "Name": "Keyboard Backslash and Pipe",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 50,
+          "Name": "Keyboard Non-US Hash and Tilde",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 51,
+          "Name": "Keyboard SemiColon and Colon",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 52,
+          "Name": "Keyboard Left Apos and Double",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 53,
+          "Name": "Keyboard Grave Accent and Tilde",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 54,
+          "Name": "Keyboard Comma and LessThan",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 55,
+          "Name": "Keyboard Period and GreaterThan",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 56,
+          "Name": "Keyboard ForwardSlash and QuestionMark",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 57,
+          "Name": "Keyboard Caps Lock",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 58,
+          "Name": "Keyboard F1",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 59,
+          "Name": "Keyboard F2",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 60,
+          "Name": "Keyboard F3",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 61,
+          "Name": "Keyboard F4",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 62,
+          "Name": "Keyboard F5",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 63,
+          "Name": "Keyboard F6",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 64,
+          "Name": "Keyboard F7",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 65,
+          "Name": "Keyboard F8",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 66,
+          "Name": "Keyboard F9",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 67,
+          "Name": "Keyboard F10",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 68,
+          "Name": "Keyboard F11",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 69,
+          "Name": "Keyboard F12",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 70,
+          "Name": "Keyboard PrintScreen",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 71,
+          "Name": "Keyboard Scroll Lock",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 72,
+          "Name": "Keyboard Pause",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 73,
+          "Name": "Keyboard Insert",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 74,
+          "Name": "Keyboard Home",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 75,
+          "Name": "Keyboard PageUp",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 76,
+          "Name": "Keyboard Delete Forward",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 77,
+          "Name": "Keyboard End",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 78,
+          "Name": "Keyboard PageDown",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 79,
+          "Name": "Keyboard RightArrow",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 80,
+          "Name": "Keyboard LeftArrow",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 81,
+          "Name": "Keyboard DownArrow",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 82,
+          "Name": "Keyboard UpArrow",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 83,
+          "Name": "Keypad Num Lock and Clear",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 84,
+          "Name": "Keypad ForwardSlash",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 85,
+          "Name": "Keypad Star",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 86,
+          "Name": "Keypad Dash",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 87,
+          "Name": "Keypad Plus",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 88,
+          "Name": "Keypad ENTER",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 89,
+          "Name": "Keypad 1 and End",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 90,
+          "Name": "Keypad 2 and Down Arrow",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 91,
+          "Name": "Keypad 3 and PageDn",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 92,
+          "Name": "Keypad 4 and Left Arrow",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 93,
+          "Name": "Keypad 5",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 94,
+          "Name": "Keypad 6 and Right Arrow",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 95,
+          "Name": "Keypad 7 and Home",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 96,
+          "Name": "Keypad 8 and Up Arrow",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 97,
+          "Name": "Keypad 9 and PageUp",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 98,
+          "Name": "Keypad 0 and Insert",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 99,
+          "Name": "Keypad Period and Delete",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 100,
+          "Name": "Keyboard Non-US Backslash and Pipe",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 101,
+          "Name": "Keyboard Application",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 102,
+          "Name": "Keyboard Power",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 103,
+          "Name": "Keypad Equals",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 104,
+          "Name": "Keyboard F13",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 105,
+          "Name": "Keyboard F14",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 106,
+          "Name": "Keyboard F15",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 107,
+          "Name": "Keyboard F16",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 108,
+          "Name": "Keyboard F17",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 109,
+          "Name": "Keyboard F18",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 110,
+          "Name": "Keyboard F19",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 111,
+          "Name": "Keyboard F20",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 112,
+          "Name": "Keyboard F21",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 113,
+          "Name": "Keyboard F22",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 114,
+          "Name": "Keyboard F23",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 115,
+          "Name": "Keyboard F24",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 116,
+          "Name": "Keyboard Execute",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 117,
+          "Name": "Keyboard Help",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 118,
+          "Name": "Keyboard Menu",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 119,
+          "Name": "Keyboard Select",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 120,
+          "Name": "Keyboard Stop",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 121,
+          "Name": "Keyboard Again",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 122,
+          "Name": "Keyboard Undo",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 123,
+          "Name": "Keyboard Cut",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 124,
+          "Name": "Keyboard Copy",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 125,
+          "Name": "Keyboard Paste",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 126,
+          "Name": "Keyboard Find",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 127,
+          "Name": "Keyboard Mute",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 128,
+          "Name": "Keyboard Volume Up",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 129,
+          "Name": "Keyboard Volume Down",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 130,
+          "Name": "Keyboard Locking Caps Lock",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 131,
+          "Name": "Keyboard Locking Num Lock",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 132,
+          "Name": "Keyboard Locking Scroll Lock",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 133,
+          "Name": "Keypad Comma",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 134,
+          "Name": "Keypad Equal Sign",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 135,
+          "Name": "Keyboard International1",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 136,
+          "Name": "Keyboard International2",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 137,
+          "Name": "Keyboard International3",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 138,
+          "Name": "Keyboard International4",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 139,
+          "Name": "Keyboard International5",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 140,
+          "Name": "Keyboard International6",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 141,
+          "Name": "Keyboard International7",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 142,
+          "Name": "Keyboard International8",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 143,
+          "Name": "Keyboard International9",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 144,
+          "Name": "Keyboard LANG1",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 145,
+          "Name": "Keyboard LANG2",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 146,
+          "Name": "Keyboard LANG3",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 147,
+          "Name": "Keyboard LANG4",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 148,
+          "Name": "Keyboard LANG5",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 149,
+          "Name": "Keyboard LANG6",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 150,
+          "Name": "Keyboard LANG7",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 151,
+          "Name": "Keyboard LANG8",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 152,
+          "Name": "Keyboard LANG9",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 153,
+          "Name": "Keyboard Alternate Erase",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 154,
+          "Name": "Keyboard SysReq Attention",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 155,
+          "Name": "Keyboard Cancel",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 156,
+          "Name": "Keyboard Clear",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 157,
+          "Name": "Keyboard Prior",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 158,
+          "Name": "Keyboard Return",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 159,
+          "Name": "Keyboard Separator",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 160,
+          "Name": "Keyboard Out",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 161,
+          "Name": "Keyboard Oper",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 162,
+          "Name": "Keyboard Clear Again",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 163,
+          "Name": "Keyboard CrSel Props",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 164,
+          "Name": "Keyboard ExSel",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 176,
+          "Name": "Keypad Double 0",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 177,
+          "Name": "Keypad Triple 0",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 178,
+          "Name": "Thousands Separator",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 179,
+          "Name": "Decimal Separator",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 180,
+          "Name": "Currency Unit",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 181,
+          "Name": "Currency Sub-unit",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 182,
+          "Name": "Keypad Left Bracket",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 183,
+          "Name": "Keypad Right Bracket",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 184,
+          "Name": "Keypad Left Brace",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 185,
+          "Name": "Keypad Right Brace",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 186,
+          "Name": "Keypad Tab",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 187,
+          "Name": "Keypad Backspace",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 188,
+          "Name": "Keypad A",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 189,
+          "Name": "Keypad B",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 190,
+          "Name": "Keypad C",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 191,
+          "Name": "Keypad D",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 192,
+          "Name": "Keypad E",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 193,
+          "Name": "Keypad F",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 194,
+          "Name": "Keypad XOR",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 195,
+          "Name": "Keypad Caret",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 196,
+          "Name": "Keypad Percentage",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 197,
+          "Name": "Keypad Less",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 198,
+          "Name": "Keypad Greater",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 199,
+          "Name": "Keypad Ampersand",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 200,
+          "Name": "Keypad Double Ampersand",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 201,
+          "Name": "Keypad Bar",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 202,
+          "Name": "Keypad Double Bar",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 203,
+          "Name": "Keypad Colon",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 204,
+          "Name": "Keypad Hash",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 205,
+          "Name": "Keypad Space",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 206,
+          "Name": "Keypad At",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 207,
+          "Name": "Keypad Bang",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 208,
+          "Name": "Keypad Memory Store",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 209,
+          "Name": "Keypad Memory Recall",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 210,
+          "Name": "Keypad Memory Clear",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 211,
+          "Name": "Keypad Memory Add",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 212,
+          "Name": "Keypad Memory Subtract",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 213,
+          "Name": "Keypad Memory Multiply",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 214,
+          "Name": "Keypad Memory Divide",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 215,
+          "Name": "Keypad Plus Minus",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 216,
+          "Name": "Keypad Clear",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 217,
+          "Name": "Keypad Clear Entry",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 218,
+          "Name": "Keypad Binary",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 219,
+          "Name": "Keypad Octal",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 220,
+          "Name": "Keypad Decimal",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 221,
+          "Name": "Keypad Hexadecimal",
+          "Kinds": [
+            "Sel"
+          ]
+        },
+        {
+          "Id": 224,
+          "Name": "Keyboard LeftControl",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 225,
+          "Name": "Keyboard LeftShift",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 226,
+          "Name": "Keyboard LeftAlt",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 227,
+          "Name": "Keyboard Left GUI",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 228,
+          "Name": "Keyboard RightControl",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 229,
+          "Name": "Keyboard RightShift",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 230,
+          "Name": "Keyboard RightAlt",
+          "Kinds": [
+            "DV"
+          ]
+        },
+        {
+          "Id": 231,
+          "Name": "Keyboard Right GUI",
+          "Kinds": [
+            "DV"
+          ]
+        }
+      ],
+      "UsageIdGenerator": null
+    }
+  ]
+}
