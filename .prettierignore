@@ -3,3 +3,4 @@ dist/
 public/
 *.rs
 src/HidUsageTables-1.5.json
+src/keyboard-and-consumer-usage-tables.json

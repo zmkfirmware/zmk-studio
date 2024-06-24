@@ -8,7 +8,11 @@ const overrides: Record<string, Record<string, string>> = HidOverrides;
 export interface UsageId {
   Id: number;
   Name: string;
-  Kinds?: string[];
+}
+
+export interface UsagePageInfo {
+  Name: string;
+  UsageIds: UsageId[];
 }
 
 export const hid_usage_from_page_and_id = (page: number, id: number) =>
@@ -20,8 +24,7 @@ export const hid_usage_page_and_id_from_usage = (
 
 export const hid_usage_page_get_ids = (
   usage_page: number,
-): { Id: number; Name: string }[] =>
-  UsagePages.find((p) => p.Id === usage_page)?.UsageIds || [];
+): UsagePageInfo | undefined => UsagePages.find((p) => p.Id === usage_page);
 
 export const hid_usage_get_label = (
   usage_page: number,

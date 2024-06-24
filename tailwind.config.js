@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+import trac from "tailwindcss-react-aria-components";
+
 export default {
   content: [
     "./index.html",
@@ -22,5 +24,7 @@ export default {
       "keycap": ["OpenGorton", "Montserrat"]
     }
   },
-  plugins: [],
+  plugins: [
+    trac({prefix: 'rac'})
+  ],
 }
