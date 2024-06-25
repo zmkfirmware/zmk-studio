@@ -16,13 +16,9 @@ import {
 } from "zmk-studio-ts-client/keymap";
 import type { GetBehaviorDetailsResponse } from "zmk-studio-ts-client/behaviors";
 
-import {
-  hid_usage_get_label,
-  hid_usage_page_and_id_from_usage,
-} from "../hid-usages";
 import { LayerPicker } from "./LayerPicker";
-import { PhysicalLayout as PhysicalLayoutComp } from "./PhysicalLayout";
 import { PhysicalLayoutPicker } from "./PhysicalLayoutPicker";
+import { Keymap as KeymapComp } from "./Keymap";
 import { useConnectedDeviceData } from "../rpc/useConnectedDeviceData";
 import { ConnectionContext } from "../rpc/ConnectionContext";
 import { UndoRedoContext } from "../undoRedo";
@@ -30,49 +26,6 @@ import { BehaviorBindingPicker } from "../behaviors/BehaviorBindingPicker";
 import { produce } from "immer";
 
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
-
-function renderLayout(
-  layout: PhysicalLayout,
-  keymap: Keymap,
-  behaviors: BehaviorMap,
-  selectedLayoutIndex: number,
-  selectedKeyPosition: number | undefined,
-  setSelectedKeyPosition: React.Dispatch<SetStateAction<number | undefined>>,
-) {
-  if (!keymap.layers[selectedLayoutIndex]) {
-    return <></>;
-  }
-
-  let positions = layout.keys.map((k, i) => {
-    let [page, id] = hid_usage_page_and_id_from_usage(
-      keymap.layers[selectedLayoutIndex].bindings[i].param1,
-    );
-
-    // TODO: Do something with implicit mods!
-    page &= 0xff;
-
-    let label = hid_usage_get_label(page, id)?.replace(/^Keyboard /, "");
-
-    return {
-      header:
-        behaviors[keymap.layers[selectedLayoutIndex].bindings[i].behaviorId]
-          ?.displayName || "Unknown",
-      x: k.x / 100.0,
-      y: k.y / 100.0,
-      width: k.width / 100,
-      height: k.height / 100.0,
-      children: <span>{label}</span>,
-    };
-  });
-
-  return (
-    <PhysicalLayoutComp
-      positions={positions}
-      selectedPosition={selectedKeyPosition}
-      onPositionClicked={setSelectedKeyPosition}
-    />
-  );
-}
 
 function useBehaviors(): BehaviorMap {
   let connection = useContext(ConnectionContext);
@@ -349,14 +302,7 @@ export default function Keyboard() {
       )}
       {layouts && keymap && behaviors && (
         <div className="col-start-2 row-start-1 grid items-center justify-center">
-          {renderLayout(
-            layouts[selectedPhysicalLayoutIndex],
-            keymap,
-            behaviors,
-            selectedLayerIndex,
-            selectedKeyPosition,
-            setSelectedKeyPosition,
-          )}
+          <KeymapComp keymap={keymap} layout={layouts[selectedPhysicalLayoutIndex]} behaviors={behaviors} selectedLayerIndex={selectedLayerIndex} selectedKeyPosition={selectedKeyPosition} onKeyPositionClicked={setSelectedKeyPosition} />
         </div>
       )}
       {keymap && selectedBinding && (
