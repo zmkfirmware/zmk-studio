@@ -9,11 +9,11 @@ use serde::{Deserialize, Serialize};
 use tauri::ipc::InvokeBody;
 use tauri::{
     command,
-    ipc::{Request, Response},
+    ipc::{Request},
     State,
 };
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct AvailableDevice {
     pub label: String,
     pub id: String,

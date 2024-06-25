@@ -3,7 +3,7 @@ use futures::channel::mpsc::channel;
 use futures::StreamExt;
 
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use tokio_serial::{available_ports, SerialPort, SerialPortBuilderExt, SerialPortType};
+use tokio_serial::{available_ports, SerialPortBuilderExt, SerialPortType};
 
 use tauri::{command, AppHandle, State};
 use tauri_plugin_cli::CliExt;

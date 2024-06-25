@@ -23,7 +23,7 @@ pub async fn gatt_connect(
     adapter.wait_available().await.map_err(|_| ())?;
 
     let device_id: DeviceId = serde_json::from_str(&id).unwrap();
-    let mut d = adapter.open_device(&device_id).await.map_err(|_| ())?;
+    let d = adapter.open_device(&device_id).await.map_err(|_| ())?;
 
     if !d.is_connected().await {
         adapter.connect_device(&d).await.map_err(|_| ())?;
