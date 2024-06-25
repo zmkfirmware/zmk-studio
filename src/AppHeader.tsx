@@ -1,6 +1,6 @@
 import { useCallback, useContext } from "react";
 
-import { call_rpc } from "ts-zmk-rpc-core";
+import { call_rpc } from "zmk-studio-ts-client";
 import { useConnectedDeviceData } from "./rpc/useConnectedDeviceData";
 import { useSub } from "./usePubSub";
 import { ConnectionContext } from "./rpc/ConnectionContext";

@@ -1,4 +1,4 @@
-import { BehaviorBindingParametersSet } from "ts-zmk-rpc-core/behaviors";
+import { BehaviorBindingParametersSet } from "zmk-studio-ts-client/behaviors";
 import { ParameterValuePicker } from "./ParameterValuePicker";
 
 export interface BehaviorParametersPickerProps {

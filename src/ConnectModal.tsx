@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import type { RpcTransport } from "ts-zmk-rpc-core/transport/index";
+import type { RpcTransport } from "zmk-studio-ts-client/transport/index";
 import type { AvailableDevice } from "./tauri/index";
 
 export type TransportFactory = {

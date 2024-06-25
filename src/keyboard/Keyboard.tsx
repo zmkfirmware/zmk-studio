@@ -7,14 +7,14 @@ import React, {
   useState,
 } from "react";
 
-import { call_rpc, Request } from "ts-zmk-rpc-core";
+import { call_rpc, Request } from "zmk-studio-ts-client";
 import {
   PhysicalLayout,
   Keymap,
   SetLayerBindingResponse,
   BehaviorBinding,
-} from "ts-zmk-rpc-core/keymap";
-import type { GetBehaviorDetailsResponse } from "ts-zmk-rpc-core/behaviors";
+} from "zmk-studio-ts-client/keymap";
+import type { GetBehaviorDetailsResponse } from "zmk-studio-ts-client/behaviors";
 
 import {
   hid_usage_get_label,

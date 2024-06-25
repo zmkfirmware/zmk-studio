@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 
-import type { RpcTransport } from "ts-zmk-rpc-core/transport/index";
+import type { RpcTransport } from "zmk-studio-ts-client/transport/index";
 import { AvailableDevice } from ".";
 
 export async function list_devices(): Promise<Array<AvailableDevice>> {

@@ -1,14 +1,14 @@
 import { AppHeader } from "./AppHeader";
 
-import { create_rpc_connection, RpcConnection } from "ts-zmk-rpc-core";
-import type { Notification } from "ts-zmk-rpc-core/studio";
+import { create_rpc_connection, RpcConnection } from "zmk-studio-ts-client";
+import type { Notification } from "zmk-studio-ts-client/studio";
 import { ConnectionContext } from "./rpc/ConnectionContext";
 import { Dispatch, useEffect, useState } from "react";
 import { ConnectModal, TransportFactory } from "./ConnectModal";
 
-import type { RpcTransport } from "ts-zmk-rpc-core/transport/index";
-import { connect as gatt_connect } from "ts-zmk-rpc-core/transport/gatt";
-import { connect as serial_connect } from "ts-zmk-rpc-core/transport/serial";
+import type { RpcTransport } from "zmk-studio-ts-client/transport/index";
+import { connect as gatt_connect } from "zmk-studio-ts-client/transport/gatt";
+import { connect as serial_connect } from "zmk-studio-ts-client/transport/serial";
 import {
   connect as tauri_ble_connect,
   list_devices as ble_list_devices,

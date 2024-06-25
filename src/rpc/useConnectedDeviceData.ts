@@ -1,7 +1,7 @@
 import React, { SetStateAction, useContext, useEffect, useState } from "react";
 import { ConnectionContext } from "./ConnectionContext";
 
-import { call_rpc, Request, RequestResponse } from "ts-zmk-rpc-core";
+import { call_rpc, Request, RequestResponse } from "zmk-studio-ts-client";
 
 export function useConnectedDeviceData<T>(
   req: Omit<Request, "requestId">,

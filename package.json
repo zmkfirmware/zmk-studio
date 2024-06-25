@@ -21,7 +21,7 @@
     "react-aria-components": "^1.2.1",
     "react-dom": "^18.2.0",
     "tailwindcss-react-aria-components": "^1.1.3",
-    "ts-zmk-rpc-core": "file:../zmk/rpc-clients/typescript/ts-zmk-rpc-core"
+    "zmk-studio-ts-client": "file:../zmk-studio-ts-client"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.3.5",

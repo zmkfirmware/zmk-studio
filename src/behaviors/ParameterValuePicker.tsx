@@ -1,4 +1,4 @@
-import { BehaviorParameterValueDescription } from "ts-zmk-rpc-core/behaviors";
+import { BehaviorParameterValueDescription } from "zmk-studio-ts-client/behaviors";
 import { HidUsagePicker } from "./HidUsagePicker";
 
 export interface ParameterValuePickerProps {
