@@ -21,12 +21,12 @@ type Story = StoryObj<typeof meta>;
 
 export const Keyboard: Story = {
   args: {
-    usagePages: [7],
+    usagePages: [{ id: 7 }],
   },
 };
 
 export const KeyboardAndConsumer: Story = {
   args: {
-    usagePages: [7, 12],
+    usagePages: [{ id: 7 }, { id: 12 }],
   },
 };

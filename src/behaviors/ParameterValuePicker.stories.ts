@@ -43,7 +43,7 @@ export const Range: Story = {
 
 export const HID: Story = {
   args: {
-    values: [{ name: "Key", hidUsage: {} }],
+    values: [{ name: "Key", hidUsage: { consumerMax: 0, keyboardMax: 0 } }],
   },
 };
 

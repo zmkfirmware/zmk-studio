@@ -17,7 +17,6 @@ export const ParameterValuePicker = ({
   if (values.length == 0) {
     return <></>;
   } else if (values.every((v) => v.constant !== undefined)) {
-    console.log("Loading a constant list wtih", value, values);
     return (
       <div>
         <select
@@ -48,8 +47,9 @@ export const ParameterValuePicker = ({
       return (
         <HidUsagePicker
           onValueChanged={onValueChanged}
+          label={values[0].name}
           value={value}
-          usagePages={[7, 12]}
+          usagePages={[{ id: 7, min: 4, max: values[0].hidUsage.keyboardMax }, { id: 12, max: values[0].hidUsage.consumerMax }]}
         />
       );
     } else if (values[0].layerIndex) {
