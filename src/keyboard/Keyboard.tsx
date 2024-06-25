@@ -36,6 +36,7 @@ function renderLayout(
   keymap: Keymap,
   behaviors: BehaviorMap,
   selectedLayoutIndex: number,
+  selectedKeyPosition: number | null,
   setSelectedKeyPosition: React.Dispatch<SetStateAction<number | null>>,
 ) {
   if (!keymap.layers[selectedLayoutIndex]) {
@@ -67,6 +68,7 @@ function renderLayout(
   return (
     <PhysicalLayoutComp
       positions={positions}
+      selectedPosition={selectedKeyPosition || undefined}
       onPositionClicked={setSelectedKeyPosition}
     />
   );
@@ -352,6 +354,7 @@ export default function Keyboard() {
             keymap,
             behaviors,
             selectedLayerIndex,
+            selectedKeyPosition,
             setSelectedKeyPosition,
           )}
         </div>

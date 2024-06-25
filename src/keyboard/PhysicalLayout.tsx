@@ -12,6 +12,7 @@ type KeyPosition = PropsWithChildren<{
 
 interface PhysicalLayoutProps {
   positions: Array<KeyPosition>;
+  selectedPosition?: number;
   onPositionClicked?: (position: number) => void;
 }
 
@@ -35,6 +36,7 @@ function scalePosition({ x, y }: PhysicalLayoutPositionLocation): {
 
 export const PhysicalLayout = ({
   positions,
+  selectedPosition,
   onPositionClicked,
   ...props
 }: PhysicalLayoutProps) => {
@@ -53,7 +55,7 @@ export const PhysicalLayout = ({
       className="absolute hover:z-[1000]"
       style={scalePosition(p)}
     >
-      <Key primary={true} {...p} />
+      <Key selected={idx == selectedPosition} {...p} />
     </div>
   ));
 

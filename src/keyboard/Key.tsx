@@ -7,7 +7,7 @@ interface KeyProps {
   /**
    * Is this the principal call to action on the page?
    */
-  primary?: boolean;
+  selected?: boolean;
   /**
    * How large should the button be?
    */
@@ -39,7 +39,7 @@ function makeSize({ width, height }: KeyDimension): CSSProperties {
 }
 
 export const Key = ({
-  primary = false,
+  selected = false,
   header,
   ...props
 }: PropsWithChildren<KeyProps>) => {
@@ -57,8 +57,9 @@ export const Key = ({
       {...props}
     >
       <button
+        aria-selected={selected}
         className={
-          "rounded-md m-auto p-0 b-0 box-border grid grid-rows-[0_var(--zmk-key-center-height)_0] grid-cols-[0_var(--zmk-key-center-width)_0] hover:grid-rows-[1em_var(--zmk-key-center-height)_1em] hover:grid-cols-[1em_var(--zmk-key-center-width)_1em] shadow-[0_0_0_1px_inset] shadow-text-base hover:z-50 text-text-base bg-bg-base"
+          "rounded-md m-auto p-0 b-0 box-border grid grid-rows-[0_var(--zmk-key-center-height)_0] grid-cols-[0_var(--zmk-key-center-width)_0] hover:grid-rows-[1em_var(--zmk-key-center-height)_1em] hover:grid-cols-[1em_var(--zmk-key-center-width)_1em] shadow-[0_0_0_1px_inset] shadow-text-base hover:z-50 text-text-base bg-bg-base aria-selected:bg-secondary"
         }
       >
         <span className="p-0 b-0 m-0 text-xs w-full h-full text-nowrap justify-self-start row-start-1 row-end-2 col-start-1 col-end-4 hidden group-hover:inline-block group-hover:truncate">
