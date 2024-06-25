@@ -52,7 +52,7 @@ function validateBinding(
   param1?: number,
   param2?: number,
 ): boolean {
-  if (param1 === undefined) {
+  if (param1 === undefined || param1 === 0) {
     return metadata.every((s) => !s.param1);
   }
 
@@ -73,7 +73,6 @@ export const BehaviorBindingPicker = ({
   behaviors,
   onBindingChanged,
 }: BehaviorBindingPickerProps) => {
-  console.log("Binding", binding);
   const [behaviorId, setBehaviorId] = useState(binding.behaviorId);
   const [param1, setParam1] = useState<number | undefined>(binding.param1);
   const [param2, setParam2] = useState<number | undefined>(binding.param2);

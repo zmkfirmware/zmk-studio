@@ -55,7 +55,7 @@ export const PhysicalLayout = ({
       className="absolute hover:z-[1000]"
       style={scalePosition(p)}
     >
-      <Key selected={idx == selectedPosition} {...p} />
+      <Key selected={idx === selectedPosition} {...p} />
     </div>
   ));
 

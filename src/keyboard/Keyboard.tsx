@@ -36,8 +36,8 @@ function renderLayout(
   keymap: Keymap,
   behaviors: BehaviorMap,
   selectedLayoutIndex: number,
-  selectedKeyPosition: number | null,
-  setSelectedKeyPosition: React.Dispatch<SetStateAction<number | null>>,
+  selectedKeyPosition: number | undefined,
+  setSelectedKeyPosition: React.Dispatch<SetStateAction<number | undefined>>,
 ) {
   if (!keymap.layers[selectedLayoutIndex]) {
     return <></>;
@@ -68,7 +68,7 @@ function renderLayout(
   return (
     <PhysicalLayoutComp
       positions={positions}
-      selectedPosition={selectedKeyPosition || undefined}
+      selectedPosition={selectedKeyPosition}
       onPositionClicked={setSelectedKeyPosition}
     />
   );
@@ -202,8 +202,8 @@ export default function Keyboard() {
     (keymap) => keymap?.keymap?.getKeymap,
   );
   const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0);
-  const [selectedKeyPosition, setSelectedKeyPosition] = useState<number | null>(
-    null,
+  const [selectedKeyPosition, setSelectedKeyPosition] = useState<number | undefined>(
+    undefined
   );
   const behaviors = useBehaviors();
 
@@ -251,7 +251,7 @@ export default function Keyboard() {
   let doUpdateBinding = useCallback(
     (binding: BehaviorBinding) => {
       console.log("Updatet the binding");
-      if (!keymap || selectedKeyPosition === null) {
+      if (!keymap || selectedKeyPosition === undefined) {
         console.error(
           "Can't update binding without a selected key position and loaded keymap",
         );
