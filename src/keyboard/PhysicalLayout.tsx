@@ -1,9 +1,8 @@
 import { PropsWithChildren } from "react";
 import { Key } from "./Key";
-import { scale } from "./geometry";
 
-type KeyPosition = PropsWithChildren<{
-  header: string;
+export type KeyPosition = PropsWithChildren<{
+  header?: string;
   width: number;
   height: number;
   x: number;
@@ -13,6 +12,8 @@ type KeyPosition = PropsWithChildren<{
 interface PhysicalLayoutProps {
   positions: Array<KeyPosition>;
   selectedPosition?: number;
+  oneU?: number;
+  hoverZoom?: boolean;
   onPositionClicked?: (position: number) => void;
 }
 
@@ -21,25 +22,31 @@ interface PhysicalLayoutPositionLocation {
   y: number;
 }
 
-function scalePosition({ x, y }: PhysicalLayoutPositionLocation): {
+function scalePosition(
+  { x, y }: PhysicalLayoutPositionLocation,
+  oneU: number
+): {
   top: number;
   left: number;
 } {
-  x = scale(x);
-  y = scale(y);
+  let left = x * oneU;
+  let top = y * oneU;
 
   return {
-    top: y,
-    left: x,
+    top,
+    left,
   };
 }
 
 export const PhysicalLayout = ({
   positions,
   selectedPosition,
+  oneU = 48,
+  hoverZoom = true,
   onPositionClicked,
   ...props
 }: PhysicalLayoutProps) => {
+  console.log("Physical Layout", oneU, hoverZoom);
   // TODO: Add a bit of padding for rotation when supported
   let rightMost = positions
     .map((k) => k.x + k.width)
@@ -52,10 +59,16 @@ export const PhysicalLayout = ({
     <div
       key={idx}
       onClick={() => onPositionClicked?.(idx)}
-      className="absolute hover:z-[1000]"
-      style={scalePosition(p)}
+      className="absolute data-[zoomer=true]:hover:z-[1000] leading-[0]"
+      data-zoomer={hoverZoom}
+      style={scalePosition(p, oneU)}
     >
-      <Key selected={idx === selectedPosition} {...p} />
+      <Key
+        hoverZoom={hoverZoom}
+        oneU={oneU}
+        selected={idx === selectedPosition}
+        {...p}
+      />
     </div>
   ));
 
@@ -63,8 +76,8 @@ export const PhysicalLayout = ({
     <div
       className="relative"
       style={{
-        height: scale(bottomMost) + "px",
-        width: scale(rightMost) + "px",
+        height: bottomMost * oneU + "px",
+        width: rightMost * oneU + "px",
       }}
       {...props}
     >

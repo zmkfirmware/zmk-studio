@@ -59,6 +59,8 @@ export const Keymap = ({
   return (
     <PhysicalLayoutComp
       positions={positions}
+      oneU={48}
+      hoverZoom={true}
       selectedPosition={selectedKeyPosition}
       onPositionClicked={onKeyPositionClicked}
     />

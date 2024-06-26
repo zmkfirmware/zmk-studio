@@ -1,7 +1,6 @@
 // import './key.css';
 
 import { PropsWithChildren, Children, CSSProperties } from "react";
-import { scale } from "./geometry";
 
 interface KeyProps {
   /**
@@ -13,10 +12,14 @@ interface KeyProps {
    */
   width: number;
   height: number;
+
+  oneU: number;
+
+  hoverZoom?: boolean;
   /**
    * Button contents
    */
-  header: string;
+  header?: string;
   /**
    * Optional click handler
    */
@@ -28,9 +31,12 @@ interface KeyDimension {
   height: number;
 }
 
-function makeSize({ width, height }: KeyDimension): CSSProperties {
-  width = scale(width);
-  height = scale(height);
+function makeSize(
+  { width, height }: KeyDimension,
+  oneU: number
+): CSSProperties {
+  width *= oneU;
+  height *= oneU;
 
   return {
     "--zmk-key-center-width": "calc(" + width + "px - 2px)",
@@ -41,30 +47,40 @@ function makeSize({ width, height }: KeyDimension): CSSProperties {
 export const Key = ({
   selected = false,
   header,
+  oneU,
+  hoverZoom = true,
   ...props
 }: PropsWithChildren<KeyProps>) => {
-  const size = makeSize(props);
+  const size = makeSize(props, oneU);
+
   const children = Children.map(props.children, (c) => (
-    <div className="justify-self-center self-center row-start-2 row-end-3 col-start-2 col-end-3 font-keycap text-lg group-hover:text-3xl">
+    <div
+      data-zoomer={hoverZoom}
+      className="justify-self-center self-center row-start-2 row-end-3 col-start-2 col-end-3 font-keycap text-lg data-[zoomer=true]:group-hover:text-3xl"
+    >
       {c}
     </div>
   ));
 
   return (
     <div
-      className="group inline-flex b-0 justify-content-center items-center hover:translate-y-[calc(-1em-7px)] hover:translate-x-[calc(-1em)]"
+      className="group inline-flex b-0 justify-content-center items-center data-[zoomer=true]:hover:translate-y-[calc(-1em-7px)] data-[zoomer=true]:hover:translate-x-[calc(-1em)]"
+      data-zoomer={hoverZoom}
       style={size}
       {...props}
     >
       <button
         aria-selected={selected}
-        className={
-          "rounded-md m-auto p-0 b-0 box-border grid grid-rows-[0_var(--zmk-key-center-height)_0] grid-cols-[0_var(--zmk-key-center-width)_0] hover:grid-rows-[1em_var(--zmk-key-center-height)_1em] hover:grid-cols-[1em_var(--zmk-key-center-width)_1em] shadow-[0_0_0_1px_inset] shadow-text-base hover:z-50 text-text-base bg-bg-base aria-selected:bg-secondary"
-        }
+        data-zoomer={hoverZoom}
+        className={`rounded${
+          oneU > 20 ? "-md" : ""
+        } m-auto p-0 b-0 box-border grid grid-rows-[0_var(--zmk-key-center-height)_0] grid-cols-[0_var(--zmk-key-center-width)_0] data-[zoomer=true]:hover:grid-rows-[1em_var(--zmk-key-center-height)_1em] data-[zoomer=true]:hover:grid-cols-[1em_var(--zmk-key-center-width)_1em] shadow-[0_0_0_1px_inset] shadow-text-base data-[zoomer=true]:hover:z-50 text-text-base bg-bg-base aria-selected:bg-secondary`}
       >
-        <span className="p-0 b-0 m-0 text-xs w-full h-full text-nowrap justify-self-start row-start-1 row-end-2 col-start-1 col-end-4 hidden group-hover:inline-block group-hover:truncate">
-          {header}
-        </span>
+        {header && (
+          <span className="p-0 b-0 m-0 text-xs w-full h-full text-nowrap justify-self-start row-start-1 row-end-2 col-start-1 col-end-4 hidden group-hover:inline-block group-hover:truncate">
+            {header}
+          </span>
+        )}
         {children}
       </button>
     </div>
