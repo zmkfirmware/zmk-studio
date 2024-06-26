@@ -27,7 +27,7 @@ export async function connect(dev: AvailableDevice): Promise<RpcTransport> {
       let writer = response_writable.getWriter();
       await writer.write(new Uint8Array(event.payload));
       writer.releaseLock();
-    },
+    }
   );
 
   const unlisten_disconnected = await listen(
@@ -36,7 +36,7 @@ export async function connect(dev: AvailableDevice): Promise<RpcTransport> {
       unlisten_data();
       unlisten_disconnected();
       response_writable.close();
-    },
+    }
   );
 
   return { label: dev.label, readable, writable };

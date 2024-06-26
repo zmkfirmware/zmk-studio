@@ -102,7 +102,7 @@ export const ConnectModal = ({
               className="m-1 p-1"
               onClick={async () => {
                 onTransportCreated(
-                  await selectedTransport!.pick_and_connect!.connect(d),
+                  await selectedTransport!.pick_and_connect!.connect(d)
                 );
                 setSelectedTransport(undefined);
               }}

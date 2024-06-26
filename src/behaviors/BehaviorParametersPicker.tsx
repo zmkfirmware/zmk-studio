@@ -30,7 +30,7 @@ export const BehaviorParametersPicker = ({
     );
   } else {
     const set = metadata.find((s) =>
-      s.param1.find((v) => v.constant == param1),
+      s.param1.find((v) => v.constant == param1)
     );
     return (
       <div>

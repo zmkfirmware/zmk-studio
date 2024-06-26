@@ -5,7 +5,7 @@ import { call_rpc, Request, RequestResponse } from "zmk-studio-ts-client";
 
 export function useConnectedDeviceData<T>(
   req: Omit<Request, "requestId">,
-  response_mapper: (resp: RequestResponse) => T | undefined,
+  response_mapper: (resp: RequestResponse) => T | undefined
 ): [T | undefined, React.Dispatch<SetStateAction<T | undefined>>] {
   let connection = useContext(ConnectionContext);
   let [data, setData] = useState<T | undefined>(undefined);

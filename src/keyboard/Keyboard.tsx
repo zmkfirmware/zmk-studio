@@ -92,12 +92,12 @@ function useLayouts(): [
   PhysicalLayout[] | undefined,
   React.Dispatch<SetStateAction<PhysicalLayout[] | undefined>>,
   number,
-  React.Dispatch<SetStateAction<number>>,
+  React.Dispatch<SetStateAction<number>>
 ] {
   let connection = useContext(ConnectionContext);
 
   const [layouts, setLayouts] = useState<PhysicalLayout[] | undefined>(
-    undefined,
+    undefined
   );
   const [selectedPhysicalLayoutIndex, setSelectedPhysicalLayoutIndex] =
     useState<number>(0);
@@ -122,7 +122,7 @@ function useLayouts(): [
       if (!ignore) {
         setLayouts(response?.keymap?.getPhysicalLayouts?.layouts);
         setSelectedPhysicalLayoutIndex(
-          response?.keymap?.getPhysicalLayouts?.activeLayoutIndex || 0,
+          response?.keymap?.getPhysicalLayouts?.activeLayoutIndex || 0
         );
       }
     }
@@ -152,12 +152,12 @@ export default function Keyboard() {
   ] = useLayouts();
   const [keymap, setKeymap] = useConnectedDeviceData<Keymap>(
     { keymap: { getKeymap: true } },
-    (keymap) => keymap?.keymap?.getKeymap,
+    (keymap) => keymap?.keymap?.getKeymap
   );
   const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0);
-  const [selectedKeyPosition, setSelectedKeyPosition] = useState<number | undefined>(
-    undefined
-  );
+  const [selectedKeyPosition, setSelectedKeyPosition] = useState<
+    number | undefined
+  >(undefined);
   const behaviors = useBehaviors();
 
   const conn = useContext(ConnectionContext);
@@ -179,7 +179,7 @@ export default function Keyboard() {
       } else {
         console.error(
           "Failed to set the active physical layout err:",
-          resp?.keymap?.setActivePhysicalLayout?.err,
+          resp?.keymap?.setActivePhysicalLayout?.err
         );
       }
     }
@@ -198,7 +198,7 @@ export default function Keyboard() {
         };
       });
     },
-    [undoRedo, selectedPhysicalLayoutIndex],
+    [undoRedo, selectedPhysicalLayoutIndex]
   );
 
   let doUpdateBinding = useCallback(
@@ -206,7 +206,7 @@ export default function Keyboard() {
       console.log("Updatet the binding");
       if (!keymap || selectedKeyPosition === undefined) {
         console.error(
-          "Can't update binding without a selected key position and loaded keymap",
+          "Can't update binding without a selected key position and loaded keymap"
         );
         return;
       }
@@ -227,7 +227,7 @@ export default function Keyboard() {
           setKeymap(
             produce((draft: any) => {
               draft.layers[layer].bindings[keyPosition] = binding;
-            }),
+            })
           );
         } else {
           console.error("Failed to set binding", resp.keymap?.setLayerBinding);
@@ -245,14 +245,14 @@ export default function Keyboard() {
             setKeymap(
               produce((draft: any) => {
                 draft.layers[layer].bindings[keyPosition] = oldBinding;
-              }),
+              })
             );
           } else {
           }
         };
       });
     },
-    [conn, keymap, undoRedo, selectedLayerIndex, selectedKeyPosition],
+    [conn, keymap, undoRedo, selectedLayerIndex, selectedKeyPosition]
   );
 
   let selectedBinding = useMemo(() => {
@@ -285,7 +285,7 @@ export default function Keyboard() {
         return () => doMove(end, start);
       });
     },
-    [undoRedo],
+    [undoRedo]
   );
 
   return (
@@ -302,7 +302,14 @@ export default function Keyboard() {
       )}
       {layouts && keymap && behaviors && (
         <div className="col-start-2 row-start-1 grid items-center justify-center">
-          <KeymapComp keymap={keymap} layout={layouts[selectedPhysicalLayoutIndex]} behaviors={behaviors} selectedLayerIndex={selectedLayerIndex} selectedKeyPosition={selectedKeyPosition} onKeyPositionClicked={setSelectedKeyPosition} />
+          <KeymapComp
+            keymap={keymap}
+            layout={layouts[selectedPhysicalLayoutIndex]}
+            behaviors={behaviors}
+            selectedLayerIndex={selectedLayerIndex}
+            selectedKeyPosition={selectedKeyPosition}
+            onKeyPositionClicked={setSelectedKeyPosition}
+          />
         </div>
       )}
       {keymap && selectedBinding && (
@@ -311,7 +318,7 @@ export default function Keyboard() {
             binding={selectedBinding}
             behaviors={Object.values(behaviors)}
             layerNames={keymap.layers.map(
-              (l, li) => l.name || li.toLocaleString(),
+              (l, li) => l.name || li.toLocaleString()
             )}
             onBindingChanged={doUpdateBinding}
           />

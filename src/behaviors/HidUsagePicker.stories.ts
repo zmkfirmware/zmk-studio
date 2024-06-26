@@ -28,8 +28,8 @@ export const Keyboard: Story = {
 export const KeyboardModSelection: Story = {
   args: {
     usagePages: [{ id: 7 }],
-    value: 458756
-  }
+    value: 458756,
+  },
 };
 
 export const KeyboardAndConsumer: Story = {

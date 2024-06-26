@@ -49,7 +49,10 @@ export const ParameterValuePicker = ({
           onValueChanged={onValueChanged}
           label={values[0].name}
           value={value}
-          usagePages={[{ id: 7, min: 4, max: values[0].hidUsage.keyboardMax }, { id: 12, max: values[0].hidUsage.consumerMax }]}
+          usagePages={[
+            { id: 7, min: 4, max: values[0].hidUsage.keyboardMax },
+            { id: 12, max: values[0].hidUsage.consumerMax },
+          ]}
         />
       );
     } else if (values[0].layerIndex) {

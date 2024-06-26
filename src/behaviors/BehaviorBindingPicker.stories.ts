@@ -33,7 +33,14 @@ export const Example: Story = {
       {
         id: 0,
         displayName: "Key Press",
-        metadata: [{ param1: [{ name: "Key", hidUsage: { consumerMax: 0, keyboardMax: 0 } }], param2: [] }],
+        metadata: [
+          {
+            param1: [
+              { name: "Key", hidUsage: { consumerMax: 0, keyboardMax: 0 } },
+            ],
+            param2: [],
+          },
+        ],
       },
     ],
   },

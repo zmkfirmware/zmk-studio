@@ -12,12 +12,12 @@ export interface AppHeaderProps {
 export const AppHeader = ({ connectedDeviceLabel }: AppHeaderProps) => {
   const [unsaved, setUnsaved] = useConnectedDeviceData<boolean>(
     { keymap: { checkUnsavedChanges: true } },
-    (r) => r.keymap?.checkUnsavedChanges,
+    (r) => r.keymap?.checkUnsavedChanges
   );
   const conn = useContext(ConnectionContext);
 
   useSub("rpc_notification.keymap.unsavedChangesStatusChanged", (unsaved) =>
-    setUnsaved(unsaved),
+    setUnsaved(unsaved)
   );
 
   const save = useCallback(() => {

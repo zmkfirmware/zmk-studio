@@ -1,6 +1,6 @@
 from fedora:41
 
-RUN dnf update -y 
+RUN dnf update -y
 
 RUN dnf group list
 RUN dnf install -y @c-development @development-tools

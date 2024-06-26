@@ -55,7 +55,7 @@ const TRANSPORTS: TransportFactory[] = [
 ].filter((t) => t !== undefined);
 
 async function listen_for_notifications(
-  notification_stream: ReadableStream<Notification>,
+  notification_stream: ReadableStream<Notification>
 ): Promise<void> {
   let reader = notification_stream.getReader();
   do {
@@ -75,7 +75,7 @@ async function listen_for_notifications(
       pub("rpc_notification", value);
 
       const subsystem = Object.entries(value).find(
-        ([_k, v]) => v !== undefined,
+        ([_k, v]) => v !== undefined
       );
       if (!subsystem) {
         continue;
@@ -103,7 +103,7 @@ async function listen_for_notifications(
 
 async function connect(
   transport: RpcTransport,
-  setConn: Dispatch<RpcConnection | null>,
+  setConn: Dispatch<RpcConnection | null>
 ) {
   let rpc_conn = await create_rpc_connection(transport);
 

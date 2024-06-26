@@ -16,7 +16,7 @@ function renderItem(
   item: PhysicalLayoutItem,
   index: number,
   selected: boolean,
-  onClick?: PhysicalLayoutClickCallback,
+  onClick?: PhysicalLayoutClickCallback
 ) {
   return (
     <li
@@ -40,8 +40,8 @@ export const PhysicalLayoutPicker = ({
       item,
       index,
       index === selectedPhysicalLayoutIndex,
-      onPhysicalLayoutClicked,
-    ),
+      onPhysicalLayoutClicked
+    )
   );
 
   return (

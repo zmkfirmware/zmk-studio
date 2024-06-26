@@ -1,4 +1,3 @@
-
 import {
   PhysicalLayout,
   Keymap as KeymapMsg,
@@ -15,12 +14,12 @@ import { PhysicalLayout as PhysicalLayoutComp } from "./PhysicalLayout";
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
 export interface KeymapProps {
-  layout: PhysicalLayout,
-  keymap: KeymapMsg,
-  behaviors: BehaviorMap,
-  selectedLayerIndex: number,
-  selectedKeyPosition: number | undefined,
-  onKeyPositionClicked: (keyPosition: number) => void,
+  layout: PhysicalLayout;
+  keymap: KeymapMsg;
+  behaviors: BehaviorMap;
+  selectedLayerIndex: number;
+  selectedKeyPosition: number | undefined;
+  onKeyPositionClicked: (keyPosition: number) => void;
 }
 
 export const Keymap = ({
@@ -37,7 +36,7 @@ export const Keymap = ({
 
   let positions = layout.keys.map((k, i) => {
     let [page, id] = hid_usage_page_and_id_from_usage(
-      keymap.layers[selectedLayerIndex].bindings[i].param1,
+      keymap.layers[selectedLayerIndex].bindings[i].param1
     );
 
     // TODO: Do something with implicit mods!
@@ -64,4 +63,4 @@ export const Keymap = ({
       onPositionClicked={onKeyPositionClicked}
     />
   );
-}
+};

@@ -19,7 +19,7 @@ export interface BehaviorBindingPickerProps {
 function validateValue(
   layerCount: number,
   value?: number,
-  values?: BehaviorParameterValueDescription[],
+  values?: BehaviorParameterValueDescription[]
 ): boolean {
   if (value === undefined) {
     return values === undefined || values?.length === 0 || !!values[0].nil;
@@ -50,14 +50,14 @@ function validateBinding(
   metadata: BehaviorBindingParametersSet[],
   layerCount: number,
   param1?: number,
-  param2?: number,
+  param2?: number
 ): boolean {
   if (param1 === undefined || param1 === 0) {
     return metadata.every((s) => !s.param1);
   }
 
   let matchingSet = metadata.find((s) =>
-    validateValue(layerCount, param1, s.param1),
+    validateValue(layerCount, param1, s.param1)
   );
 
   if (!matchingSet) {
@@ -79,7 +79,7 @@ export const BehaviorBindingPicker = ({
 
   const metadata = useMemo(
     () => behaviors.find((b) => b.id == behaviorId)?.metadata,
-    [behaviorId, behaviors],
+    [behaviorId, behaviors]
   );
 
   useEffect(() => {
@@ -94,7 +94,7 @@ export const BehaviorBindingPicker = ({
     if (!metadata) {
       console.error(
         "Can't find metadata for the selected behaviorId",
-        behaviorId,
+        behaviorId
       );
       return;
     }

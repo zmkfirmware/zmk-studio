@@ -8,7 +8,7 @@ export const usePub = () => (name: PropertyKey, data: any) =>
 
 export const useSub = (
   name: PropertyKey,
-  callback: (data: any) => void | Promise<void>,
+  callback: (data: any) => void | Promise<void>
 ) => {
   const unsub = () => emitter.off(name, callback);
 

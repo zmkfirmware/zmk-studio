@@ -45,7 +45,7 @@ export const LayerPicker = ({
 
       onLayerClicked?.(layer_items.findIndex((l) => s.has(l.id)));
     },
-    [onLayerClicked, layer_items],
+    [onLayerClicked, layer_items]
   );
 
   let { dragAndDropHooks } = useDragAndDrop({
