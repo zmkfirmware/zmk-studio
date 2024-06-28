@@ -14,6 +14,11 @@ export const AppHeader = ({ connectedDeviceLabel }: AppHeaderProps) => {
     { keymap: { checkUnsavedChanges: true } },
     (r) => r.keymap?.checkUnsavedChanges
   );
+
+  const [deviceInfo, _setDeviceInfo] = useConnectedDeviceData<boolean>(
+    { core: { getDeviceInfo: true } },
+    (r) => r.core?.getDeviceInfo
+  );
   const conn = useContext(ConnectionContext);
 
   useSub("rpc_notification.keymap.unsavedChangesStatusChanged", (unsaved) =>
@@ -53,7 +58,7 @@ export const AppHeader = ({ connectedDeviceLabel }: AppHeaderProps) => {
   return (
     <header className="top-0 left-0 right-0 grid grid-cols-[1fr_auto_1fr] items-center justify-between border-b border-text-base">
       <p className="px-3">ZMK Studio</p>
-      <p className="text-center">{connectedDeviceLabel}</p>
+      <p className="text-center">{deviceInfo?.name}</p>
       <div className="flex justify-end">
         <button
           type="button"
