@@ -7,14 +7,14 @@ import React, {
   useState,
 } from "react";
 
-import { call_rpc, Request } from "zmk-studio-ts-client";
+import { call_rpc, Request } from "@zmkfirmware/zmk-studio-ts-client";
 import {
   PhysicalLayout,
   Keymap,
   SetLayerBindingResponse,
   BehaviorBinding,
-} from "zmk-studio-ts-client/keymap";
-import type { GetBehaviorDetailsResponse } from "zmk-studio-ts-client/behaviors";
+} from "@zmkfirmware/zmk-studio-ts-client/keymap";
+import type { GetBehaviorDetailsResponse } from "@zmkfirmware/zmk-studio-ts-client/behaviors";
 
 import { LayerPicker } from "./LayerPicker";
 import { PhysicalLayoutPicker } from "./PhysicalLayoutPicker";

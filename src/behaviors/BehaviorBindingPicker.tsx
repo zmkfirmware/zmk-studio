@@ -4,8 +4,8 @@ import {
   GetBehaviorDetailsResponse,
   BehaviorBindingParametersSet,
   BehaviorParameterValueDescription,
-} from "zmk-studio-ts-client/behaviors";
-import { BehaviorBinding } from "zmk-studio-ts-client/keymap";
+} from "@zmkfirmware/zmk-studio-ts-client/behaviors";
+import { BehaviorBinding } from "@zmkfirmware/zmk-studio-ts-client/keymap";
 import { BehaviorParametersPicker } from "./BehaviorParametersPicker";
 import { hid_usage_page_and_id_from_usage } from "../hid-usages";
 

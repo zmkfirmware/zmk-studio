@@ -1,8 +1,8 @@
 import {
   PhysicalLayout,
   Keymap as KeymapMsg,
-} from "zmk-studio-ts-client/keymap";
-import type { GetBehaviorDetailsResponse } from "zmk-studio-ts-client/behaviors";
+} from "@zmkfirmware/zmk-studio-ts-client/keymap";
+import type { GetBehaviorDetailsResponse } from "@zmkfirmware/zmk-studio-ts-client/behaviors";
 
 import {
   hid_usage_get_label,
