@@ -24,16 +24,22 @@ import { ConnectionContext } from "../rpc/ConnectionContext";
 import { UndoRedoContext } from "../undoRedo";
 import { BehaviorBindingPicker } from "../behaviors/BehaviorBindingPicker";
 import { produce } from "immer";
+import { LockStateContext } from "../rpc/LockStateContext";
+import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
 function useBehaviors(): BehaviorMap {
   let connection = useContext(ConnectionContext);
+  let lockState = useContext(LockStateContext);
 
   const [behaviors, setBehaviors] = useState<BehaviorMap>({});
 
   useEffect(() => {
-    if (!connection) {
+    if (
+      !connection ||
+      lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED
+    ) {
       setBehaviors({});
       return;
     }
@@ -83,7 +89,7 @@ function useBehaviors(): BehaviorMap {
     return () => {
       ignore = true;
     };
-  }, [connection]);
+  }, [connection, lockState]);
 
   return behaviors;
 }
@@ -95,6 +101,7 @@ function useLayouts(): [
   React.Dispatch<SetStateAction<number>>
 ] {
   let connection = useContext(ConnectionContext);
+  let lockState = useContext(LockStateContext);
 
   const [layouts, setLayouts] = useState<PhysicalLayout[] | undefined>(
     undefined
@@ -103,7 +110,10 @@ function useLayouts(): [
     useState<number>(0);
 
   useEffect(() => {
-    if (!connection) {
+    if (
+      !connection ||
+      lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED
+    ) {
       setLayouts(undefined);
       return;
     }
@@ -133,7 +143,7 @@ function useLayouts(): [
     return () => {
       ignore = true;
     };
-  }, [connection]);
+  }, [connection, lockState]);
 
   return [
     layouts,
@@ -152,7 +162,8 @@ export default function Keyboard() {
   ] = useLayouts();
   const [keymap, setKeymap] = useConnectedDeviceData<Keymap>(
     { keymap: { getKeymap: true } },
-    (keymap) => keymap?.keymap?.getKeymap
+    (keymap) => keymap?.keymap?.getKeymap,
+    true
   );
   const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0);
   const [selectedKeyPosition, setSelectedKeyPosition] = useState<

@@ -1,6 +1,7 @@
 import { AppHeader } from "./AppHeader";
 
 import {
+  call_rpc,
   create_rpc_connection,
   RpcConnection,
 } from "@zmkfirmware/zmk-studio-ts-client";
@@ -22,7 +23,10 @@ import {
 } from "./tauri/serial";
 import Keyboard from "./keyboard/Keyboard";
 import { UndoRedoContext, useUndoRedo } from "./undoRedo";
-import { usePub } from "./usePubSub";
+import { usePub, useSub } from "./usePubSub";
+import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
+import { LockStateContext } from "./rpc/LockStateContext";
+import { UnlockModal } from "./UnlockModal";
 
 declare global {
   interface Window {
@@ -125,43 +129,70 @@ function App() {
   const [conn, setConn] = useState<RpcConnection | null>(null);
   const [doIt, undo, redo, canUndo, canRedo, reset] = useUndoRedo();
 
+  const [lockState, setLockState] = useState<LockState>(
+    LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED
+  );
+
+  useSub("rpc_notification.core.lockStateChanged", (ls) => {
+    setLockState(ls);
+  });
+
   useEffect(() => {
     if (!conn) {
       reset();
+      setLockState(LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED);
     }
-  }, [conn]);
+
+    async function updateLockState() {
+      if (!conn) {
+        return;
+      }
+
+      let locked_resp = await call_rpc(conn, { core: { getLockState: true } });
+
+      setLockState(
+        locked_resp.core?.getLockState ||
+          LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED
+      );
+    }
+
+    updateLockState();
+  }, [conn, setLockState]);
 
   return (
     <ConnectionContext.Provider value={conn}>
-      <UndoRedoContext.Provider value={doIt}>
-        <ConnectModal
-          open={!conn}
-          transports={TRANSPORTS}
-          onTransportCreated={(t) => connect(t, setConn)}
-        />
-        <div className="bg-bg-base text-text-base h-full grid grid-cols-[auto] grid-rows-[auto_1fr]">
-          <AppHeader connectedDeviceLabel={conn?.label} />
-          <Keyboard />
-          <button
-            type="button"
-            className="disabled:text-gray-500"
-            id="undo"
-            disabled={!canUndo}
-            onClick={() => undo()}
-          >
-            Undo
-          </button>
-          <button
-            type="button"
-            className="disabled:text-gray-500"
-            id="redo"
-            disabled={!canRedo}
-            onClick={() => redo()}
-          >
-            Redo
-          </button>
-        </div>
-      </UndoRedoContext.Provider>
+      <LockStateContext.Provider value={lockState}>
+        <UndoRedoContext.Provider value={doIt}>
+          <UnlockModal />
+          <ConnectModal
+            open={!conn}
+            transports={TRANSPORTS}
+            onTransportCreated={(t) => connect(t, setConn)}
+          />
+          <div className="bg-bg-base text-text-base h-full grid grid-cols-[auto] grid-rows-[auto_1fr]">
+            <AppHeader connectedDeviceLabel={conn?.label} />
+            <Keyboard />
+            <button
+              type="button"
+              className="disabled:text-gray-500"
+              id="undo"
+              disabled={!canUndo}
+              onClick={() => undo()}
+            >
+              Undo
+            </button>
+            <button
+              type="button"
+              className="disabled:text-gray-500"
+              id="redo"
+              disabled={!canRedo}
+              onClick={() => redo()}
+            >
+              Redo
+            </button>
+          </div>
+        </UndoRedoContext.Provider>
+      </LockStateContext.Provider>
     </ConnectionContext.Provider>
   );
 }
