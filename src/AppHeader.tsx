@@ -5,12 +5,25 @@ import { useConnectedDeviceData } from "./rpc/useConnectedDeviceData";
 import { useSub } from "./usePubSub";
 import { ConnectionContext } from "./rpc/ConnectionContext";
 import { GetDeviceInfoResponse } from "@zmkfirmware/zmk-studio-ts-client/core";
+import {
+  ArrowUturnLeftIcon,
+  ArrowUturnRightIcon,
+} from "@heroicons/react/24/solid";
 
 export interface AppHeaderProps {
   connectedDeviceLabel?: string;
+  onUndo?: () => Promise<void>;
+  onRedo?: () => Promise<void>;
+  canUndo?: boolean;
+  canRedo?: boolean;
 }
 
-export const AppHeader = ({}: AppHeaderProps) => {
+export const AppHeader = ({
+  canRedo,
+  canUndo,
+  onRedo,
+  onUndo,
+}: AppHeaderProps) => {
   const [unsaved, setUnsaved] = useConnectedDeviceData<boolean>(
     { keymap: { checkUnsavedChanges: true } },
     (r) => r.keymap?.checkUnsavedChanges
@@ -62,9 +75,36 @@ export const AppHeader = ({}: AppHeaderProps) => {
       <p className="px-3">ZMK Studio</p>
       <p className="text-center">{deviceInfo?.name}</p>
       <div className="flex justify-end">
+        {onUndo && (
+          <button
+            type="button"
+            className="flex justify-center items-center rounded border-solid border-transparent px-3 py-1.5 border enabled:hover:border-text-base disabled:text-gray-500"
+            disabled={!canUndo}
+            onClick={onUndo}
+          >
+            <ArrowUturnLeftIcon
+              className="inline-block w-4 mx-1"
+              aria-label="Undo"
+            />
+          </button>
+        )}
+
+        {onRedo && (
+          <button
+            type="button"
+            className="flex items-center justify-center rounded border-solid border-transparent px-3 py-1.5 border enabled:hover:border-text-base disabled:text-gray-500"
+            disabled={!canRedo}
+            onClick={onRedo}
+          >
+            <ArrowUturnRightIcon
+              className="inline-block w-4 mx-1"
+              aria-label="Redo"
+            />
+          </button>
+        )}
         <button
           type="button"
-          className="rounded border-solid border-transparent px-5 py-2.5 border enabled:hover:border-text-base disabled:text-gray-500"
+          className="rounded border-solid border-transparent px-3 py-1.5 border enabled:hover:border-text-base disabled:text-gray-500"
           disabled={!unsaved}
           onClick={save}
         >
@@ -72,7 +112,7 @@ export const AppHeader = ({}: AppHeaderProps) => {
         </button>
         <button
           type="button"
-          className="rounded border-solid border-transparent px-5 py-2.5 border enabled:hover:border-text-base disabled:text-gray-500"
+          className="rounded border-solid border-transparent px-3 py-1.5 border enabled:hover:border-text-base disabled:text-gray-500"
           onClick={discard}
           disabled={!unsaved}
         >

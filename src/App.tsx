@@ -170,26 +170,14 @@ function App() {
             onTransportCreated={(t) => connect(t, setConn)}
           />
           <div className="bg-bg-base text-text-base h-full grid grid-cols-[auto] grid-rows-[auto_1fr]">
-            <AppHeader connectedDeviceLabel={conn?.label} />
+            <AppHeader
+              connectedDeviceLabel={conn?.label}
+              canUndo={canUndo}
+              canRedo={canRedo}
+              onUndo={undo}
+              onRedo={redo}
+            />
             <Keyboard />
-            <button
-              type="button"
-              className="disabled:text-gray-500"
-              id="undo"
-              disabled={!canUndo}
-              onClick={() => undo()}
-            >
-              Undo
-            </button>
-            <button
-              type="button"
-              className="disabled:text-gray-500"
-              id="redo"
-              disabled={!canRedo}
-              onClick={() => redo()}
-            >
-              Redo
-            </button>
           </div>
         </UndoRedoContext.Provider>
       </LockStateContext.Provider>

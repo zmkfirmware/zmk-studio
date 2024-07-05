@@ -300,7 +300,7 @@ export default function Keyboard() {
   );
 
   return (
-    <div className="py-2 h-full grid grid-cols-[1fr_5fr_1fr] grid-rows-[1fr_auto]">
+    <div className="p-2 h-full grid grid-cols-[1fr_5fr_1fr] grid-rows-[1fr_auto]">
       {keymap && (
         <div className="col-start-1 row-start-1 row-end-2">
           <LayerPicker
