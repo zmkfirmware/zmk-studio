@@ -4,14 +4,14 @@ import { HidUsagePicker } from "./HidUsagePicker";
 export interface ParameterValuePickerProps {
   value?: number;
   values: BehaviorParameterValueDescription[];
-  layerNames: string[];
+  layers: { id: number; name: string }[];
   onValueChanged: (value?: number) => void;
 }
 
 export const ParameterValuePicker = ({
   value,
   values,
-  layerNames,
+  layers,
   onValueChanged,
 }: ParameterValuePickerProps) => {
   if (values.length == 0) {
@@ -55,7 +55,7 @@ export const ParameterValuePicker = ({
           ]}
         />
       );
-    } else if (values[0].layerIndex) {
+    } else if (values[0].layerId) {
       return (
         <div>
           <label>{values[0].name}</label>
@@ -63,8 +63,8 @@ export const ParameterValuePicker = ({
             value={value}
             onChange={(e) => onValueChanged(parseInt(e.target.value))}
           >
-            {layerNames.map((n, idx) => (
-              <option value={idx}>{n}</option>
+            {layers.map(({ name, id }) => (
+              <option value={id}>{name}</option>
             ))}
           </select>
         </div>

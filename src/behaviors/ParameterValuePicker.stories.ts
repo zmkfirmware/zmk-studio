@@ -18,7 +18,10 @@ const meta = {
   },
   // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
   args: {
-    layerNames: ["Base", "Num"],
+    layers: [
+      { name: "Base", id: 0 },
+      { id: 1, name: "Num" },
+    ],
     onValueChanged: fn(),
   },
 } satisfies Meta<typeof ParameterValuePicker>;
@@ -47,8 +50,8 @@ export const HID: Story = {
   },
 };
 
-export const LayerIndex: Story = {
+export const LayerId: Story = {
   args: {
-    values: [{ name: "Layer", layerIndex: {} }],
+    values: [{ name: "Layer", layerId: {} }],
   },
 };

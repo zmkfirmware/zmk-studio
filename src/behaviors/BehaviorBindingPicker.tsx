@@ -12,12 +12,12 @@ import { hid_usage_page_and_id_from_usage } from "../hid-usages";
 export interface BehaviorBindingPickerProps {
   binding: BehaviorBinding;
   behaviors: GetBehaviorDetailsResponse[];
-  layerNames: string[];
+  layers: { id: number; name: string }[];
   onBindingChanged: (binding: BehaviorBinding) => void;
 }
 
 function validateValue(
-  layerCount: number,
+  layerIds: number[],
   value?: number,
   values?: BehaviorParameterValueDescription[]
 ): boolean {
@@ -33,8 +33,8 @@ function validateValue(
     } else if (v.hidUsage) {
       const [page, id] = hid_usage_page_and_id_from_usage(value);
       return page !== 0 && id !== 0;
-    } else if (v.layerIndex) {
-      return value >= 0 && value < layerCount;
+    } else if (v.layerId) {
+      return layerIds.includes(value);
     } else if (v.nil) {
       return value === 0;
     } else {
@@ -48,7 +48,7 @@ function validateValue(
 
 function validateBinding(
   metadata: BehaviorBindingParametersSet[],
-  layerCount: number,
+  layerIds: number[],
   param1?: number,
   param2?: number
 ): boolean {
@@ -57,19 +57,19 @@ function validateBinding(
   }
 
   let matchingSet = metadata.find((s) =>
-    validateValue(layerCount, param1, s.param1)
+    validateValue(layerIds, param1, s.param1)
   );
 
   if (!matchingSet) {
     return false;
   }
 
-  return validateValue(layerCount, param2, matchingSet.param2);
+  return validateValue(layerIds, param2, matchingSet.param2);
 }
 
 export const BehaviorBindingPicker = ({
   binding,
-  layerNames,
+  layers,
   behaviors,
   onBindingChanged,
 }: BehaviorBindingPickerProps) => {
@@ -99,7 +99,14 @@ export const BehaviorBindingPicker = ({
       return;
     }
 
-    if (validateBinding(metadata, layerNames.length, param1, param2)) {
+    if (
+      validateBinding(
+        metadata,
+        layers.map(({ id }) => id),
+        param1,
+        param2
+      )
+    ) {
       onBindingChanged({
         behaviorId,
         param1: param1 || 0,
@@ -137,7 +144,7 @@ export const BehaviorBindingPicker = ({
           metadata={metadata}
           param1={param1}
           param2={param2}
-          layerNames={layerNames}
+          layers={layers}
           onParam1Changed={setParam1}
           onParam2Changed={setParam2}
         />

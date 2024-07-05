@@ -223,6 +223,7 @@ export default function Keyboard() {
       }
 
       const layer = selectedLayerIndex;
+      const layerId = keymap.layers[layer].id;
       const keyPosition = selectedKeyPosition;
       const oldBinding = keymap.layers[layer].bindings[keyPosition];
       undoRedo?.(async () => {
@@ -231,7 +232,7 @@ export default function Keyboard() {
         }
 
         let resp = await call_rpc(conn, {
-          keymap: { setLayerBinding: { layer, keyPosition, binding } },
+          keymap: { setLayerBinding: { layerId, keyPosition, binding } },
         });
 
         if (resp.keymap?.setLayerBinding === SetLayerBindingResponse.SUCCESS) {
@@ -247,7 +248,7 @@ export default function Keyboard() {
         return async () => {
           let resp = await call_rpc(conn, {
             keymap: {
-              setLayerBinding: { layer, keyPosition, binding: oldBinding },
+              setLayerBinding: { layerId, keyPosition, binding: oldBinding },
             },
           });
           if (
@@ -276,17 +277,17 @@ export default function Keyboard() {
 
   const moveLayer = useCallback(
     (start: number, end: number) => {
-      const doMove = async (layer: number, dest: number) => {
+      const doMove = async (startIndex: number, destIndex: number) => {
         if (!conn) {
           return;
         }
 
         let resp = await call_rpc(conn, {
-          keymap: { moveLayer: { layer, dest } },
+          keymap: { moveLayer: { startIndex, destIndex } },
         });
         if (resp.keymap?.moveLayer?.ok) {
           setKeymap(resp.keymap?.moveLayer?.ok);
-          setSelectedLayerIndex(dest);
+          setSelectedLayerIndex(destIndex);
         } else {
           console.error("Error moving", resp);
         }
@@ -328,9 +329,10 @@ export default function Keyboard() {
           <BehaviorBindingPicker
             binding={selectedBinding}
             behaviors={Object.values(behaviors)}
-            layerNames={keymap.layers.map(
-              (l, li) => l.name || li.toLocaleString()
-            )}
+            layers={keymap.layers.map(({ id, name }, li) => ({
+              id,
+              name: name || li.toLocaleString(),
+            }))}
             onBindingChanged={doUpdateBinding}
           />
         </div>
