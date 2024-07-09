@@ -169,7 +169,7 @@ function App() {
             transports={TRANSPORTS}
             onTransportCreated={(t) => connect(t, setConn)}
           />
-          <div className="bg-bg-base text-text-base h-full inline-grid grid-cols-[auto] grid-rows-[auto_1fr]">
+          <div className="bg-bg-base text-text-base h-full w-full min-w-min inline-grid grid-cols-[auto] grid-rows-[auto_1fr]">
             <AppHeader
               connectedDeviceLabel={conn?.label}
               canUndo={canUndo}
