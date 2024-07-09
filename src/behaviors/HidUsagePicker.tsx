@@ -173,7 +173,7 @@ export const HidUsagePicker = ({
       </ComboBox>
       <CheckboxGroup
         aria-label="Implicit Modifiers"
-        className="grid grid-flow-col gap-x-px auto-cols-fr content-stretch divide-x rounded border border-text-base"
+        className="grid grid-flow-col gap-x-px auto-cols-[minmax(min-content,1fr)] content-stretch divide-x rounded-md border border-text-base"
         value={mods}
         onChange={modifiersChanged}
       >
@@ -181,7 +181,7 @@ export const HidUsagePicker = ({
           <Checkbox
             key={m}
             value={m.toLocaleString()}
-            className="text-nowrap grid content-center justify-center rac-selected:bg-secondary first:rounded-s last:rounded-e hover:text-accent rac-selected:hover:text-accent"
+            className="text-nowrap grid px-2 content-center justify-center rac-selected:bg-secondary first:rounded-s-md last:rounded-e-md hover:text-accent rac-selected:hover:text-accent"
           >
             {mod_labels[m]}
           </Checkbox>
