@@ -42,11 +42,11 @@ export const PhysicalLayoutPicker = ({
   return (
     <Select
       onSelectionChange={selectionChanged}
-      className="flex"
+      className="flex flex-col"
       selectedKey={layouts[selectedPhysicalLayoutIndex].name}
     >
-      <Label className="mx-2 after:content-[':']">Layout</Label>
-      <Button className="min-w-24">
+      <Label className="after:content-[':']">Layout</Label>
+      <Button className="ml-4 min-w-24 text-left">
         <SelectValue<PhysicalLayoutItem>>
           {(v) => {
             return <span>{v.selectedItem?.name}</span>;

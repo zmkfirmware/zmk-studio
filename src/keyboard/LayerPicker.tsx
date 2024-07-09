@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react";
 import {
   DropIndicator,
+  Label,
   ListBox,
   ListBoxItem,
   Selection,
@@ -67,22 +68,25 @@ export const LayerPicker = ({
   });
 
   return (
-    <ListBox
-      aria-label="Keymap Layer"
-      selectionMode="single"
-      items={layer_items}
-      disallowEmptySelection={true}
-      selectedKeys={[layer_items[selectedLayerIndex].id]}
-      className="items-center justify-center cursor-pointer"
-      onSelectionChange={selectionChanged}
-      dragAndDropHooks={dragAndDropHooks}
-      {...props}
-    >
-      {(layer_item) => (
-        <ListBoxItem className="p-1 b-1 aria-selected:bg-secondary border rounded border-transparent border-solid hover:border-text-base">
-          {layer_item.id}
-        </ListBoxItem>
-      )}
-    </ListBox>
+    <div className="flex flex-col">
+      <Label className="after:content-[':']">Layers</Label>
+      <ListBox
+        aria-label="Keymap Layer"
+        selectionMode="single"
+        items={layer_items}
+        disallowEmptySelection={true}
+        selectedKeys={[layer_items[selectedLayerIndex].id]}
+        className="ml-2 items-center justify-center cursor-pointer"
+        onSelectionChange={selectionChanged}
+        dragAndDropHooks={dragAndDropHooks}
+        {...props}
+      >
+        {(layer_item) => (
+          <ListBoxItem className="p-1 b-1 aria-selected:bg-secondary border rounded border-transparent border-solid hover:border-text-base">
+            {layer_item.id}
+          </ListBoxItem>
+        )}
+      </ListBox>
+    </div>
   );
 };

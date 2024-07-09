@@ -301,17 +301,29 @@ export default function Keyboard() {
   );
 
   return (
-    <div className="p-2 h-full grid grid-cols-[1fr_5fr_1fr] grid-rows-[1fr_auto]">
-      {keymap && (
-        <div className="col-start-1 row-start-1 row-end-2">
-          <LayerPicker
-            layers={keymap.layers}
-            selectedLayerIndex={selectedLayerIndex}
-            onLayerClicked={setSelectedLayerIndex}
-            onLayerMoved={moveLayer}
-          />
-        </div>
-      )}
+    <div className="p-2 h-full w-full grid grid-cols-[auto_1fr] grid-rows-[4fr_1fr]">
+      <div className="flex flex-col gap-2">
+        {layouts && (
+          <div className="col-start-3 row-start-1 row-end-2">
+            <PhysicalLayoutPicker
+              layouts={layouts}
+              selectedPhysicalLayoutIndex={selectedPhysicalLayoutIndex}
+              onPhysicalLayoutClicked={doSelectPhysicalLayout}
+            />
+          </div>
+        )}
+
+        {keymap && (
+          <div className="col-start-1 row-start-1 row-end-2">
+            <LayerPicker
+              layers={keymap.layers}
+              selectedLayerIndex={selectedLayerIndex}
+              onLayerClicked={setSelectedLayerIndex}
+              onLayerMoved={moveLayer}
+            />
+          </div>
+        )}
+      </div>
       {layouts && keymap && behaviors && (
         <div className="col-start-2 row-start-1 grid items-center justify-center">
           <KeymapComp
@@ -334,15 +346,6 @@ export default function Keyboard() {
               name: name || li.toLocaleString(),
             }))}
             onBindingChanged={doUpdateBinding}
-          />
-        </div>
-      )}
-      {layouts && (
-        <div className="col-start-3 row-start-1 row-end-2">
-          <PhysicalLayoutPicker
-            layouts={layouts}
-            selectedPhysicalLayoutIndex={selectedPhysicalLayoutIndex}
-            onPhysicalLayoutClicked={doSelectPhysicalLayout}
           />
         </div>
       )}
