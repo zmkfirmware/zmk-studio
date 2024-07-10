@@ -35,6 +35,17 @@ export const Keymap = ({
   }
 
   let positions = layout.keys.map((k, i) => {
+    if (i >= keymap.layers[selectedLayerIndex].bindings.length) {
+      return {
+        header: "Unknown",
+        x: k.x / 100.0,
+        y: k.y / 100.0,
+        width: k.width / 100,
+        height: k.height / 100.0,
+        children: <span></span>,
+      };
+    }
+
     let [page, id] = hid_usage_page_and_id_from_usage(
       keymap.layers[selectedLayerIndex].bindings[i].param1
     );
