@@ -1,3 +1,4 @@
+import { PencilIcon } from "@heroicons/react/24/solid";
 import { useCallback, useMemo } from "react";
 import {
   DropIndicator,
@@ -9,6 +10,7 @@ import {
 } from "react-aria-components";
 
 interface Layer {
+  id: number;
   name?: string;
 }
 
@@ -18,21 +20,36 @@ export type LayerMovedCallback = (index: number, destination: number) => void;
 interface LayerPickerProps {
   layers: Array<Layer>;
   selectedLayerIndex: number;
+  canAdd?: boolean;
+  canRemove?: boolean;
 
   onLayerClicked?: LayerClickCallback;
   onLayerMoved?: LayerMovedCallback;
+  onAddClicked?: () => void | Promise<void>;
+  onRemoveClicked?: () => void | Promise<void>;
+  onLayerNameChanged?: (
+    id: number,
+    oldName: string,
+    newName: string
+  ) => void | Promise<void>;
 }
 
 export const LayerPicker = ({
   layers,
   selectedLayerIndex,
+  canAdd,
+  canRemove,
   onLayerClicked,
   onLayerMoved,
+  onAddClicked,
+  onRemoveClicked,
+  onLayerNameChanged,
   ...props
 }: LayerPickerProps) => {
   const layer_items = useMemo(() => {
     return layers.map((l, i) => ({
-      id: l.name || i.toLocaleString(),
+      name: l.name || i.toLocaleString(),
+      id: l.id,
       index: i,
       selected: i === selectedLayerIndex,
     }));
@@ -67,9 +84,42 @@ export const LayerPicker = ({
     },
   });
 
+  let onEditClicked = useCallback(
+    (id: number, name: string) => {
+      let newName = window.prompt("Label");
+
+      if (newName !== null) {
+        onLayerNameChanged?.(id, name, newName);
+      }
+    },
+    [onLayerNameChanged]
+  );
+
   return (
-    <div className="flex flex-col">
-      <Label className="after:content-[':']">Layers</Label>
+    <div className="flex flex-col min-w-40">
+      <div className="grid grid-cols-[1fr_auto_auto]">
+        <Label className="after:content-[':']">Layers</Label>
+        {onRemoveClicked && (
+          <button
+            type="button"
+            className="px-2"
+            disabled={!canRemove}
+            onClick={onRemoveClicked}
+          >
+            -
+          </button>
+        )}
+        {onAddClicked && (
+          <button
+            type="button"
+            disabled={!canAdd}
+            className="px-2"
+            onClick={onAddClicked}
+          >
+            +
+          </button>
+        )}
+      </div>
       <ListBox
         aria-label="Keymap Layer"
         selectionMode="single"
@@ -82,8 +132,15 @@ export const LayerPicker = ({
         {...props}
       >
         {(layer_item) => (
-          <ListBoxItem className="p-1 b-1 aria-selected:bg-secondary border rounded border-transparent border-solid hover:border-text-base">
-            {layer_item.id}
+          <ListBoxItem
+            textValue={layer_item.name}
+            className="p-1 b-1 group grid grid-cols-[1fr_auto] items-center aria-selected:bg-secondary border rounded border-transparent border-solid hover:border-text-base"
+          >
+            <span>{layer_item.name}</span>
+            <PencilIcon
+              className="h-4 w-4 mx-1 invisible group-hover:visible"
+              onClick={() => onEditClicked(layer_item.id, layer_item.name)}
+            />
           </ListBoxItem>
         )}
       </ListBox>

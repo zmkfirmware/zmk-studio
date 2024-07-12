@@ -28,10 +28,10 @@ type Story = StoryObj<typeof meta>;
 export const Named: Story = {
   args: {
     layers: [
-      { name: "Base" },
-      { name: "Num" },
-      { name: "Nav" },
-      { name: "Symbol" },
+      { id: 1, name: "Base" },
+      { id: 2, name: "Num" },
+      { id: 3, name: "Nav" },
+      { id: 4, name: "Symbol" },
     ],
     selectedLayerIndex: 2,
   },
@@ -39,7 +39,7 @@ export const Named: Story = {
 
 export const NoNames: Story = {
   args: {
-    layers: [{}, {}, {}],
+    layers: [{ id: 1 }, { id: 2 }, { id: 3 }],
     selectedLayerIndex: 0,
   },
 };
