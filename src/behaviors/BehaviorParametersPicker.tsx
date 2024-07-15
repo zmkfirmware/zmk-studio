@@ -47,7 +47,7 @@ export const BehaviorParametersPicker = ({
         />
         {(set?.param2?.length || 0) > 0 && (
           <ParameterValuePicker
-            values={set.param2}
+            values={set!.param2}
             value={param2}
             layers={layers}
             onValueChanged={onParam2Changed}
