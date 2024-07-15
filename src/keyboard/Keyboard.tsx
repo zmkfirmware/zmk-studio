@@ -472,7 +472,7 @@ export default function Keyboard() {
   );
 
   return (
-    <div className="p-2 h-full w-full grid grid-cols-[auto_1fr] grid-rows-[4fr_1fr]">
+    <div className="p-2 grid grid-cols-[auto_1fr] grid-rows-[1fr_minmax(10em,auto)]">
       <div className="flex flex-col gap-2">
         {layouts && (
           <div className="col-start-3 row-start-1 row-end-2">

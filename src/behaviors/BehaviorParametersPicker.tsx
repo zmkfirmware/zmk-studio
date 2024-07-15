@@ -1,5 +1,6 @@
 import { BehaviorBindingParametersSet } from "@zmkfirmware/zmk-studio-ts-client/behaviors";
 import { ParameterValuePicker } from "./ParameterValuePicker";
+import { validateValue } from "./parameters";
 
 export interface BehaviorParametersPickerProps {
   param1?: number;
@@ -30,7 +31,11 @@ export const BehaviorParametersPicker = ({
     );
   } else {
     const set = metadata.find((s) =>
-      s.param1.find((v) => v.constant == param1)
+      validateValue(
+        layers.map((l) => l.id),
+        param1,
+        s.param1
+      )
     );
     return (
       <div>
@@ -40,7 +45,7 @@ export const BehaviorParametersPicker = ({
           layers={layers}
           onValueChanged={onParam1Changed}
         />
-        {set?.param2 && set.param2.length > 0 && (
+        {(set?.param2?.length || 0) > 0 && (
           <ParameterValuePicker
             values={set.param2}
             value={param2}
