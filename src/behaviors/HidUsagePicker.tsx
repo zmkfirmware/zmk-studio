@@ -41,7 +41,9 @@ const UsageSection = ({ id, min, max }: UsageSectionProps) => {
     let usages = info?.UsageIds || [];
     if (max || min) {
       usages = usages.filter(
-        (i) => i.Id <= (max || Number.MAX_SAFE_INTEGER) && i.Id >= (min || 0)
+        (i) =>
+          (i.Id <= (max || Number.MAX_SAFE_INTEGER) && i.Id >= (min || 0)) ||
+          (id === 7 && i.Id >= 0xe0 && i.Id <= 0xe7)
       );
     }
 
