@@ -56,6 +56,7 @@
     "vite": "^5.2.0"
   },
   "optionalDependencies": {
+    "@esbuild/darwin-arm64": "0.23.0",
     "@rollup/rollup-darwin-arm64": "^4.18.1"
   }
 }
