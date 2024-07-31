@@ -49,7 +49,7 @@ pub async fn gatt_connect(
             let ah1 = app_handle.clone();
             let notify_handle = tauri::async_runtime::spawn(async move {
                 if let Ok(mut n) = c2.notify().await {
-                    use tauri::Manager;
+                    use tauri::Emitter;
 
                     while let Some(Ok(vn)) = n.next().await {
                         ah1.emit("connection_data", vn.clone());
@@ -63,6 +63,7 @@ pub async fn gatt_connect(
                 let a = adapter;
 
                 use tauri::Manager;
+                use tauri::Emitter;
 
                 if let Ok(mut events) = a.device_connection_events(&d).await {
                     while let Some(ev) = events.next().await {

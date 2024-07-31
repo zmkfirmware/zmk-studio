@@ -34,6 +34,7 @@ pub async fn serial_connect(
 
             tauri::async_runtime::spawn(async move {
                 use tauri::Manager;
+                use tauri::Emitter;
 
                 let mut buffer = vec![0; READ_BUF_SIZE];
                 while let Ok(size) = reader.read(&mut buffer).await {
