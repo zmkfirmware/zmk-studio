@@ -41,6 +41,7 @@ const TRANSPORTS: TransportFactory[] = [
     ? [
         {
           label: "BLE",
+          isWireless: true,
           pick_and_connect: {
             connect: tauri_ble_connect,
             list: ble_list_devices,

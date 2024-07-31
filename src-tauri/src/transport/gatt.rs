@@ -110,11 +110,15 @@ pub async fn gatt_list_devices() -> Result<Vec<super::commands::AvailableDevice>
         .expect("GET DEVICES!")
         .take_until(async_std::task::sleep(Duration::from_secs(2)))
         .filter_map(|d| ready(d.ok()))
-        .then(move |device| async move {
-            let label = device.name_async().await.unwrap_or("Unknown".to_string());
-            let id = serde_json::to_string(&device.id()).unwrap();
+        .filter_map(move |device| async move {
+            if device.is_connected().await {
+                let label = device.name_async().await.unwrap_or("Unknown".to_string());
+                let id = serde_json::to_string(&device.id()).unwrap();
 
-            super::commands::AvailableDevice { label, id }
+                Some(super::commands::AvailableDevice { label, id })
+            } else {
+                None
+            }
         })
         .collect::<Vec<_>>()
         .await;
