@@ -223,7 +223,7 @@ export const ConnectModal = ({
       <h1 className="text-xl">Welcome to ZMK Studio</h1>
       {useSimplePicker
         ? simpleDevicePicker(transports, onTransportCreated)
-        : deviceList(open, transports, onTransportCreated)}
+        : deviceList(open || false, transports, onTransportCreated)}
     </dialog>
   );
 };
