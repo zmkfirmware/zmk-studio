@@ -27,6 +27,7 @@ import { usePub, useSub } from "./usePubSub";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { LockStateContext } from "./rpc/LockStateContext";
 import { UnlockModal } from "./UnlockModal";
+import { valueAfter } from "./misc/async";
 
 declare global {
   interface Window {
@@ -111,23 +112,46 @@ async function listen_for_notifications(
 
 async function connect(
   transport: RpcTransport,
-  setConn: Dispatch<RpcConnection | null>
+  setConn: Dispatch<RpcConnection | null>,
+  setConnectedDeviceName: Dispatch<string | undefined>
 ) {
   let rpc_conn = await create_rpc_connection(transport);
 
+  let details = await Promise.race([
+    call_rpc(rpc_conn, { core: { getDeviceInfo: true } })
+      .then((r) => r?.core?.getDeviceInfo)
+      .catch((e) => {
+        console.error("Failed first RPC call", e);
+        return undefined;
+      }),
+    valueAfter(undefined, 1000),
+  ]);
+
+  if (!details) {
+    // TODO: Show a proper toast/alert not using `window.alert`
+    window.alert("Failed to connect to the chosen device");
+    return;
+  }
+
   listen_for_notifications(rpc_conn.notification_readable)
     .then(() => {
+      setConnectedDeviceName(undefined);
       setConn(null);
     })
     .catch((_e) => {
+      setConnectedDeviceName(undefined);
       setConn(null);
     });
 
+  setConnectedDeviceName(details.name);
   setConn(rpc_conn);
 }
 
 function App() {
   const [conn, setConn] = useState<RpcConnection | null>(null);
+  const [connectedDeviceName, setConnectedDeviceName] = useState<
+    string | undefined
+  >(undefined);
   const [doIt, undo, redo, canUndo, canRedo, reset] = useUndoRedo();
 
   const [lockState, setLockState] = useState<LockState>(
@@ -168,11 +192,13 @@ function App() {
           <ConnectModal
             open={!conn}
             transports={TRANSPORTS}
-            onTransportCreated={(t) => connect(t, setConn)}
+            onTransportCreated={(t) =>
+              connect(t, setConn, setConnectedDeviceName)
+            }
           />
           <div className="bg-bg-base text-text-base h-full w-full min-w-min inline-grid grid-cols-[auto] grid-rows-[auto_1fr]">
             <AppHeader
-              connectedDeviceLabel={conn?.label}
+              connectedDeviceLabel={connectedDeviceName}
               canUndo={canUndo}
               canRedo={canRedo}
               onUndo={undo}
