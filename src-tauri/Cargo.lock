@@ -121,6 +121,7 @@ dependencies = [
  "futures",
  "serde",
  "serde_json",
+ "serialport",
  "tauri",
  "tauri-build",
  "tauri-plugin-cli",
@@ -3413,9 +3414,9 @@ dependencies = [
 
 [[package]]
 name = "serialport"
-version = "4.3.0"
+version = "4.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8f5a15d0be940df84846264b09b51b10b931fb2f275becb80934e3568a016828"
+checksum = "de7c4f0cce25b9b3518eea99618112f9ee4549f974480c8f43d3c06f03c131a0"
 dependencies = [
  "bitflags 2.5.0",
  "cfg-if",

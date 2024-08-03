@@ -24,6 +24,7 @@ uuid = "1.6.1"
 futures = "0.3.30"
 blocking = "1.6.0"
 tokio-serial = { version ="5.4.1", features = ["libudev"] }
+serialport = "4.4.0"
 tokio = { version = "1.37.0", features = ["io-util"] }
 
 [features]
