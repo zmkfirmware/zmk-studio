@@ -11,7 +11,7 @@
   "identifier": "dev.zmk.studio",
   "bundle": {
     "active": true,
-    "category": "DeveloperTool",
+    "category": "Productivity",
     "copyright": "",
     "linux": {
       "deb": {
@@ -57,9 +57,10 @@
   },
   "app": {
     "security": {
+      "capabilities": ["default"],
       "csp": {
         "default-src": "'self' customprotocol: asset:",
-	"connect-src": "ipc: https://ipc.localhost"
+	"connect-src": "ipc: http://ipc.localhost"
       }
     },
     "windows": [
