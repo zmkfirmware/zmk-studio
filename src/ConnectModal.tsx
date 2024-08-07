@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { RpcTransport } from "@zmkfirmware/zmk-studio-ts-client/transport/index";
 import type { AvailableDevice } from "./tauri/index";
 import { SignalIcon } from "@heroicons/react/24/outline";
 import { Key, ListBox, ListBoxItem, Selection } from "react-aria-components";
+import { useModalRef } from "./misc/useModalRef";
 
 export type TransportFactory = {
   label: string;
@@ -199,19 +200,7 @@ export const ConnectModal = ({
   transports,
   onTransportCreated,
 }: ConnectModalProps) => {
-  const dialog = useRef<HTMLDialogElement | null>(null);
-
-  useEffect(() => {
-    if (dialog.current) {
-      if (open) {
-        if (!dialog.current.open) {
-          dialog.current.showModal();
-        }
-      } else {
-        dialog.current.close();
-      }
-    }
-  }, [open]);
+  const dialog = useModalRef(open || false);
 
   const useSimplePicker = useMemo(
     () => transports.every((t) => !t.pick_and_connect),

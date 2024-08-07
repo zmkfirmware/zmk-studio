@@ -28,6 +28,9 @@ import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { LockStateContext } from "./rpc/LockStateContext";
 import { UnlockModal } from "./UnlockModal";
 import { valueAfter } from "./misc/async";
+import { AppFooter } from "./AppFooter";
+import { AboutModal } from "./AboutModal";
+import { LicenseNoticeModal } from "./misc/LicenseNoticeModal";
 
 declare global {
   interface Window {
@@ -153,6 +156,8 @@ function App() {
     string | undefined
   >(undefined);
   const [doIt, undo, redo, canUndo, canRedo, reset] = useUndoRedo();
+  const [showAbout, setShowAbout] = useState(false);
+  const [showLicenseNotice, setShowLicenseNotice] = useState(false);
 
   const [lockState, setLockState] = useState<LockState>(
     LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED
@@ -196,7 +201,12 @@ function App() {
               connect(t, setConn, setConnectedDeviceName)
             }
           />
-          <div className="bg-bg-base text-text-base h-full w-full min-w-min inline-grid grid-cols-[auto] grid-rows-[auto_1fr]">
+          <AboutModal open={showAbout} onClose={() => setShowAbout(false)} />
+          <LicenseNoticeModal
+            open={showLicenseNotice}
+            onClose={() => setShowLicenseNotice(false)}
+          />
+          <div className="bg-bg-base text-text-base h-full w-full min-w-min inline-grid grid-cols-[auto] grid-rows-[auto_1fr_auto]">
             <AppHeader
               connectedDeviceLabel={connectedDeviceName}
               canUndo={canUndo}
@@ -205,6 +215,10 @@ function App() {
               onRedo={redo}
             />
             <Keyboard />
+            <AppFooter
+              onShowAbout={() => setShowAbout(true)}
+              onShowLicenseNotice={() => setShowLicenseNotice(true)}
+            />
           </div>
         </UndoRedoContext.Provider>
       </LockStateContext.Provider>
