@@ -93,8 +93,6 @@ export const BehaviorBindingPicker = ({
     setParam2(binding.param2);
   }, [binding]);
 
-  console.log("Rendering with", behaviorId, param1, param2);
-
   return (
     <div>
       <label>Behavior:</label>
@@ -107,7 +105,9 @@ export const BehaviorBindingPicker = ({
         }}
       >
         {behaviors.map((b) => (
-          <option value={b.id}>{b.displayName}</option>
+          <option key={b.id} value={b.id}>
+            {b.displayName}
+          </option>
         ))}
       </select>
       {metadata && (
