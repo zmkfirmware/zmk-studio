@@ -66,12 +66,17 @@ export const PhysicalLayoutPicker = ({
                 <PhysicalLayout
                   oneU={15}
                   hoverZoom={false}
-                  positions={l.keys.map(({ x, y, width, height }) => ({
-                    x: x / 100.0,
-                    y: y / 100.0,
-                    width: width / 100.0,
-                    height: height / 100.0,
-                  }))}
+                  positions={l.keys.map(
+                    ({ x, y, width, height, r, rx, ry }) => ({
+                      x: x / 100.0,
+                      y: y / 100.0,
+                      width: width / 100.0,
+                      height: height / 100.0,
+                      r: (r || 0) / 100.0,
+                      rx: (rx || 0) / 100.0,
+                      ry: (ry || 0) / 100.0,
+                    })
+                  )}
                 />
               </div>
             </ListBoxItem>

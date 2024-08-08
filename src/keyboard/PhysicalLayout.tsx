@@ -7,6 +7,9 @@ export type KeyPosition = PropsWithChildren<{
   height: number;
   x: number;
   y: number;
+  r?: number;
+  rx?: number;
+  ry?: number;
 }>;
 
 interface PhysicalLayoutProps {
