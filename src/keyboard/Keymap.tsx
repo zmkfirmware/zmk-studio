@@ -63,6 +63,9 @@ export const Keymap = ({
       y: k.y / 100.0,
       width: k.width / 100,
       height: k.height / 100.0,
+      r: k.r / 100.0,
+      rx: (k.rx || 0) / 100.0,
+      ry: (k.ry || 0) / 100.0,
       children: <span>{label}</span>,
     };
   });

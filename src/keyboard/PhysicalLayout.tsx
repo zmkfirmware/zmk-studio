@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { CSSProperties, PropsWithChildren } from "react";
 import { Key } from "./Key";
 
 export type KeyPosition = PropsWithChildren<{
@@ -20,21 +20,32 @@ interface PhysicalLayoutProps {
 interface PhysicalLayoutPositionLocation {
   x: number;
   y: number;
+  r?: number;
+  rx?: number;
+  ry?: number;
 }
 
 function scalePosition(
-  { x, y }: PhysicalLayoutPositionLocation,
+  { x, y, r, rx, ry }: PhysicalLayoutPositionLocation,
   oneU: number
-): {
-  top: number;
-  left: number;
-} {
+): CSSProperties {
   let left = x * oneU;
   let top = y * oneU;
+  let transformOrigin = undefined;
+  let transform = undefined;
+
+  if (r) {
+    let transformX = ((rx || x) - x) * oneU;
+    let transformY = ((ry || y) - y) * oneU;
+    transformOrigin = `${transformX}px ${transformY}px`;
+    transform = `rotate(${r}deg)`;
+  }
 
   return {
     top,
     left,
+    transformOrigin,
+    transform,
   };
 }
 
@@ -46,7 +57,6 @@ export const PhysicalLayout = ({
   onPositionClicked,
   ...props
 }: PhysicalLayoutProps) => {
-  console.log("Physical Layout", oneU, hoverZoom);
   // TODO: Add a bit of padding for rotation when supported
   let rightMost = positions
     .map((k) => k.x + k.width)
