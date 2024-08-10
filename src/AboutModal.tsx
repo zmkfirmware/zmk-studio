@@ -63,7 +63,7 @@ const sponsors = [
         url: "https://typeractive.xyz/",
       },
       {
-        name: "Kineses",
+        name: "Kinesis",
         img: kinesis,
         darkModeImg: kinesisDarkMode,
         url: "https://kinesis-ergo.com/",
