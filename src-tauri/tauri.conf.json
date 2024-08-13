@@ -50,7 +50,7 @@
         {
           "name": "serial-port",
 	  "takesValue": true,
-          "description": "Specefic serial port to connect to"
+          "description": "Specific serial port to connect to"
         }
       ]
     }
