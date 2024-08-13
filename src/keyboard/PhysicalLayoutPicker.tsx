@@ -85,13 +85,4 @@ export const PhysicalLayoutPicker = ({
       </Popover>
     </Select>
   );
-
-  // return (
-  //   <ul
-  //     className="grid b-0 grid-flow-row auto-rows-auto list-none items-center justify-center cursor-pointer"
-  //     {...props}
-  //   >
-  //     {layout_items}
-  //   </ul>
-  // );
 };
