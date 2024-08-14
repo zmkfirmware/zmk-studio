@@ -2,4 +2,8 @@ import { createContext } from "react";
 
 import { RpcConnection } from "@zmkfirmware/zmk-studio-ts-client/index";
 
-export const ConnectionContext = createContext<RpcConnection | null>(null);
+export interface ConnectionState {
+  conn: RpcConnection | null;
+}
+
+export const ConnectionContext = createContext<ConnectionState>({ conn: null });

@@ -21,7 +21,7 @@ export function useConnectedDeviceData<T>(
   useEffect(
     () => {
       if (
-        !connection ||
+        !connection.conn ||
         (requireUnlock &&
           lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED)
       ) {
@@ -31,11 +31,11 @@ export function useConnectedDeviceData<T>(
 
       async function startRequest() {
         setData(undefined);
-        if (!connection) {
+        if (!connection.conn) {
           return;
         }
 
-        let response = response_mapper(await call_rpc(connection, req));
+        let response = response_mapper(await call_rpc(connection.conn, req));
 
         if (!ignore) {
           setData(response);

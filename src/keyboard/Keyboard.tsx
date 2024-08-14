@@ -39,7 +39,7 @@ function useBehaviors(): BehaviorMap {
 
   useEffect(() => {
     if (
-      !connection ||
+      !connection.conn ||
       lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED
     ) {
       setBehaviors({});
@@ -49,7 +49,7 @@ function useBehaviors(): BehaviorMap {
     async function startRequest() {
       setBehaviors({});
 
-      if (!connection) {
+      if (!connection.conn) {
         return;
       }
 
@@ -58,7 +58,7 @@ function useBehaviors(): BehaviorMap {
         requestId: 0,
       };
 
-      let behavior_list = await call_rpc(connection, get_behaviors);
+      let behavior_list = await call_rpc(connection.conn, get_behaviors);
       if (!ignore) {
         let behavior_map: BehaviorMap = {};
         for (let behaviorId of behavior_list.behaviors?.listAllBehaviors
@@ -70,7 +70,7 @@ function useBehaviors(): BehaviorMap {
             behaviors: { getBehaviorDetails: { behaviorId } },
             requestId: 0,
           };
-          let behavior_details = await call_rpc(connection, details_req);
+          let behavior_details = await call_rpc(connection.conn, details_req);
           let dets: GetBehaviorDetailsResponse | undefined =
             behavior_details?.behaviors?.getBehaviorDetails;
 
@@ -113,7 +113,7 @@ function useLayouts(): [
 
   useEffect(() => {
     if (
-      !connection ||
+      !connection.conn ||
       lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED
     ) {
       setLayouts(undefined);
@@ -123,11 +123,11 @@ function useLayouts(): [
     async function startRequest() {
       setLayouts(undefined);
 
-      if (!connection) {
+      if (!connection.conn) {
         return;
       }
 
-      let response = await call_rpc(connection, {
+      let response = await call_rpc(connection.conn, {
         keymap: { getPhysicalLayouts: true },
       });
 
@@ -164,7 +164,10 @@ export default function Keyboard() {
   ] = useLayouts();
   const [keymap, setKeymap] = useConnectedDeviceData<Keymap>(
     { keymap: { getKeymap: true } },
-    (keymap) => keymap?.keymap?.getKeymap,
+    (keymap) => {
+      console.log("Got the keymap!");
+      return keymap?.keymap?.getKeymap;
+    },
     true
   );
 
@@ -179,11 +182,11 @@ export default function Keyboard() {
 
   useEffect(() => {
     async function performSetRequest() {
-      if (!conn || !layouts) {
+      if (!conn.conn || !layouts) {
         return;
       }
 
-      let resp = await call_rpc(conn, {
+      let resp = await call_rpc(conn.conn, {
         keymap: { setActivePhysicalLayout: selectedPhysicalLayoutIndex },
       });
 
@@ -229,11 +232,11 @@ export default function Keyboard() {
       const keyPosition = selectedKeyPosition;
       const oldBinding = keymap.layers[layer].bindings[keyPosition];
       undoRedo?.(async () => {
-        if (!conn) {
+        if (!conn.conn) {
           throw new Error("Not connected");
         }
 
-        let resp = await call_rpc(conn, {
+        let resp = await call_rpc(conn.conn, {
           keymap: { setLayerBinding: { layerId, keyPosition, binding } },
         });
 
@@ -251,7 +254,11 @@ export default function Keyboard() {
         }
 
         return async () => {
-          let resp = await call_rpc(conn, {
+          if (!conn.conn) {
+            return;
+          }
+
+          let resp = await call_rpc(conn.conn, {
             keymap: {
               setLayerBinding: { layerId, keyPosition, binding: oldBinding },
             },
@@ -284,11 +291,11 @@ export default function Keyboard() {
   const moveLayer = useCallback(
     (start: number, end: number) => {
       const doMove = async (startIndex: number, destIndex: number) => {
-        if (!conn) {
+        if (!conn.conn) {
           return;
         }
 
-        let resp = await call_rpc(conn, {
+        let resp = await call_rpc(conn.conn, {
           keymap: { moveLayer: { startIndex, destIndex } },
         });
 
@@ -310,11 +317,11 @@ export default function Keyboard() {
 
   const addLayer = useCallback(() => {
     async function doAdd(): Promise<number> {
-      if (!conn || !keymap) {
+      if (!conn.conn || !keymap) {
         throw new Error("Not connected");
       }
 
-      const resp = await call_rpc(conn, { keymap: { addLayer: {} } });
+      const resp = await call_rpc(conn.conn, { keymap: { addLayer: {} } });
 
       if (resp.keymap?.addLayer?.ok) {
         const newSelection = keymap.layers.length;
@@ -335,11 +342,11 @@ export default function Keyboard() {
     }
 
     async function doRemove(layerIndex: number) {
-      if (!conn) {
+      if (!conn.conn) {
         throw new Error("Not connected");
       }
 
-      const resp = await call_rpc(conn, {
+      const resp = await call_rpc(conn.conn, {
         keymap: { removeLayer: { layerIndex } },
       });
 
@@ -367,11 +374,11 @@ export default function Keyboard() {
 
   const removeLayer = useCallback(() => {
     async function doRemove(layerIndex: number): Promise<void> {
-      if (!conn || !keymap) {
+      if (!conn.conn || !keymap) {
         throw new Error("Not connected");
       }
 
-      const resp = await call_rpc(conn, {
+      const resp = await call_rpc(conn.conn, {
         keymap: { removeLayer: { layerIndex } },
       });
 
@@ -394,11 +401,11 @@ export default function Keyboard() {
     }
 
     async function doRestore(layerId: number, atIndex: number) {
-      if (!conn) {
+      if (!conn.conn) {
         throw new Error("Not connected");
       }
 
-      const resp = await call_rpc(conn, {
+      const resp = await call_rpc(conn.conn, {
         keymap: { restoreLayer: { layerId, atIndex } },
       });
 
@@ -434,11 +441,11 @@ export default function Keyboard() {
   const changeLayerName = useCallback(
     (id: number, oldName: string, newName: string) => {
       async function changeName(layerId: number, name: string) {
-        if (!conn) {
+        if (!conn.conn) {
           throw new Error("Not connected");
         }
 
-        const resp = await call_rpc(conn, {
+        const resp = await call_rpc(conn.conn, {
           keymap: { setLayerProps: { layerId, name } },
         });
 

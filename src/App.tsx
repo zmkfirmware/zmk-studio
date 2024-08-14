@@ -3,11 +3,10 @@ import { AppHeader } from "./AppHeader";
 import {
   call_rpc,
   create_rpc_connection,
-  RpcConnection,
 } from "@zmkfirmware/zmk-studio-ts-client";
 import type { Notification } from "@zmkfirmware/zmk-studio-ts-client/studio";
-import { ConnectionContext } from "./rpc/ConnectionContext";
-import { Dispatch, useEffect, useState } from "react";
+import { ConnectionState, ConnectionContext } from "./rpc/ConnectionContext";
+import { Dispatch, useCallback, useEffect, useState } from "react";
 import { ConnectModal, TransportFactory } from "./ConnectModal";
 
 import type { RpcTransport } from "@zmkfirmware/zmk-studio-ts-client/transport/index";
@@ -115,13 +114,13 @@ async function listen_for_notifications(
 
 async function connect(
   transport: RpcTransport,
-  setConn: Dispatch<RpcConnection | null>,
+  setConn: Dispatch<ConnectionState>,
   setConnectedDeviceName: Dispatch<string | undefined>
 ) {
-  let rpc_conn = await create_rpc_connection(transport);
+  let conn = await create_rpc_connection(transport);
 
   let details = await Promise.race([
-    call_rpc(rpc_conn, { core: { getDeviceInfo: true } })
+    call_rpc(conn, { core: { getDeviceInfo: true } })
       .then((r) => r?.core?.getDeviceInfo)
       .catch((e) => {
         console.error("Failed first RPC call", e);
@@ -136,22 +135,22 @@ async function connect(
     return;
   }
 
-  listen_for_notifications(rpc_conn.notification_readable)
+  listen_for_notifications(conn.notification_readable)
     .then(() => {
       setConnectedDeviceName(undefined);
-      setConn(null);
+      setConn({ conn: null });
     })
     .catch((_e) => {
       setConnectedDeviceName(undefined);
-      setConn(null);
+      setConn({ conn: null });
     });
 
   setConnectedDeviceName(details.name);
-  setConn(rpc_conn);
+  setConn({ conn });
 }
 
 function App() {
-  const [conn, setConn] = useState<RpcConnection | null>(null);
+  const [conn, setConn] = useState<ConnectionState>({ conn: null });
   const [connectedDeviceName, setConnectedDeviceName] = useState<
     string | undefined
   >(undefined);
@@ -174,11 +173,13 @@ function App() {
     }
 
     async function updateLockState() {
-      if (!conn) {
+      if (!conn.conn) {
         return;
       }
 
-      let locked_resp = await call_rpc(conn, { core: { getLockState: true } });
+      let locked_resp = await call_rpc(conn.conn, {
+        core: { getLockState: true },
+      });
 
       setLockState(
         locked_resp.core?.getLockState ||
@@ -189,13 +190,48 @@ function App() {
     updateLockState();
   }, [conn, setLockState]);
 
+  const save = useCallback(() => {
+    async function doSave() {
+      if (!conn.conn) {
+        return;
+      }
+
+      let resp = await call_rpc(conn.conn, { keymap: { saveChanges: true } });
+      if (!resp.keymap?.saveChanges) {
+        console.error("Failed to save changes", resp);
+      }
+    }
+
+    doSave();
+  }, [conn]);
+
+  const discard = useCallback(() => {
+    async function doDiscard() {
+      if (!conn.conn) {
+        return;
+      }
+
+      let resp = await call_rpc(conn.conn, {
+        keymap: { discardChanges: true },
+      });
+      if (!resp.keymap?.discardChanges) {
+        console.error("Failed to discard changes", resp);
+      }
+
+      reset();
+      setConn({ conn: conn.conn });
+    }
+
+    doDiscard();
+  }, [conn]);
+
   return (
     <ConnectionContext.Provider value={conn}>
       <LockStateContext.Provider value={lockState}>
         <UndoRedoContext.Provider value={doIt}>
           <UnlockModal />
           <ConnectModal
-            open={!conn}
+            open={!conn.conn}
             transports={TRANSPORTS}
             onTransportCreated={(t) =>
               connect(t, setConn, setConnectedDeviceName)
@@ -213,6 +249,8 @@ function App() {
               canRedo={canRedo}
               onUndo={undo}
               onRedo={redo}
+              onSave={save}
+              onDiscard={discard}
             />
             <Keyboard />
             <AppFooter
