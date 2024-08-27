@@ -4,7 +4,7 @@
 use futures::lock::Mutex;
 
 mod transport;
-use transport::commands::{transport_send_data, ActiveConnection};
+use transport::commands::{transport_close, transport_send_data, ActiveConnection};
 
 use transport::gatt::{gatt_connect, gatt_list_devices};
 use transport::serial::{serial_connect, serial_list_devices};
@@ -17,6 +17,7 @@ fn main() {
         })
         .invoke_handler(tauri::generate_handler![
             transport_send_data,
+            transport_close,
             gatt_list_devices,
             gatt_connect,
             serial_list_devices,
