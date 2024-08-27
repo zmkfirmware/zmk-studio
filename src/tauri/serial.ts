@@ -13,6 +13,8 @@ export async function connect(dev: AvailableDevice): Promise<RpcTransport> {
     throw new Error("Failed to connect");
   }
 
+  let abortController = new AbortController();
+
   let writable = new WritableStream({
     async write(chunk, _controller) {
       await invoke("transport_send_data", new Uint8Array(chunk));
@@ -39,5 +41,16 @@ export async function connect(dev: AvailableDevice): Promise<RpcTransport> {
     }
   );
 
-  return { label: dev.label, readable, writable };
+  let signal = abortController.signal;
+
+  let abort_cb = async (_reason: any) => {
+    unlisten_data();
+    unlisten_disconnected();
+    await invoke("transport_close");
+    signal.removeEventListener("abort", abort_cb);
+  };
+
+  signal.addEventListener("abort", abort_cb);
+
+  return { label: dev.label, abortController, readable, writable };
 }

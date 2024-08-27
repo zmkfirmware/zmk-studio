@@ -38,3 +38,13 @@ pub async fn transport_send_data(
 
     Ok(())
 }
+
+#[command]
+pub async fn transport_close(
+    req: Request<'_>,
+    state: State<'_, ActiveConnection<'_>>,
+) -> Result<(), ()> {
+    *state.conn.lock().await = None;
+
+    Ok(())
+}

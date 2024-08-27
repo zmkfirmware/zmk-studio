@@ -58,7 +58,7 @@ pub async fn gatt_connect(
             });
 
             let ah2 = app_handle.clone();
-            tauri::async_runtime::spawn(async move {
+            let disconnect_handle = tauri::async_runtime::spawn(async move {
                 // Need to keep adapter from being dropped while active/connected
                 let a = adapter;
 
@@ -75,7 +75,7 @@ pub async fn gatt_connect(
                                 println!("ERROR RAISING! {:?}", e);
                             }
 
-                            notify_handle.abort();
+                            *state.conn.lock().await = None;
                         }
                     }
                 };
@@ -87,6 +87,9 @@ pub async fn gatt_connect(
                 while let Some(data) = recv.next().await {
                     c.write(&data).await.expect("Write uneventfully");
                 }
+
+                disconnect_handle.abort();
+                notify_handle.abort();
             });
 
             Ok(true)

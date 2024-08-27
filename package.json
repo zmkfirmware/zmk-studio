@@ -16,7 +16,7 @@
     "@heroicons/react": "^2.1.4",
     "@tauri-apps/api": "^2.0.0-beta.16",
     "@tauri-apps/plugin-cli": "^2.0.0-beta.8",
-    "@zmkfirmware/zmk-studio-ts-client": "^0.0.14",
+    "@zmkfirmware/zmk-studio-ts-client": "^0.0.16",
     "emittery": "^1.0.3",
     "immer": "^10.1.1",
     "react": "^18.2.0",

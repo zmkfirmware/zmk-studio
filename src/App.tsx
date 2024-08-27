@@ -66,9 +66,15 @@ const TRANSPORTS: TransportFactory[] = [
 ].filter((t) => t !== undefined);
 
 async function listen_for_notifications(
-  notification_stream: ReadableStream<Notification>
+  notification_stream: ReadableStream<Notification>,
+  signal: AbortSignal
 ): Promise<void> {
   let reader = notification_stream.getReader();
+  const onAbort = () => {
+    reader.cancel();
+    reader.releaseLock();
+  };
+  signal.addEventListener("abort", onAbort, { once: true });
   do {
     let pub = usePub();
 
@@ -104,20 +110,24 @@ async function listen_for_notifications(
 
       pub(topic, eventData);
     } catch (e) {
+      signal.removeEventListener("abort", onAbort);
       reader.releaseLock();
       throw e;
     }
   } while (true);
 
+  signal.removeEventListener("abort", onAbort);
   reader.releaseLock();
+  notification_stream.cancel();
 }
 
 async function connect(
   transport: RpcTransport,
   setConn: Dispatch<ConnectionState>,
-  setConnectedDeviceName: Dispatch<string | undefined>
+  setConnectedDeviceName: Dispatch<string | undefined>,
+  signal: AbortSignal
 ) {
-  let conn = await create_rpc_connection(transport);
+  let conn = await create_rpc_connection(transport, { signal });
 
   let details = await Promise.race([
     call_rpc(conn, { core: { getDeviceInfo: true } })
@@ -135,7 +145,7 @@ async function connect(
     return;
   }
 
-  listen_for_notifications(conn.notification_readable)
+  listen_for_notifications(conn.notification_readable, signal)
     .then(() => {
       setConnectedDeviceName(undefined);
       setConn({ conn: null });
@@ -157,6 +167,7 @@ function App() {
   const [doIt, undo, redo, canUndo, canRedo, reset] = useUndoRedo();
   const [showAbout, setShowAbout] = useState(false);
   const [showLicenseNotice, setShowLicenseNotice] = useState(false);
+  const [connectionAbort, setConnectionAbort] = useState(new AbortController());
 
   const [lockState, setLockState] = useState<LockState>(
     LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED
@@ -225,6 +236,49 @@ function App() {
     doDiscard();
   }, [conn]);
 
+  const resetSettings = useCallback(() => {
+    async function doReset() {
+      if (!conn.conn) {
+        return;
+      }
+
+      let resp = await call_rpc(conn.conn, {
+        core: { resetSettings: true },
+      });
+      if (!resp.core?.resetSettings) {
+        console.error("Failed to settings reset", resp);
+      }
+
+      reset();
+      setConn({ conn: conn.conn });
+    }
+
+    doReset();
+  }, [conn]);
+
+  const disconnect = useCallback(() => {
+    async function doDisconnect() {
+      if (!conn.conn) {
+        return;
+      }
+
+      await conn.conn.request_writable.close();
+      connectionAbort.abort("User disconnected");
+      setConnectionAbort(new AbortController());
+    }
+
+    doDisconnect();
+  }, [conn]);
+
+  const onConnect = useCallback(
+    (t: RpcTransport) => {
+      const ac = new AbortController();
+      setConnectionAbort(ac);
+      connect(t, setConn, setConnectedDeviceName, ac.signal);
+    },
+    [setConn, setConnectedDeviceName, setConnectedDeviceName]
+  );
+
   return (
     <ConnectionContext.Provider value={conn}>
       <LockStateContext.Provider value={lockState}>
@@ -233,9 +287,7 @@ function App() {
           <ConnectModal
             open={!conn.conn}
             transports={TRANSPORTS}
-            onTransportCreated={(t) =>
-              connect(t, setConn, setConnectedDeviceName)
-            }
+            onTransportCreated={onConnect}
           />
           <AboutModal open={showAbout} onClose={() => setShowAbout(false)} />
           <LicenseNoticeModal
@@ -251,6 +303,8 @@ function App() {
               onRedo={redo}
               onSave={save}
               onDiscard={discard}
+              onDisconnect={disconnect}
+              onResetSettings={resetSettings}
             />
             <Keyboard />
             <AppFooter
