@@ -49,6 +49,7 @@ function scalePosition(
     left,
     transformOrigin,
     transform,
+    willChange: "transform",
   };
 }
 
