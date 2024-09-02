@@ -173,62 +173,78 @@ const sponsors = [
 ];
 
 export const AboutModal = ({ open, onClose }: AboutModalProps) => {
-  const ref = useModalRef(open);
+  const ref = useModalRef(open, onClose);
 
   return (
-    <dialog
-      ref={ref}
-      onClose={onClose}
-      className="p-5 rounded-lg border-text-base border min-w-min w-[70vw]"
+    <div
+      className={`fixed inset-0 flex items-center justify-center ${open ? "" : "hidden"}`}
     >
-      <p className="py-1">
-        ZMK Studio is made possible thanks to the generous donation of time from
-        our contributors, as well as the financial sponsorship from the
-        following vendors:
-      </p>
-      <div className="grid gap-2 auto-rows-auto grid-cols-[auto_minmax(min-content,1fr)] justify-items-center items-center">
-        {sponsors.map((s) => {
-          const heightVariants = {
-            [SponsorSize.Large]: "h-16",
-            [SponsorSize.Medium]: "h-12",
-            [SponsorSize.Small]: "h-8",
-          };
+      <dialog
+        ref={ref}
+        className="p-5 rounded-lg border-text-base border min-w-min w-[70vw]"
+        open={open}
+        onClose={onClose}
+      >
+        <div className="flex justify-between items-start">
+          <p className="py-1 mr-2">
+            ZMK Studio is made possible thanks to the generous donation of time
+            from our contributors, as well as the financial sponsorship from the
+            following vendors:
+          </p>
+          <button
+            className="p-1.5 rounded-md bg-gray-200 text-black hover:bg-gray-300"
+            onClick={onClose}
+          >
+            Close
+          </button>
+        </div>
+        <div className="grid gap-2 auto-rows-auto grid-cols-[auto_minmax(min-content,1fr)] justify-items-center items-center">
+          {sponsors.map((s) => {
+            const heightVariants = {
+              [SponsorSize.Large]: "h-16",
+              [SponsorSize.Medium]: "h-12",
+              [SponsorSize.Small]: "h-8",
+            };
 
-          return (
-            <>
-              <label>{s.level}</label>
-              <div
-                className={`grid grid-rows-1 gap-x-1 auto-cols-fr grid-flow-col justify-items-center items-center ${
-                  heightVariants[s.size]
-                }`}
-              >
-                {s.vendors.map((v) => {
-                  const maxSizeVariants = {
-                    [SponsorSize.Large]: "max-h-16",
-                    [SponsorSize.Medium]: "max-h-12",
-                    [SponsorSize.Small]: "max-h-8",
-                  };
+            return (
+              <>
+                <label>{s.level}</label>
+                <div
+                  className={`grid grid-rows-1 gap-x-1 auto-cols-fr grid-flow-col justify-items-center items-center ${
+                    heightVariants[s.size]
+                  }`}
+                >
+                  {s.vendors.map((v) => {
+                    const maxSizeVariants = {
+                      [SponsorSize.Large]: "max-h-16",
+                      [SponsorSize.Medium]: "max-h-12",
+                      [SponsorSize.Small]: "max-h-8",
+                    };
 
-                  return (
-                    <a href={v.url} target="_blank">
-                      <picture aria-label={v.name}>
-                        {v.darkModeImg && (
-                          <source
+                    return (
+                      <a href={v.url} target="_blank">
+                        <picture aria-label={v.name}>
+                          {v.darkModeImg && (
+                            <source
+                              className={maxSizeVariants[s.size]}
+                              srcSet={v.darkModeImg}
+                              media="(prefers-color-scheme: dark)"
+                            />
+                          )}
+                          <img
                             className={maxSizeVariants[s.size]}
-                            srcSet={v.darkModeImg}
-                            media="(prefers-color-scheme: dark)"
+                            src={v.img}
                           />
-                        )}
-                        <img className={maxSizeVariants[s.size]} src={v.img} />
-                      </picture>
-                    </a>
-                  );
-                })}
-              </div>
-            </>
-          );
-        })}
-      </div>
-    </dialog>
+                        </picture>
+                      </a>
+                    );
+                  })}
+                </div>
+              </>
+            );
+          })}
+        </div>
+      </dialog>
+    </div>
   );
 };
