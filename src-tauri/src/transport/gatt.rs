@@ -112,19 +112,21 @@ pub async fn gatt_list_devices() -> Result<Vec<super::commands::AvailableDevice>
         .await
         .expect("GET DEVICES!")
         .take_until(async_std::task::sleep(Duration::from_secs(2)))
-        .filter_map(|d| ready(d.ok()))
-        .filter_map(move |device| async move {
-            if device.is_connected().await {
-                let label = device.name_async().await.unwrap_or("Unknown".to_string());
-                let id = serde_json::to_string(&device.id()).unwrap();
+        .filter_map(|d| ready(d.ok()));
 
-                Some(super::commands::AvailableDevice { label, id })
-            } else {
-                None
-            }
-        })
-        .collect::<Vec<_>>()
-        .await;
+    futures::pin_mut!(devices);
 
-    Ok(devices)
+    let mut ret = vec![];
+    while let Some(device) = devices.next().await {
+        if let Ok(()) = adapter.connect_device(&device).await {
+            let label = device.name_async().await.unwrap_or("Unknown".to_string());
+            let id = serde_json::to_string(&device.id()).unwrap();
+
+            ret.push(super::commands::AvailableDevice { label, id });
+        } else {
+            println!("Device isn't connected: {:?}", device);
+        }
+    }
+
+    Ok(ret)
 }
