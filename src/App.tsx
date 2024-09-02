@@ -289,15 +289,11 @@ function App() {
             transports={TRANSPORTS}
             onTransportCreated={onConnect}
           />
-          {showAbout && (
-            <AboutModal open={showAbout} onClose={() => setShowAbout(false)} />
-          )}
-          {showLicenseNotice && (
-            <LicenseNoticeModal
-              open={showLicenseNotice}
-              onClose={() => setShowLicenseNotice(false)}
-            />
-          )}
+          <AboutModal open={showAbout} onClose={() => setShowAbout(false)} />
+          <LicenseNoticeModal
+            open={showLicenseNotice}
+            onClose={() => setShowLicenseNotice(false)}
+          />
           <div className="bg-bg-base text-text-base h-full w-full min-w-min inline-grid grid-cols-[auto] grid-rows-[auto_1fr_auto]">
             <AppHeader
               connectedDeviceLabel={connectedDeviceName}

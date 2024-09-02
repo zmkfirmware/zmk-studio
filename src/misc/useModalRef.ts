@@ -2,7 +2,7 @@ import { MutableRefObject, useEffect, useRef } from "react";
 
 export function useModalRef(
   open: boolean,
-  onClose?: () => void,
+  closeOnOutsideClick?: boolean,
 ): MutableRefObject<HTMLDialogElement | null> {
   const ref = useRef<HTMLDialogElement | null>(null);
 
@@ -11,36 +11,32 @@ export function useModalRef(
       if (ref.current && !ref.current?.open) {
         ref.current?.showModal();
       }
+      if (closeOnOutsideClick) {
+        const handleClickOutside = (e: MouseEvent) => {
+          const target = e.target as HTMLDialogElement | null;
+          if (!target) return;
+
+          const { top, left, width, height } = target.getBoundingClientRect();
+          const clickedInDialog =
+            top <= e.clientY &&
+            e.clientY <= top + height &&
+            left <= e.clientX &&
+            e.clientX <= left + width;
+
+          if (!clickedInDialog) {
+            target.close();
+          }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }
     } else {
       ref.current?.close();
     }
-  }, [open]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        onClose &&
-        open &&
-        ref.current &&
-        !ref.current.contains(event.target as Node)
-      ) {
-        onClose();
-      }
-    };
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (onClose && event.key === "Escape") {
-        onClose();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEscKey);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscKey);
-    };
-  }, [open, onClose]);
+  }, [open, closeOnOutsideClick]);
 
   return ref;
 }
