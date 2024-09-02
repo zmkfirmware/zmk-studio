@@ -14,9 +14,7 @@ export const LicenseNoticeModal = ({
   const ref = useModalRef(open, onClose);
 
   return (
-    <div
-      className={`fixed inset-0 flex items-center justify-center ${open ? "" : "hidden"}`}
-    >
+    <div className="fixed inset-0 flex items-center justify-center">
       <dialog
         ref={ref}
         className="p-5 rounded-lg border-text-base border min-w-min w-[60vw]"
