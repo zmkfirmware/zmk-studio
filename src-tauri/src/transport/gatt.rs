@@ -5,7 +5,7 @@ use futures::StreamExt;
 use std::time::Duration;
 use uuid::Uuid;
 
-use bluest::{Adapter, ConnectionEvent, DeviceId};
+use bluest::{Adapter, ConnectionEvent, Device, DeviceId, Error};
 
 use tauri::{command, AppHandle, State};
 
@@ -101,6 +101,20 @@ pub async fn gatt_connect(
     }
 }
 
+#[cfg(target_os = "macos")]
+async fn check_connected(adapter: &Adapter, dev: &Device) -> bool {
+    if let Some(()) = adapter.connect_device(&device).await {
+        true
+    } else {
+        false
+    }
+}
+
+#[cfg(not(target_os = "macos"))]
+async fn check_connected(adapter: &Adapter, device: &Device) -> bool{
+    device.is_connected().await
+}
+
 #[command]
 pub async fn gatt_list_devices() -> Result<Vec<super::commands::AvailableDevice>, ()> {
     let adapter = Adapter::default().await.ok_or(())?;
@@ -118,7 +132,7 @@ pub async fn gatt_list_devices() -> Result<Vec<super::commands::AvailableDevice>
 
     let mut ret = vec![];
     while let Some(device) = devices.next().await {
-        if let Ok(()) = adapter.connect_device(&device).await {
+        if check_connected(&adapter, &device).await {
             let label = device.name_async().await.unwrap_or("Unknown".to_string());
             let id = serde_json::to_string(&device.id()).unwrap();
 
