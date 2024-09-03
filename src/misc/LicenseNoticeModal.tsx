@@ -11,19 +11,28 @@ export const LicenseNoticeModal = ({
   open,
   onClose,
 }: LicenseNoticeModalProps) => {
-  const ref = useModalRef(open);
+  const ref = useModalRef(open, true);
+
   return (
     <dialog
       ref={ref}
-      onClose={onClose}
       className="p-5 rounded-lg border-text-base border min-w-min w-[60vw]"
+      onClose={onClose}
     >
       <div>
-        <p>
-          ZMK Studio is released under the open source Apache 2.0 license. A
-          copy of the NOTICE file from the ZMK Studio repository is included
-          here:
-        </p>
+        <div className="flex justify-between items-start">
+          <p className="mr-2">
+            ZMK Studio is released under the open source Apache 2.0 license. A
+            copy of the NOTICE file from the ZMK Studio repository is included
+            here:
+          </p>
+          <button
+            className="p-1.5 rounded-md bg-gray-100 text-black hover:bg-gray-300"
+            onClick={onClose}
+          >
+            Close
+          </button>
+        </div>
         <pre className="m-4 font-mono text-xs">{NOTICE}</pre>
       </div>
     </dialog>

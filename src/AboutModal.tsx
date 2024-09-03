@@ -1,3 +1,4 @@
+import React from "react";
 import { useModalRef } from "./misc/useModalRef";
 
 import cannonKeys from "./assets/cannonkeys.png";
@@ -173,19 +174,27 @@ const sponsors = [
 ];
 
 export const AboutModal = ({ open, onClose }: AboutModalProps) => {
-  const ref = useModalRef(open);
+  const ref = useModalRef(open, true);
 
   return (
     <dialog
       ref={ref}
-      onClose={onClose}
       className="p-5 rounded-lg border-text-base border min-w-min w-[70vw]"
+      onClose={onClose}
     >
-      <p className="py-1">
-        ZMK Studio is made possible thanks to the generous donation of time from
-        our contributors, as well as the financial sponsorship from the
-        following vendors:
-      </p>
+      <div className="flex justify-between items-start">
+        <p className="py-1 mr-2">
+          ZMK Studio is made possible thanks to the generous donation of time
+          from our contributors, as well as the financial sponsorship from the
+          following vendors:
+        </p>
+        <button
+          className="p-1.5 rounded-md bg-gray-100 text-black hover:bg-gray-300"
+          onClick={onClose}
+        >
+          Close
+        </button>
+      </div>
       <div className="grid gap-2 auto-rows-auto grid-cols-[auto_minmax(min-content,1fr)] justify-items-center items-center">
         {sponsors.map((s) => {
           const heightVariants = {
@@ -195,7 +204,7 @@ export const AboutModal = ({ open, onClose }: AboutModalProps) => {
           };
 
           return (
-            <>
+            <React.Fragment key={s.level}>
               <label>{s.level}</label>
               <div
                 className={`grid grid-rows-1 gap-x-1 auto-cols-fr grid-flow-col justify-items-center items-center ${
@@ -210,7 +219,7 @@ export const AboutModal = ({ open, onClose }: AboutModalProps) => {
                   };
 
                   return (
-                    <a href={v.url} target="_blank">
+                    <a key={v.name} href={v.url} target="_blank">
                       <picture aria-label={v.name}>
                         {v.darkModeImg && (
                           <source
@@ -225,7 +234,7 @@ export const AboutModal = ({ open, onClose }: AboutModalProps) => {
                   );
                 })}
               </div>
-            </>
+            </React.Fragment>
           );
         })}
       </div>
