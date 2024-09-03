@@ -102,8 +102,8 @@ pub async fn gatt_connect(
 }
 
 #[cfg(target_os = "macos")]
-async fn check_connected(adapter: &Adapter, dev: &Device) -> bool {
-    if let Some(()) = adapter.connect_device(&device).await {
+async fn check_connected(adapter: &Adapter, device: &Device) -> bool {
+    if let Ok(()) = adapter.connect_device(&device).await {
         true
     } else {
         false
