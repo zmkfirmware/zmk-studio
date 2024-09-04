@@ -1,4 +1,4 @@
-import { CheckIcon, PencilIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { PencilIcon } from "@heroicons/react/24/solid";
 import { useCallback, useMemo, useRef, useState } from "react";
 import {
   DropIndicator,
