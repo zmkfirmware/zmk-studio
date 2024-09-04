@@ -1,5 +1,5 @@
-import { PencilIcon } from "@heroicons/react/24/solid";
-import { useCallback, useMemo } from "react";
+import { CheckIcon, PencilIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   DropIndicator,
   Label,
@@ -8,6 +8,7 @@ import {
   Selection,
   useDragAndDrop,
 } from "react-aria-components";
+import { useModalRef } from "../misc/useModalRef";
 
 interface Layer {
   id: number;
@@ -30,9 +31,78 @@ interface LayerPickerProps {
   onLayerNameChanged?: (
     id: number,
     oldName: string,
-    newName: string
+    newName: string,
   ) => void | Promise<void>;
 }
+
+interface EditLabelData {
+  id: number;
+  name: string;
+}
+
+const EditLabelModal = ({
+  open,
+  onClose,
+  editLabelData,
+  handleSaveNewLabel,
+}: {
+  open: boolean;
+  onClose: () => void;
+  editLabelData: EditLabelData;
+  handleSaveNewLabel: (
+    id: number,
+    oldName: string,
+    newName: string | null,
+  ) => void;
+}) => {
+  const ref = useModalRef(open);
+  const labelInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSave = () => {
+    const newName = labelInputRef.current?.value ?? null;
+    handleSaveNewLabel(editLabelData.id, editLabelData.name, newName);
+    onClose();
+  };
+
+  return (
+    <dialog
+      ref={ref}
+      defaultValue={editLabelData.name}
+      onClose={onClose}
+      className="p-5 rounded-lg border-text-base border min-w-min w-[30vw] flex flex-col"
+    >
+      <span className="mb-3 text-lg">Editing Layer Name</span>
+      <input
+        className="p-1 border rounded border-text-base border-solid"
+        ref={labelInputRef}
+        type="text"
+        defaultValue={editLabelData.name}
+        autoFocus
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            handleSave();
+          }
+        }}
+      />
+      <div className="m-2 flex justify-end">
+        <button type="button" aria-label="Cancel Edit" onClick={onClose}>
+          <XMarkIcon className="h-7 w-7 mx-1 hover:text-accent" />
+        </button>
+        <button
+          type="button"
+          aria-label="Save Edit"
+          onClick={(e) => {
+            e.preventDefault();
+            handleSave();
+          }}
+        >
+          <CheckIcon className="h-7 w-7 mx-1 hover:text-accent" />
+        </button>
+      </div>
+    </dialog>
+  );
+};
 
 export const LayerPicker = ({
   layers,
@@ -46,6 +116,10 @@ export const LayerPicker = ({
   onLayerNameChanged,
   ...props
 }: LayerPickerProps) => {
+  const [editLabelData, setEditLabelData] = useState<EditLabelData | null>(
+    null,
+  );
+
   const layer_items = useMemo(() => {
     return layers.map((l, i) => ({
       name: l.name || i.toLocaleString(),
@@ -53,7 +127,7 @@ export const LayerPicker = ({
       index: i,
       selected: i === selectedLayerIndex,
     }));
-  }, [layers]);
+  }, [layers, selectedLayerIndex]);
 
   const selectionChanged = useCallback(
     (s: Selection) => {
@@ -84,15 +158,13 @@ export const LayerPicker = ({
     },
   });
 
-  let onEditClicked = useCallback(
-    (id: number, name: string) => {
-      let newName = window.prompt("Label");
-
+  const handleSaveNewLabel = useCallback(
+    (id: number, oldName: string, newName: string | null) => {
       if (newName !== null) {
-        onLayerNameChanged?.(id, name, newName);
+        onLayerNameChanged?.(id, oldName, newName);
       }
     },
-    [onLayerNameChanged]
+    [onLayerNameChanged],
   );
 
   return (
@@ -120,6 +192,14 @@ export const LayerPicker = ({
           </button>
         )}
       </div>
+      {editLabelData !== null && (
+        <EditLabelModal
+          open={editLabelData !== null}
+          onClose={() => setEditLabelData(null)}
+          editLabelData={editLabelData}
+          handleSaveNewLabel={handleSaveNewLabel}
+        />
+      )}
       <ListBox
         aria-label="Keymap Layer"
         selectionMode="single"
@@ -138,8 +218,10 @@ export const LayerPicker = ({
           >
             <span>{layer_item.name}</span>
             <PencilIcon
-              className="h-4 w-4 mx-1 invisible group-hover:visible"
-              onClick={() => onEditClicked(layer_item.id, layer_item.name)}
+              className="h-4 w-4 mx-1 invisible group-hover:visible hover:text-accent"
+              onClick={() =>
+                setEditLabelData({ id: layer_item.id, name: layer_item.name })
+              }
             />
           </ListBoxItem>
         )}
