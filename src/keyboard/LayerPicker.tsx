@@ -85,19 +85,23 @@ const EditLabelModal = ({
           }
         }}
       />
-      <div className="m-2 flex justify-end">
-        <button type="button" aria-label="Cancel Edit" onClick={onClose}>
-          <XMarkIcon className="h-7 w-7 mx-1 hover:text-accent" />
+      <div className="mt-4 flex justify-end">
+        <button
+          className="py-1.5 px-2"
+          type="button"
+          onClick={onClose}
+        >
+          Cancel
         </button>
         <button
+          className="py-1.5 px-2 ml-4 rounded-md bg-gray-100 text-black hover:bg-gray-300"
           type="button"
-          aria-label="Save Edit"
           onClick={(e) => {
             e.preventDefault();
             handleSave();
           }}
         >
-          <CheckIcon className="h-7 w-7 mx-1 hover:text-accent" />
+          Save
         </button>
       </div>
     </dialog>
@@ -137,7 +141,7 @@ export const LayerPicker = ({
 
       onLayerClicked?.(layer_items.findIndex((l) => s.has(l.id)));
     },
-    [onLayerClicked, layer_items]
+    [onLayerClicked, layer_items],
   );
 
   let { dragAndDropHooks } = useDragAndDrop({
