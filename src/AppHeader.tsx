@@ -58,11 +58,11 @@ export const AppHeader = ({
   const showSettingsRef = useModalRef(showSettingsReset);
   const [unsaved, setUnsaved] = useConnectedDeviceData<boolean>(
     { keymap: { checkUnsavedChanges: true } },
-    (r) => r.keymap?.checkUnsavedChanges
+    (r) => r.keymap?.checkUnsavedChanges,
   );
 
   useSub("rpc_notification.keymap.unsavedChangesStatusChanged", (unsaved) =>
-    setUnsaved(unsaved)
+    setUnsaved(unsaved),
   );
 
   return (
@@ -100,12 +100,12 @@ export const AppHeader = ({
           {connectedDeviceLabel}
         </Button>
         <Popover>
-          <Menu className="border rounded bg-bg-base">
-            <MenuItem className="p-1" onAction={onDisconnect}>
+          <Menu className="border rounded bg-bg-base cursor-pointer">
+            <MenuItem className="p-1 hover:text-accent" onAction={onDisconnect}>
               Disconnect
             </MenuItem>
             <MenuItem
-              className="p-1"
+              className="p-1 hover:text-accent"
               onAction={() => setShowSettingsReset(true)}
             >
               Settings Reset
