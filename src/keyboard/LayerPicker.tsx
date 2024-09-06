@@ -102,7 +102,7 @@ export const LayerPicker = ({
         {onRemoveClicked && (
           <button
             type="button"
-            className="px-2"
+            className="px-2 hover:text-accent"
             disabled={!canRemove}
             onClick={onRemoveClicked}
           >
@@ -113,7 +113,7 @@ export const LayerPicker = ({
           <button
             type="button"
             disabled={!canAdd}
-            className="px-2"
+            className="px-2 hover:text-accent disabled:text-gray-500 disabled:cursor-not-allowed"
             onClick={onAddClicked}
           >
             +
