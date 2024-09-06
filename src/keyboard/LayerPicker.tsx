@@ -71,7 +71,7 @@ const EditLabelModal = ({
       onClose={onClose}
       className="p-5 rounded-lg border-text-base border min-w-min w-[30vw] flex flex-col"
     >
-      <span className="mb-3 text-lg">Editing Layer Name</span>
+      <span className="mb-3 text-lg">New Layer Name</span>
       <input
         className="p-1 border rounded border-text-base border-solid"
         ref={labelInputRef}
