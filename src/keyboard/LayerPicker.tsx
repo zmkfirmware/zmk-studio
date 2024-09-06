@@ -1,5 +1,5 @@
 import { PencilIcon } from "@heroicons/react/24/solid";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   DropIndicator,
   Label,
@@ -56,28 +56,26 @@ const EditLabelModal = ({
   ) => void;
 }) => {
   const ref = useModalRef(open);
-  const labelInputRef = useRef<HTMLInputElement>(null);
+  const [newLabelName, setNewLabelName] = useState(editLabelData.name);
 
   const handleSave = () => {
-    const newName = labelInputRef.current?.value ?? null;
-    handleSaveNewLabel(editLabelData.id, editLabelData.name, newName);
+    handleSaveNewLabel(editLabelData.id, editLabelData.name, newLabelName);
     onClose();
   };
 
   return (
     <dialog
       ref={ref}
-      defaultValue={editLabelData.name}
       onClose={onClose}
       className="p-5 rounded-lg border-text-base border min-w-min w-[30vw] flex flex-col"
     >
       <span className="mb-3 text-lg">New Layer Name</span>
       <input
         className="p-1 border rounded border-text-base border-solid"
-        ref={labelInputRef}
         type="text"
         defaultValue={editLabelData.name}
         autoFocus
+        onChange={(e) => setNewLabelName(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             e.preventDefault();
@@ -86,18 +84,13 @@ const EditLabelModal = ({
         }}
       />
       <div className="mt-4 flex justify-end">
-        <button
-          className="py-1.5 px-2"
-          type="button"
-          onClick={onClose}
-        >
+        <button className="py-1.5 px-2" type="button" onClick={onClose}>
           Cancel
         </button>
         <button
           className="py-1.5 px-2 ml-4 rounded-md bg-gray-100 text-black hover:bg-gray-300"
           type="button"
-          onClick={(e) => {
-            e.preventDefault();
+          onClick={() => {
             handleSave();
           }}
         >
