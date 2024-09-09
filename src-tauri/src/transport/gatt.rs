@@ -1,11 +1,12 @@
-use futures::channel::mpsc::channel;
+use async_std::future::timeout;
 use futures::future::ready;
-use futures::StreamExt;
+use futures::{channel::mpsc::channel, FutureExt};
+use futures::{StreamExt, TryFutureExt};
 
 use std::time::Duration;
 use uuid::Uuid;
 
-use bluest::{Adapter, ConnectionEvent, Device, DeviceId, Error};
+use bluest::{Adapter, ConnectionEvent, Device, DeviceId};
 
 use tauri::{command, AppHandle, State};
 
@@ -62,8 +63,8 @@ pub async fn gatt_connect(
                 // Need to keep adapter from being dropped while active/connected
                 let a = adapter;
 
-                use tauri::Manager;
                 use tauri::Emitter;
+                use tauri::Manager;
 
                 if let Ok(mut events) = a.device_connection_events(&d).await {
                     while let Some(ev) = events.next().await {
@@ -111,34 +112,45 @@ async fn check_connected(adapter: &Adapter, device: &Device) -> bool {
 }
 
 #[cfg(not(target_os = "macos"))]
-async fn check_connected(adapter: &Adapter, device: &Device) -> bool{
+async fn check_connected(_: &Adapter, device: &Device) -> bool {
     device.is_connected().await
 }
 
+const ADAPTER_TIMEOUT: Duration = Duration::from_secs(2);
+
 #[command]
 pub async fn gatt_list_devices() -> Result<Vec<super::commands::AvailableDevice>, ()> {
-    let adapter = Adapter::default().await.ok_or(())?;
-
-    adapter.wait_available().await.map_err(|_| ())?;
-
-    let devices = adapter
-        .discover_devices(&[SVC_UUID])
-        .await
-        .expect("GET DEVICES!")
-        .take_until(async_std::task::sleep(Duration::from_secs(2)))
-        .filter_map(|d| ready(d.ok()));
-
-    futures::pin_mut!(devices);
+    let adapter = Adapter::default()
+        .map(|a| a.ok_or(()))
+        .and_then(|a| async {
+            timeout(ADAPTER_TIMEOUT, a.wait_available())
+                .await
+                .map_err(|_| ())
+                .map(|_| a)
+        })
+        .await;
 
     let mut ret = vec![];
-    while let Some(device) = devices.next().await {
-        if check_connected(&adapter, &device).await {
-            let label = device.name_async().await.unwrap_or("Unknown".to_string());
-            let id = serde_json::to_string(&device.id()).unwrap();
 
-            ret.push(super::commands::AvailableDevice { label, id });
-        } else {
-            println!("Device isn't connected: {:?}", device);
+    if let Ok(a) = adapter {
+        let devices = a
+            .discover_devices(&[SVC_UUID])
+            .await
+            .expect("GET DEVICES!")
+            .take_until(async_std::task::sleep(Duration::from_secs(2)))
+            .filter_map(|d| ready(d.ok()));
+
+        futures::pin_mut!(devices);
+
+        while let Some(device) = devices.next().await {
+            if check_connected(&a, &device).await {
+                let label = device.name_async().await.unwrap_or("Unknown".to_string());
+                let id = serde_json::to_string(&device.id()).unwrap();
+
+                ret.push(super::commands::AvailableDevice { label, id });
+            } else {
+                println!("Device isn't connected: {:?}", device);
+            }
         }
     }
 
