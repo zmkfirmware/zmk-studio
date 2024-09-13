@@ -164,7 +164,11 @@ function simpleDevicePicker(
 
   let connections = transports.map((t) => (
     <li key={t.label} className="p-1 m-1 list-none">
-      <button type="button" onClick={async () => setSelectedTransport(t)}>
+      <button
+        className="hover:text-accent"
+        type="button"
+        onClick={async () => setSelectedTransport(t)}
+      >
         {t.label}
       </button>
     </li>

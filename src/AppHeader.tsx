@@ -58,11 +58,11 @@ export const AppHeader = ({
   const showSettingsRef = useModalRef(showSettingsReset);
   const [unsaved, setUnsaved] = useConnectedDeviceData<boolean>(
     { keymap: { checkUnsavedChanges: true } },
-    (r) => r.keymap?.checkUnsavedChanges
+    (r) => r.keymap?.checkUnsavedChanges,
   );
 
   useSub("rpc_notification.keymap.unsavedChangesStatusChanged", (unsaved) =>
-    setUnsaved(unsaved)
+    setUnsaved(unsaved),
   );
 
   return (
@@ -100,12 +100,12 @@ export const AppHeader = ({
           {connectedDeviceLabel}
         </Button>
         <Popover>
-          <Menu className="border rounded bg-bg-base">
-            <MenuItem className="p-1" onAction={onDisconnect}>
+          <Menu className="border rounded bg-bg-base cursor-pointer">
+            <MenuItem className="p-1 hover:text-accent" onAction={onDisconnect}>
               Disconnect
             </MenuItem>
             <MenuItem
-              className="p-1"
+              className="p-1 hover:text-accent"
               onAction={() => setShowSettingsReset(true)}
             >
               Settings Reset
@@ -117,7 +117,7 @@ export const AppHeader = ({
         {onUndo && (
           <button
             type="button"
-            className="flex justify-center items-center rounded border-solid border-transparent px-3 py-1.5 border enabled:hover:border-text-base disabled:text-gray-500"
+            className="flex justify-center items-center px-3 py-1.5 enabled:hover:text-accent disabled:text-gray-500"
             disabled={!canUndo}
             onClick={onUndo}
           >
@@ -131,7 +131,7 @@ export const AppHeader = ({
         {onRedo && (
           <button
             type="button"
-            className="flex items-center justify-center rounded border-solid border-transparent px-3 py-1.5 border enabled:hover:border-text-base disabled:text-gray-500"
+            className="flex items-center justify-center px-3 py-1.5 enabled:hover:text-accent disabled:text-gray-500"
             disabled={!canRedo}
             onClick={onRedo}
           >
@@ -143,7 +143,7 @@ export const AppHeader = ({
         )}
         <button
           type="button"
-          className="rounded border-solid border-transparent px-3 py-1.5 border enabled:hover:border-text-base disabled:text-gray-500"
+          className="px-3 py-1.5 enabled:hover:text-accent disabled:text-gray-500"
           disabled={!unsaved}
           onClick={onSave}
         >
@@ -151,7 +151,7 @@ export const AppHeader = ({
         </button>
         <button
           type="button"
-          className="rounded border-solid border-transparent px-3 py-1.5 border enabled:hover:border-text-base disabled:text-gray-500"
+          className="px-3 py-1.5 enabled:hover:text-accent disabled:text-gray-500"
           onClick={onDiscard}
           disabled={!unsaved}
         >

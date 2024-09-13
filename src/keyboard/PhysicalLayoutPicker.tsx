@@ -46,7 +46,7 @@ export const PhysicalLayoutPicker = ({
       selectedKey={layouts[selectedPhysicalLayoutIndex].name}
     >
       <Label className="after:content-[':']">Layout</Label>
-      <Button className="ml-4 min-w-24 text-left">
+      <Button className="ml-4 min-w-24 text-left hover:text-accent">
         <SelectValue<PhysicalLayoutItem>>
           {(v) => {
             return <span>{v.selectedItem?.name}</span>;
