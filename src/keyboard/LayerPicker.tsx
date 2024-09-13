@@ -31,7 +31,7 @@ interface LayerPickerProps {
   onLayerNameChanged?: (
     id: number,
     oldName: string,
-    newName: string,
+    newName: string
   ) => void | Promise<void>;
 }
 
@@ -52,7 +52,7 @@ const EditLabelModal = ({
   handleSaveNewLabel: (
     id: number,
     oldName: string,
-    newName: string | null,
+    newName: string | null
   ) => void;
 }) => {
   const ref = useModalRef(open);
@@ -114,7 +114,7 @@ export const LayerPicker = ({
   ...props
 }: LayerPickerProps) => {
   const [editLabelData, setEditLabelData] = useState<EditLabelData | null>(
-    null,
+    null
   );
 
   const layer_items = useMemo(() => {
@@ -134,7 +134,7 @@ export const LayerPicker = ({
 
       onLayerClicked?.(layer_items.findIndex((l) => s.has(l.id)));
     },
-    [onLayerClicked, layer_items],
+    [onLayerClicked, layer_items]
   );
 
   let { dragAndDropHooks } = useDragAndDrop({
@@ -161,7 +161,7 @@ export const LayerPicker = ({
         onLayerNameChanged?.(id, oldName, newName);
       }
     },
-    [onLayerNameChanged],
+    [onLayerNameChanged]
   );
 
   return (
@@ -202,7 +202,11 @@ export const LayerPicker = ({
         selectionMode="single"
         items={layer_items}
         disallowEmptySelection={true}
-        selectedKeys={[layer_items[selectedLayerIndex].id]}
+        selectedKeys={
+          layer_items[selectedLayerIndex]
+            ? [layer_items[selectedLayerIndex].id]
+            : []
+        }
         className="ml-2 items-center justify-center cursor-pointer"
         onSelectionChange={selectionChanged}
         dragAndDropHooks={dragAndDropHooks}

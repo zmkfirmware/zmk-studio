@@ -181,6 +181,11 @@ export default function Keyboard() {
   const undoRedo = useContext(UndoRedoContext);
 
   useEffect(() => {
+    setSelectedLayerIndex(0);
+    setSelectedKeyPosition(undefined);
+  }, [conn]);
+
+  useEffect(() => {
     async function performSetRequest() {
       if (!conn.conn || !layouts) {
         return;
