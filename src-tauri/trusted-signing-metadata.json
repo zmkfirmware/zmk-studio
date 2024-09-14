@@ -1,0 +1,17 @@
+{
+    "Endpoint": "https://eus.codesigning.azure.net",
+    "CodeSigningAccountName": "ZMKStudio",
+    "CertificateProfileName": "ZMKStudioCertProfile",
+    "ExcludeCredentials": [
+      "ManagedIdentityCredential",
+      "WorkloadIdentityCredential",
+      "SharedTokenCacheCredential",
+      "VisualStudioCredential",
+      "VisualStudioCodeCredential",
+
+      "AzurePowerShellCredential",
+      "AzureCliCredential",
+      "AzureDeveloperCliCredential",
+      "InteractiveBrowserCredential"
+    ]
+  }
