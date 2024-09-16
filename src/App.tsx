@@ -38,8 +38,10 @@ declare global {
 }
 
 const TRANSPORTS: TransportFactory[] = [
-  navigator.bluetooth && { label: "BLE", connect: gatt_connect },
   navigator.serial && { label: "USB", connect: serial_connect },
+  ...(navigator.bluetooth && navigator.userAgent.indexOf("Linux") >= 0
+    ? [{ label: "BLE", connect: gatt_connect }]
+    : []),
   ...(window.__TAURI_INTERNALS__
     ? [
         {

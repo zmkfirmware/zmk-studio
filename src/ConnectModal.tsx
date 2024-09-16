@@ -5,6 +5,7 @@ import type { AvailableDevice } from "./tauri/index";
 import { SignalIcon } from "@heroicons/react/24/outline";
 import { Key, ListBox, ListBoxItem, Selection } from "react-aria-components";
 import { useModalRef } from "./misc/useModalRef";
+import { ExternalLink } from "./misc/ExternalLink";
 
 export type TransportFactory = {
   label: string;
@@ -199,6 +200,56 @@ function simpleDevicePicker(
   );
 }
 
+function noTransportsOptionsPrompt() {
+  return (
+    <div className="m-4 flex flex-col gap-2">
+      <p>
+        Your browser is not supported. ZMK Studio uses{" "}
+        <ExternalLink href="https://caniuse.com/web-serial">
+          Web Serial
+        </ExternalLink>{" "}
+        and{" "}
+        <ExternalLink href="https://caniuse.com/web-bluetooth">
+          Web Bluetooth
+        </ExternalLink>{" "}
+        (Linux only) to connect to ZMK devices.
+      </p>
+
+      <div>
+        <p>To use ZMK Studio, either:</p>
+        <ul className="list-disc list-inside">
+          <li>
+            Use a browser that supports the above web technologies, e.g.
+            Chrome/Edge, or
+          </li>
+          <li>
+            Download our{" "}
+            <ExternalLink href="https://github.com/zmkfirmware/zmk-studio/releases">
+              cross platform application
+            </ExternalLink>
+            .
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function connectOptions(
+  transports: TransportFactory[],
+  onTransportCreated: (t: RpcTransport) => void,
+  open?: boolean
+) {
+  const useSimplePicker = useMemo(
+    () => transports.every((t) => !t.pick_and_connect),
+    [transports]
+  );
+
+  return useSimplePicker
+    ? simpleDevicePicker(transports, onTransportCreated)
+    : deviceList(open || false, transports, onTransportCreated);
+}
+
 export const ConnectModal = ({
   open,
   transports,
@@ -206,17 +257,14 @@ export const ConnectModal = ({
 }: ConnectModalProps) => {
   const dialog = useModalRef(open || false);
 
-  const useSimplePicker = useMemo(
-    () => transports.every((t) => !t.pick_and_connect),
-    [transports]
-  );
+  const haveTransports = useMemo(() => transports.length > 0, [transports]);
 
   return (
     <dialog ref={dialog} className="p-5 rounded-lg border-text-base border">
       <h1 className="text-xl">Welcome to ZMK Studio</h1>
-      {useSimplePicker
-        ? simpleDevicePicker(transports, onTransportCreated)
-        : deviceList(open || false, transports, onTransportCreated)}
+      {haveTransports
+        ? connectOptions(transports, onTransportCreated, open)
+        : noTransportsOptionsPrompt()}
     </dialog>
   );
 };
