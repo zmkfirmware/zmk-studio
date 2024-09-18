@@ -255,7 +255,7 @@ export const ConnectModal = ({
   transports,
   onTransportCreated,
 }: ConnectModalProps) => {
-  const dialog = useModalRef(open || false);
+  const dialog = useModalRef(open || false, false, false);
 
   const haveTransports = useMemo(() => transports.length > 0, [transports]);
 
