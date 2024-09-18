@@ -27,7 +27,7 @@ export const UnlockModal = ({}: UnlockModalProps) => {
       !!conn.conn && lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED,
     [conn, lockState]
   );
-  const dialog = useModalRef(open);
+  const dialog = useModalRef(open, false, false);
 
   return (
     <dialog ref={dialog} className="p-5 rounded-lg border-text-base border">
