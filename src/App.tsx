@@ -1,9 +1,8 @@
 import { AppHeader } from "./AppHeader";
 
-import {
-  call_rpc,
-  create_rpc_connection,
-} from "@zmkfirmware/zmk-studio-ts-client";
+import { create_rpc_connection } from "@zmkfirmware/zmk-studio-ts-client";
+import { call_rpc } from "./rpc/logging";
+
 import type { Notification } from "@zmkfirmware/zmk-studio-ts-client/studio";
 import { ConnectionState, ConnectionContext } from "./rpc/ConnectionContext";
 import { Dispatch, useCallback, useEffect, useState } from "react";
