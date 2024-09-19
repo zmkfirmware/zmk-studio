@@ -7,7 +7,8 @@ import React, {
   useState,
 } from "react";
 
-import { call_rpc, Request } from "@zmkfirmware/zmk-studio-ts-client";
+import { Request } from "@zmkfirmware/zmk-studio-ts-client";
+import { call_rpc } from "../rpc/logging";
 import {
   PhysicalLayout,
   Keymap,
