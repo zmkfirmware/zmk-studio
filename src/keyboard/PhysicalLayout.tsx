@@ -82,7 +82,7 @@ export const PhysicalLayout = ({
 
     const calculateScale = () => {
       if (props.zoom === "auto") {
-        const padding = 50; // Padding when in auto mode
+        const padding = Math.min(window.innerWidth, window.innerHeight) * 0.05; // Padding when in auto mode
         const newScale = Math.min(
           parent.clientWidth / (element.clientWidth + 2 * padding),
           parent.clientHeight / (element.clientHeight + 2 * padding),
