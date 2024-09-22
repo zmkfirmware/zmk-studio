@@ -133,7 +133,7 @@ export const PhysicalLayout = ({
 
   return (
     <div
-      className="p-4 box-content"
+      className="p-12 box-content"
       ref={ref}
       style={{ transform: `scale(${scale})` }}
     >
