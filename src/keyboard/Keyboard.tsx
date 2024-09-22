@@ -29,6 +29,7 @@ import { BehaviorBindingPicker } from "../behaviors/BehaviorBindingPicker";
 import { produce } from "immer";
 import { LockStateContext } from "../rpc/LockStateContext";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
+import { LayoutZoom } from "./PhysicalLayout";
 
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
@@ -172,6 +173,7 @@ export default function Keyboard() {
     true
   );
 
+  const [keymapScale, setKeymapScale] = useState<LayoutZoom>("auto");
   const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0);
   const [selectedKeyPosition, setSelectedKeyPosition] = useState<
     number | undefined
@@ -514,15 +516,37 @@ export default function Keyboard() {
         )}
       </div>
       {layouts && keymap && behaviors && (
-        <div className="col-start-2 row-start-1 grid items-center justify-center">
+        <div className="col-start-2 row-start-1 grid items-center justify-center relative">
           <KeymapComp
             keymap={keymap}
             layout={layouts[selectedPhysicalLayoutIndex]}
             behaviors={behaviors}
+            scale={keymapScale}
             selectedLayerIndex={selectedLayerIndex}
             selectedKeyPosition={selectedKeyPosition}
             onKeyPositionClicked={setSelectedKeyPosition}
           />
+          <select
+            className="absolute top-2 right-2 h-8 rounded px-2"
+            value={keymapScale}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value === "auto") {
+                setKeymapScale("auto");
+              } else {
+                setKeymapScale(parseFloat(value));
+              }
+            }}
+          >
+            <option value="auto">Auto</option>
+            <option value={0.25}>25%</option>
+            <option value={0.5}>50%</option>
+            <option value={0.75}>75%</option>
+            <option value={1}>100%</option>
+            <option value={1.25}>125%</option>
+            <option value={1.5}>150%</option>
+            <option value={2}>200%</option>
+          </select>
         </div>
       )}
       {keymap && selectedBinding && (
