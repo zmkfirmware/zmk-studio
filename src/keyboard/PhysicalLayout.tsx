@@ -1,4 +1,10 @@
-import { CSSProperties, PropsWithChildren } from "react";
+import {
+  CSSProperties,
+  PropsWithChildren,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Key } from "./Key";
 
 export type KeyPosition = PropsWithChildren<{
@@ -12,11 +18,14 @@ export type KeyPosition = PropsWithChildren<{
   ry?: number;
 }>;
 
+export type LayoutZoom = number | "auto";
+
 interface PhysicalLayoutProps {
   positions: Array<KeyPosition>;
   selectedPosition?: number;
   oneU?: number;
   hoverZoom?: boolean;
+  zoom?: LayoutZoom;
   onPositionClicked?: (position: number) => void;
 }
 
@@ -30,7 +39,7 @@ interface PhysicalLayoutPositionLocation {
 
 function scalePosition(
   { x, y, r, rx, ry }: PhysicalLayoutPositionLocation,
-  oneU: number
+  oneU: number,
 ): CSSProperties {
   let left = x * oneU;
   let top = y * oneU;
@@ -61,6 +70,42 @@ export const PhysicalLayout = ({
   onPositionClicked,
   ...props
 }: PhysicalLayoutProps) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const parent = element.parentElement;
+    if (!parent) return;
+
+    const calculateScale = () => {
+      if (props.zoom === "auto") {
+        const newScale = Math.min(
+          parent.clientWidth / element.clientWidth,
+          parent.clientHeight / element.clientHeight,
+        );
+        setScale(newScale);
+      } else {
+        setScale(props.zoom || 1);
+      }
+    };
+
+    calculateScale(); // Initial calculation
+
+    const resizeObserver = new ResizeObserver(() => {
+      calculateScale();
+    });
+
+    resizeObserver.observe(element);
+    resizeObserver.observe(parent);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [props.zoom]);
+
   // TODO: Add a bit of padding for rotation when supported
   let rightMost = positions
     .map((k) => k.x + k.width)
@@ -88,14 +133,20 @@ export const PhysicalLayout = ({
 
   return (
     <div
-      className="relative"
-      style={{
-        height: bottomMost * oneU + "px",
-        width: rightMost * oneU + "px",
-      }}
-      {...props}
+      className="p-4 box-content"
+      ref={ref}
+      style={{ transform: `scale(${scale})` }}
     >
-      {positionItems}
+      <div
+        className="relative"
+        style={{
+          height: bottomMost * oneU + "px",
+          width: rightMost * oneU + "px",
+        }}
+        {...props}
+      >
+        {positionItems}
+      </div>
     </div>
   );
 };

@@ -9,7 +9,7 @@ import {
   hid_usage_page_and_id_from_usage,
 } from "../hid-usages";
 
-import { PhysicalLayout as PhysicalLayoutComp } from "./PhysicalLayout";
+import { LayoutZoom, PhysicalLayout as PhysicalLayoutComp } from "./PhysicalLayout";
 
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
@@ -17,6 +17,7 @@ export interface KeymapProps {
   layout: PhysicalLayout;
   keymap: KeymapMsg;
   behaviors: BehaviorMap;
+  scale: LayoutZoom;
   selectedLayerIndex: number;
   selectedKeyPosition: number | undefined;
   onKeyPositionClicked: (keyPosition: number) => void;
@@ -26,6 +27,7 @@ export const Keymap = ({
   layout,
   keymap,
   behaviors,
+  scale,
   selectedLayerIndex,
   selectedKeyPosition,
   onKeyPositionClicked,
@@ -75,6 +77,7 @@ export const Keymap = ({
       positions={positions}
       oneU={48}
       hoverZoom={true}
+      zoom={scale}
       selectedPosition={selectedKeyPosition}
       onPositionClicked={onKeyPositionClicked}
     />
