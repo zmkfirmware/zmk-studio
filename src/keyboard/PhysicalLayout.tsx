@@ -82,9 +82,10 @@ export const PhysicalLayout = ({
 
     const calculateScale = () => {
       if (props.zoom === "auto") {
+        const padding = 50; // Padding when in auto mode
         const newScale = Math.min(
-          parent.clientWidth / element.clientWidth,
-          parent.clientHeight / element.clientHeight,
+          parent.clientWidth / (element.clientWidth + 2 * padding),
+          parent.clientHeight / (element.clientHeight + 2 * padding),
         );
         setScale(newScale);
       } else {
@@ -133,20 +134,16 @@ export const PhysicalLayout = ({
 
   return (
     <div
-      className="p-12 box-content"
+      className="relative"
+      style={{
+        height: bottomMost * oneU + "px",
+        width: rightMost * oneU + "px",
+        transform: `scale(${scale})`,
+      }}
       ref={ref}
-      style={{ transform: `scale(${scale})` }}
+      {...props}
     >
-      <div
-        className="relative"
-        style={{
-          height: bottomMost * oneU + "px",
-          width: rightMost * oneU + "px",
-        }}
-        {...props}
-      >
-        {positionItems}
-      </div>
+      {positionItems}
     </div>
   );
 };
