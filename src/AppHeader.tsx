@@ -14,6 +14,7 @@ import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { ConnectionContext } from "./rpc/ConnectionContext";
 import { ChevronDown, Undo2, Redo2, Save, Trash2 } from "lucide-react";
 import { Tooltip } from "./misc/Tooltip";
+import { GenericModal } from "./GenericModal";
 
 export interface AppHeaderProps {
   connectedDeviceLabel?: string;
@@ -69,10 +70,7 @@ export const AppHeader = ({
         <img src="/zmk.svg" alt="ZMK Logo" className="h-8 rounded" />
         <p>Studio</p>
       </div>
-      <dialog
-        ref={showSettingsRef}
-        className="p-5 rounded-lg border-base-content border max-w-[50vw]"
-      >
+      <GenericModal ref={showSettingsRef} className="max-w-[50vw]">
         <h2 className="my-2 text-lg">Settings Reset</h2>
         <div>
           <p>
@@ -81,18 +79,24 @@ export const AppHeader = ({
           </p>
           <p>Continue?</p>
           <div className="flex justify-end my-2 gap-3">
-            <button onClick={() => setShowSettingsReset(false)}>Cancel</button>
-            <button
-              onClick={() => {
+            <Button
+              className="rounded bg-base-200 hover:bg-base-300 px-3 py-2"
+              onPress={() => setShowSettingsReset(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="rounded bg-base-200 hover:bg-base-300 px-3 py-2"
+              onPress={() => {
                 setShowSettingsReset(false);
                 onResetSettings?.();
               }}
             >
               Reset Settings
-            </button>
+            </Button>
           </div>
         </div>
-      </dialog>
+      </GenericModal>
       <MenuTrigger>
         <Button
           className="text-center rac-disabled:opacity-0 hover:bg-base-300 transition-all duration-100 p-1 pl-2 rounded-lg"
@@ -102,12 +106,12 @@ export const AppHeader = ({
           <ChevronDown className="inline-block w-4" />
         </Button>
         <Popover>
-          <Menu className="shadow-md rounded bg-base-100 text-base-content cursor-pointer">
-            <MenuItem className="p-1 hover:bg-base-300" onAction={onDisconnect}>
+          <Menu className="shadow-md rounded bg-base-100 text-base-content cursor-pointer overflow-hidden">
+            <MenuItem className="px-2 py-1 hover:bg-base-200" onAction={onDisconnect}>
               Disconnect
             </MenuItem>
             <MenuItem
-              className="p-1 hover:bg-base-300"
+              className="px-2 py-1 hover:bg-base-200"
               onAction={() => setShowSettingsReset(true)}
             >
               Settings Reset
@@ -123,10 +127,7 @@ export const AppHeader = ({
               isDisabled={!canUndo}
               onPress={onUndo}
             >
-              <Undo2
-                className="inline-block w-4 mx-1"
-                aria-label="Undo"
-              />
+              <Undo2 className="inline-block w-4 mx-1" aria-label="Undo" />
             </Button>
           </Tooltip>
         )}
@@ -138,10 +139,7 @@ export const AppHeader = ({
               isDisabled={!canRedo}
               onPress={onRedo}
             >
-              <Redo2
-                className="inline-block w-4 mx-1"
-                aria-label="Redo"
-              />
+              <Redo2 className="inline-block w-4 mx-1" aria-label="Redo" />
             </Button>
           </Tooltip>
         )}
@@ -151,10 +149,7 @@ export const AppHeader = ({
             isDisabled={!unsaved}
             onPress={onSave}
           >
-            <Save
-              className="inline-block w-4 mx-1"
-              aria-label="Save"
-            />
+            <Save className="inline-block w-4 mx-1" aria-label="Save" />
           </Button>
         </Tooltip>
         <Tooltip label="Discard">
@@ -163,10 +158,7 @@ export const AppHeader = ({
             onPress={onDiscard}
             isDisabled={!unsaved}
           >
-            <Trash2
-              className="inline-block w-4 mx-1"
-              aria-label="Discard"
-            />
+            <Trash2 className="inline-block w-4 mx-1" aria-label="Discard" />
           </Button>
         </Tooltip>
       </div>

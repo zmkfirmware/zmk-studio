@@ -9,6 +9,7 @@ import {
   useDragAndDrop,
 } from "react-aria-components";
 import { useModalRef } from "../misc/useModalRef";
+import { GenericModal } from "../GenericModal";
 
 interface Layer {
   id: number;
@@ -64,10 +65,10 @@ const EditLabelModal = ({
   };
 
   return (
-    <dialog
+    <GenericModal
       ref={ref}
       onClose={onClose}
-      className="p-5 rounded-lg border-base-content border min-w-min w-[30vw] flex flex-col"
+      className="min-w-min w-[30vw] flex flex-col"
     >
       <span className="mb-3 text-lg">New Layer Name</span>
       <input
@@ -97,7 +98,7 @@ const EditLabelModal = ({
           Save
         </button>
       </div>
-    </dialog>
+    </GenericModal>
   );
 };
 
