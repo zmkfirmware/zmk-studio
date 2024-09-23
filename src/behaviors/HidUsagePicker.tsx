@@ -18,6 +18,7 @@ import {
   hid_usage_page_get_ids,
 } from "../hid-usages";
 import { useCallback, useMemo } from "react";
+import { ChevronDown } from "lucide-react";
 
 export interface HidUsagePage {
   id: number;
@@ -52,11 +53,11 @@ const UsageSection = ({ id, min, max }: UsageSectionProps) => {
 
   return (
     <Section id={id}>
-      <Header className="text-text-base/50">{info?.Name}</Header>
+      <Header className="text-base-content/50">{info?.Name}</Header>
       <Collection items={usages}>
         {(i) => (
           <ListBoxItem
-            className="rac-hover:text-accent pl-3 relative rac-focus:text-accent cursur-default select-none rac-selected:before:content-['✔'] before:absolute before:left-[0] before:top-[0]"
+            className="rac-hover:bg-base-300 pl-3 relative rac-focus:bg-base-300 cursor-default select-none rac-selected:before:content-['✔'] before:absolute before:left-[0] before:top-[0]"
             id={hid_usage_from_page_and_id(id, i.Id)}
           >
             {i.Name}
@@ -147,26 +148,23 @@ export const HidUsagePicker = ({
   );
 
   return (
-    <div className="flex mt-8 relative">
+    <div className="flex gap-2 relative">
+      {label && <Label id="hid-usage-picker">{label}:</Label>}
       <ComboBox
         selectedKey={value ? mask_mods(value) : undefined}
         onSelectionChange={selectionChanged}
+        aria-labelledby="hid-usage-picker"
       >
-        {label && (
-          <Label className="absolute top-[-1.75em] left-[0.25em]">
-            {label}
-          </Label>
-        )}
-        <div>
-          <Input className="p-1 rounded" />
-          <Button className="ml-[-1.75em] px-[0.25em] py-0 rounded rounded-md bg-accent w-6 h-6">
-            ▼
+        <div className="flex">
+          <Input className="p-1 rounded-l" />
+          <Button className="rounded-r bg-primary text-primary-content w-8 h-8 flex justify-center items-center">
+            <ChevronDown className="size-4" />
           </Button>
         </div>
-        <Popover className="w-[var(--trigger-width)] max-h-4 border rounded border-text-base bg-bg-base">
+        <Popover className="w-[var(--trigger-width)] max-h-4 shadow-md text-base-content rounded border-base-content bg-base-100">
           <ListBox
             items={usagePages}
-            className="block max-h-[30vh] min-h-[unset] overflow-auto m-2"
+            className="block max-h-[30vh] min-h-[unset] overflow-auto p-2"
             selectionMode="single"
           >
             {({ id, min, max }) => <UsageSection id={id} min={min} max={max} />}
@@ -175,7 +173,7 @@ export const HidUsagePicker = ({
       </ComboBox>
       <CheckboxGroup
         aria-label="Implicit Modifiers"
-        className="grid grid-flow-col gap-x-px auto-cols-[minmax(min-content,1fr)] content-stretch divide-x rounded-md border border-text-base"
+        className="grid grid-flow-col gap-x-px auto-cols-[minmax(min-content,1fr)] content-stretch divide-x rounded-md"
         value={mods}
         onChange={modifiersChanged}
       >
@@ -183,7 +181,7 @@ export const HidUsagePicker = ({
           <Checkbox
             key={m}
             value={m.toLocaleString()}
-            className="text-nowrap grid px-2 content-center justify-center rac-selected:bg-secondary first:rounded-s-md last:rounded-e-md hover:text-accent rac-selected:hover:text-accent"
+            className="text-nowrap cursor-pointer grid px-2 content-center justify-center rac-selected:bg-primary border-base-100 bg-base-300 hover:bg-base-100 first:rounded-s-md last:rounded-e-md rac-selected:text-primary-content"
           >
             {mod_labels[m]}
           </Checkbox>

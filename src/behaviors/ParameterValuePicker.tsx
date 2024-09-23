@@ -21,6 +21,7 @@ export const ParameterValuePicker = ({
       <div>
         <select
           value={value}
+          className="h-8 rounded"
           onChange={(e) => onValueChanged(parseInt(e.target.value))}
         >
           {values.map((v) => (
@@ -33,7 +34,7 @@ export const ParameterValuePicker = ({
     if (values[0].range) {
       return (
         <div>
-          <label>{values[0].name}</label>
+          <label>{values[0].name}: </label>
           <input
             type="number"
             min={values[0].range.min}
@@ -58,9 +59,10 @@ export const ParameterValuePicker = ({
     } else if (values[0].layerId) {
       return (
         <div>
-          <label>{values[0].name}</label>
+          <label>{values[0].name}: </label>
           <select
             value={value}
+            className="h-8 rounded"
             onChange={(e) => onValueChanged(parseInt(e.target.value))}
           >
             {layers.map(({ name, id }) => (

@@ -38,7 +38,7 @@ export const BehaviorParametersPicker = ({
       )
     );
     return (
-      <div>
+      <>
         <ParameterValuePicker
           values={metadata.flatMap((m) => m.param1)}
           value={param1}
@@ -53,7 +53,7 @@ export const BehaviorParametersPicker = ({
             onValueChanged={onParam2Changed}
           />
         )}
-      </div>
+      </>
     );
   }
 };

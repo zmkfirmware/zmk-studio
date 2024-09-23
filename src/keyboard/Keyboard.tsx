@@ -491,8 +491,8 @@ export default function Keyboard() {
   );
 
   return (
-    <div className="p-2 grid grid-cols-[auto_1fr] grid-rows-[1fr_minmax(10em,auto)]">
-      <div className="flex flex-col gap-2">
+    <div className="grid grid-cols-[auto_1fr] grid-rows-[1fr_minmax(10em,auto)] bg-base-300">
+      <div className="p-2 flex flex-col gap-2 bg-base-200 row-span-2">
         {layouts && (
           <div className="col-start-3 row-start-1 row-end-2">
             <PhysicalLayoutPicker
@@ -520,7 +520,7 @@ export default function Keyboard() {
         )}
       </div>
       {layouts && keymap && behaviors && (
-        <div className="col-start-2 row-start-1 grid items-center justify-center relative">
+        <div className="p-2 col-start-2 row-start-1 grid items-center justify-center relative">
           <KeymapComp
             keymap={keymap}
             layout={layouts[selectedPhysicalLayoutIndex]}
@@ -550,7 +550,7 @@ export default function Keyboard() {
         </div>
       )}
       {keymap && selectedBinding && (
-        <div className="col-start-2 row-start-2">
+        <div className="p-2 col-start-2 row-start-2 bg-base-200">
           <BehaviorBindingPicker
             binding={selectedBinding}
             behaviors={Object.values(behaviors)}

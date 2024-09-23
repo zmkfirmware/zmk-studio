@@ -1,4 +1,4 @@
-import { PencilIcon } from "@heroicons/react/24/solid";
+import { Pencil, Minus, Plus } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import {
   DropIndicator,
@@ -67,11 +67,11 @@ const EditLabelModal = ({
     <dialog
       ref={ref}
       onClose={onClose}
-      className="p-5 rounded-lg border-text-base border min-w-min w-[30vw] flex flex-col"
+      className="p-5 rounded-lg border-base-content border min-w-min w-[30vw] flex flex-col"
     >
       <span className="mb-3 text-lg">New Layer Name</span>
       <input
-        className="p-1 border rounded border-text-base border-solid"
+        className="p-1 border rounded border-base-content border-solid"
         type="text"
         defaultValue={editLabelData.name}
         autoFocus
@@ -166,26 +166,26 @@ export const LayerPicker = ({
 
   return (
     <div className="flex flex-col min-w-40">
-      <div className="grid grid-cols-[1fr_auto_auto]">
-        <Label className="after:content-[':']">Layers</Label>
+      <div className="grid grid-cols-[1fr_auto_auto] items-center">
+        <Label className="after:content-[':'] text-sm">Layers</Label>
         {onRemoveClicked && (
           <button
             type="button"
-            className="px-2 hover:text-accent"
+            className="hover:text-primary-content hover:bg-primary rounded-sm"
             disabled={!canRemove}
             onClick={onRemoveClicked}
           >
-            -
+            <Minus className="size-4" />
           </button>
         )}
         {onAddClicked && (
           <button
             type="button"
             disabled={!canAdd}
-            className="px-2 hover:text-accent disabled:text-gray-500 disabled:cursor-not-allowed"
+            className="hover:text-primary-content ml-1 hover:bg-primary rounded-sm disabled:text-gray-500 disabled:hover:bg-base-300 disabled:cursor-not-allowed"
             onClick={onAddClicked}
           >
-            +
+            <Plus className="size-4" />
           </button>
         )}
       </div>
@@ -215,11 +215,11 @@ export const LayerPicker = ({
         {(layer_item) => (
           <ListBoxItem
             textValue={layer_item.name}
-            className="p-1 b-1 group grid grid-cols-[1fr_auto] items-center aria-selected:bg-secondary border rounded border-transparent border-solid hover:border-text-base"
+            className="p-1 b-1 my-1 group grid grid-cols-[1fr_auto] items-center aria-selected:bg-primary aria-selected:text-primary-content border rounded border-transparent border-solid hover:bg-base-300"
           >
             <span>{layer_item.name}</span>
-            <PencilIcon
-              className="h-4 w-4 mx-1 invisible group-hover:visible hover:text-accent"
+            <Pencil
+              className="h-4 w-4 mx-1 invisible group-hover:visible"
               onClick={() =>
                 setEditLabelData({ id: layer_item.id, name: layer_item.name })
               }

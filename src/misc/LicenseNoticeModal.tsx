@@ -1,6 +1,7 @@
 import { useModalRef } from "./useModalRef";
 
 import NOTICE from "../../NOTICE?raw";
+import { GenericModal } from "../GenericModal";
 
 export interface LicenseNoticeModalProps {
   open: boolean;
@@ -14,9 +15,9 @@ export const LicenseNoticeModal = ({
   const ref = useModalRef(open, true);
 
   return (
-    <dialog
+    <GenericModal
       ref={ref}
-      className="p-5 rounded-lg border-text-base border min-w-min w-[60vw]"
+      className="min-w-min w-[60vw]"
       onClose={onClose}
     >
       <div>
@@ -35,6 +36,6 @@ export const LicenseNoticeModal = ({
         </div>
         <pre className="m-4 font-mono text-xs">{NOTICE}</pre>
       </div>
-    </dialog>
+    </GenericModal>
   );
 };
