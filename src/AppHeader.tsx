@@ -12,7 +12,7 @@ import { useModalRef } from "./misc/useModalRef";
 import { LockStateContext } from "./rpc/LockStateContext";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { ConnectionContext } from "./rpc/ConnectionContext";
-import { ChevronDown, Undo2, Redo2, Save, Bomb } from "lucide-react";
+import { ChevronDown, Undo2, Redo2, Save, Trash2 } from "lucide-react";
 import { Tooltip } from "./misc/Tooltip";
 
 export interface AppHeaderProps {
@@ -163,7 +163,7 @@ export const AppHeader = ({
             onPress={onDiscard}
             isDisabled={!unsaved}
           >
-            <Bomb
+            <Trash2
               className="inline-block w-4 mx-1"
               aria-label="Discard"
             />
