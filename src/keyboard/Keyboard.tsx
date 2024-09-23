@@ -173,7 +173,15 @@ export default function Keyboard() {
     true
   );
 
-  const [keymapScale, setKeymapScale] = useState<LayoutZoom>("auto");
+  const [keymapScale, setKeymapScale] = useState<LayoutZoom>(() => {
+    const savedValue = localStorage.getItem("keymapScale");
+    return savedValue === null || savedValue === "auto" ? "auto" : parseFloat(savedValue) || "auto";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("keymapScale", keymapScale.toString());
+  }, [keymapScale]);
+
   const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0);
   const [selectedKeyPosition, setSelectedKeyPosition] = useState<
     number | undefined
