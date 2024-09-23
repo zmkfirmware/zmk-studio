@@ -15,10 +15,10 @@ export function useLocalStorageState<T>(key: string, defaultValue: T, options?: 
   const [state] = reactState;
 
   useEffect(() => {
-    const serializedState = options?.serialize ? options.serialize(state)
-      : (typeof state === 'object' && state !== null)
+    const serializedState = options?.serialize?(state) || 
+      ((typeof state === 'object' && state !== null)
         ? JSON.stringify(state) // Fallback for objects
-        : String(state); // Fallback for other types
+        : String(state)); // Fallback for other types
     localStorage.setItem(key, serializedState);
   }, [state, key, options]);
 
