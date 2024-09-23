@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export function useLocalStorageState<T>(key: string, defaultValue: T, options?: { serialize?: (value: T) => string; deserialize?: (value: string) => T; }) {
-  const [state, setState] = useState<T>(() => {
+  const reactState = useState<T>(() => {
     const savedValue = localStorage.getItem(key);
     if (savedValue !== null) {
       if (options?.deserialize) {
@@ -12,6 +12,8 @@ export function useLocalStorageState<T>(key: string, defaultValue: T, options?: 
     return defaultValue;
   })
 
+  const [state] = reactState;
+
   useEffect(() => {
     const serializedState = options?.serialize ? options.serialize(state)
       : (typeof state === 'object' && state !== null)
@@ -20,5 +22,5 @@ export function useLocalStorageState<T>(key: string, defaultValue: T, options?: 
     localStorage.setItem(key, serializedState);
   }, [state, key, options]);
 
-  return [state, setState];
+  return reactState;
 }
