@@ -30,6 +30,7 @@ import { produce } from "immer";
 import { LockStateContext } from "../rpc/LockStateContext";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { LayoutZoom } from "./PhysicalLayout";
+import { useLocalStorageState } from "../misc/useLocalStorageState";
 
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
@@ -173,14 +174,14 @@ export default function Keyboard() {
     true
   );
 
-  const [keymapScale, setKeymapScale] = useState<LayoutZoom>(() => {
-    const savedValue = localStorage.getItem("keymapScale");
-    return savedValue === null || savedValue === "auto" ? "auto" : parseFloat(savedValue) || "auto";
+  const [keymapScale, setKeymapScale] = useLocalStorageState<LayoutZoom>("keymapScale", "auto", {
+    deserialize: (value) => {
+      if (value === "auto") {
+        return "auto";
+      }
+      return parseFloat(value) || "auto";
+    }
   });
-
-  useEffect(() => {
-    localStorage.setItem("keymapScale", keymapScale.toString());
-  }, [keymapScale]);
 
   const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0);
   const [selectedKeyPosition, setSelectedKeyPosition] = useState<

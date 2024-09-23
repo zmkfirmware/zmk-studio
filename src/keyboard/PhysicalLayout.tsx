@@ -1,7 +1,7 @@
 import {
   CSSProperties,
   PropsWithChildren,
-  useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -73,7 +73,7 @@ export const PhysicalLayout = ({
   const ref = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const element = ref.current;
     if (!element) return;
 
