@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { RpcTransport } from "@zmkfirmware/zmk-studio-ts-client/transport/index";
 import type { AvailableDevice } from "./tauri/index";
-import { Radio } from "lucide-react";
+import { Bluetooth } from "lucide-react";
 import { Key, ListBox, ListBoxItem, Selection } from "react-aria-components";
 import { useModalRef } from "./misc/useModalRef";
 import { ExternalLink } from "./misc/ExternalLink";
@@ -99,7 +99,7 @@ function deviceList(
             aria-label={d.label}
           >
             {t.isWireless && (
-              <Radio className="w-4 justify-center content-center h-full" />
+              <Bluetooth className="w-4 justify-center content-center h-full" />
             )}
             <span className="col-start-2">{d.label}</span>
           </ListBoxItem>
