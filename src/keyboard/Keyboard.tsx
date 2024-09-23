@@ -29,7 +29,7 @@ import { BehaviorBindingPicker } from "../behaviors/BehaviorBindingPicker";
 import { produce } from "immer";
 import { LockStateContext } from "../rpc/LockStateContext";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
-import { LayoutZoom } from "./PhysicalLayout";
+import { deserializeLayoutZoom, LayoutZoom } from "./PhysicalLayout";
 import { useLocalStorageState } from "../misc/useLocalStorageState";
 
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
@@ -175,12 +175,7 @@ export default function Keyboard() {
   );
 
   const [keymapScale, setKeymapScale] = useLocalStorageState<LayoutZoom>("keymapScale", "auto", {
-    deserialize: (value) => {
-      if (value === "auto") {
-        return "auto";
-      }
-      return parseFloat(value) || "auto";
-    }
+    deserialize: deserializeLayoutZoom,
   });
 
   const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0);
@@ -539,12 +534,8 @@ export default function Keyboard() {
             className="absolute top-2 right-2 h-8 rounded px-2"
             value={keymapScale}
             onChange={(e) => {
-              const value = e.target.value;
-              if (value === "auto") {
-                setKeymapScale("auto");
-              } else {
-                setKeymapScale(parseFloat(value));
-              }
+              const value = deserializeLayoutZoom(e.target.value);
+              setKeymapScale(value);
             }}
           >
             <option value="auto">Auto</option>

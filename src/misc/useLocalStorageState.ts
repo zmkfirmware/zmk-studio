@@ -1,6 +1,20 @@
 import { useEffect, useState } from "react";
 
-export function useLocalStorageState<T>(key: string, defaultValue: T, options?: { serialize?: (value: T) => string; deserialize?: (value: string) => T; }) {
+function basicSerialize<T>(value: T): string {
+  if (typeof value === "object") {
+    return JSON.stringify(value);
+  }
+  return String(value);
+}
+
+export function useLocalStorageState<T>(
+  key: string,
+  defaultValue: T,
+  options?: {
+    serialize?: (value: T) => string;
+    deserialize?: (value: string) => T;
+  },
+) {
   const reactState = useState<T>(() => {
     const savedValue = localStorage.getItem(key);
     if (savedValue !== null) {
@@ -10,15 +24,13 @@ export function useLocalStorageState<T>(key: string, defaultValue: T, options?: 
       return savedValue as T; // Assuming T is a string
     }
     return defaultValue;
-  })
+  });
 
   const [state] = reactState;
 
   useEffect(() => {
-    const serializedState = options?.serialize?(state) || 
-      ((typeof state === 'object' && state !== null)
-        ? JSON.stringify(state) // Fallback for objects
-        : String(state)); // Fallback for other types
+    const serializedState =
+      options?.serialize?.(state) || basicSerialize(state);
     localStorage.setItem(key, serializedState);
   }, [state, key, options]);
 

@@ -20,6 +20,13 @@ export type KeyPosition = PropsWithChildren<{
 
 export type LayoutZoom = number | "auto";
 
+export function deserializeLayoutZoom(value: string): LayoutZoom {
+  if (value === "auto") {
+    return "auto";
+  }
+  return parseFloat(value) || "auto";
+}
+
 interface PhysicalLayoutProps {
   positions: Array<KeyPosition>;
   selectedPosition?: number;
