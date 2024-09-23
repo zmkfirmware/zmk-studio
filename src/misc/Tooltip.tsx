@@ -1,4 +1,4 @@
-import { TooltipTrigger, Tooltip as AriaTooltip, OverlayArrow } from "react-aria-components";
+import { TooltipTrigger, Tooltip as AriaTooltip } from "react-aria-components";
 
 export interface TooltipProps {
   children: React.ReactNode;
