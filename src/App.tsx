@@ -295,7 +295,7 @@ function App() {
             open={showLicenseNotice}
             onClose={() => setShowLicenseNotice(false)}
           />
-          <div className="bg-base-100 text-base-content h-full w-full min-w-min inline-grid grid-cols-[auto] grid-rows-[auto_1fr_auto]">
+          <div className="bg-base-100 text-base-content h-full max-h-[100vh] w-full max-w-[100vw] inline-grid grid-cols-[auto] grid-rows-[auto_1fr_auto] overflow-hidden">
             <AppHeader
               connectedDeviceLabel={connectedDeviceName}
               canUndo={canUndo}
