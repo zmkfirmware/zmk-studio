@@ -4,8 +4,9 @@
 
 @layer base {
   @font-face {
-    font-family: "OpenGorton";
-    src: url("/OpenGorton-Regular.otf");
+    font-family: "Inter";
+    src: url("/Inter.woff2") format("woff2");
+    font-display: fallback;
   }
 }
 
