@@ -45,21 +45,21 @@ export const PhysicalLayoutPicker = ({
       className="flex flex-col"
       selectedKey={layouts[selectedPhysicalLayoutIndex].name}
     >
-      <Label className="after:content-[':']">Layout</Label>
-      <Button className="ml-4 min-w-24 text-left hover:text-accent">
+      <Label className="after:content-[':'] text-sm">Layout</Label>
+      <Button className="ml-2 p-1 rounded min-w-24 text-left hover:bg-base-300">
         <SelectValue<PhysicalLayoutItem>>
           {(v) => {
             return <span>{v.selectedItem?.name}</span>;
           }}
         </SelectValue>
       </Button>
-      <Popover className="min-w-[var(--trigger-width)] max-h-4 border rounded border-text-base bg-bg-base">
+      <Popover className="min-w-[var(--trigger-width)] max-h-4 shadow-md text-base-content rounded border-base-content bg-base-100">
         <ListBox items={layouts}>
           {(l) => (
             <ListBoxItem
               id={l.name}
               textValue={l.name}
-              className="p-1 aria-selected:bg-secondary first:rounded-t last:rounded-b"
+              className="p-1 aria-selected:bg-primary aria-selected:text-primary-content cursor-pointer first:rounded-t last:rounded-b"
             >
               <Text slot="label">{l.name}</Text>
               <div className="p-1 flex justify-center">

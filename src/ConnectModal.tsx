@@ -2,10 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { RpcTransport } from "@zmkfirmware/zmk-studio-ts-client/transport/index";
 import type { AvailableDevice } from "./tauri/index";
-import { SignalIcon } from "@heroicons/react/24/outline";
+import { Bluetooth, RefreshCw } from "lucide-react";
 import { Key, ListBox, ListBoxItem, Selection } from "react-aria-components";
 import { useModalRef } from "./misc/useModalRef";
 import { ExternalLink } from "./misc/ExternalLink";
+import { GenericModal } from "./GenericModal";
 
 export type TransportFactory = {
   label: string;
@@ -32,8 +33,10 @@ function deviceList(
     Array<[TransportFactory, AvailableDevice]>
   >([]);
   const [selectedDev, setSelectedDev] = useState(new Set<Key>());
+  const [refreshing, setRefreshing] = useState(false);
 
   async function LoadEm() {
+    setRefreshing(true);
     let entries: Array<[TransportFactory, AvailableDevice]> = [];
     for (const t of transports.filter((t) => t.pick_and_connect)) {
       const devices = await t.pick_and_connect?.list();
@@ -49,6 +52,7 @@ function deviceList(
     }
 
     setDevices(entries);
+    setRefreshing(false);
   }
 
   useEffect(() => {
@@ -82,7 +86,15 @@ function deviceList(
     <div>
       <div className="grid grid-cols-[1fr_auto]">
         <label>Select A Device:</label>
-        <button onClick={onRefresh}>🗘</button>
+        <button
+          className="p-1 rounded hover:bg-base-300 disabled:bg-base-100 disabled:opacity-75"
+          disabled={refreshing}
+          onClick={onRefresh}
+        >
+          <RefreshCw
+            className={`size-5 transition-transform ${refreshing ? "animate-spin" : ""}`}
+          />
+        </button>
       </div>
       <ListBox
         aria-label="Device"
@@ -90,15 +102,16 @@ function deviceList(
         onSelectionChange={onSelect}
         selectionMode="single"
         selectedKeys={selectedDev}
+        className="flex flex-col gap-1 pt-1"
       >
         {([t, d]) => (
           <ListBoxItem
-            className="grid grid-cols-[1em_1fr]"
+            className="grid grid-cols-[1em_1fr] rounded hover:bg-base-300 cursor-pointer px-1"
             id={d.id}
             aria-label={d.label}
           >
             {t.isWireless && (
-              <SignalIcon className="w-4 justify-center content-center h-full" />
+              <Bluetooth className="w-4 justify-center content-center h-full" />
             )}
             <span className="col-start-2">{d.label}</span>
           </ListBoxItem>
@@ -164,9 +177,9 @@ function simpleDevicePicker(
   }, [selectedTransport]);
 
   let connections = transports.map((t) => (
-    <li key={t.label} className="p-1 m-1 list-none">
+    <li key={t.label} className="list-none">
       <button
-        className="hover:text-accent"
+        className="bg-base-300 hover:bg-primary hover:text-primary-content rounded px-2 py-1"
         type="button"
         onClick={async () => setSelectedTransport(t)}
       >
@@ -176,8 +189,8 @@ function simpleDevicePicker(
   ));
   return (
     <div>
-      <p>Select a connection type:</p>
-      <ul>{connections}</ul>
+      <p className="text-sm">Select a connection type.</p>
+      <ul className="flex gap-2 pt-2">{connections}</ul>
       {selectedTransport && availableDevices && (
         <ul>
           {availableDevices.map((d) => (
@@ -260,11 +273,11 @@ export const ConnectModal = ({
   const haveTransports = useMemo(() => transports.length > 0, [transports]);
 
   return (
-    <dialog ref={dialog} className="p-5 rounded-lg border-text-base border">
+    <GenericModal ref={dialog}>
       <h1 className="text-xl">Welcome to ZMK Studio</h1>
       {haveTransports
         ? connectOptions(transports, onTransportCreated, open)
         : noTransportsOptionsPrompt()}
-    </dialog>
+    </GenericModal>
   );
 };

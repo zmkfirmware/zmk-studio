@@ -94,22 +94,25 @@ export const BehaviorBindingPicker = ({
   }, [binding]);
 
   return (
-    <div>
-      <label>Behavior:</label>
-      <select
-        value={behaviorId}
-        onChange={(e) => {
-          setBehaviorId(parseInt(e.target.value));
-          setParam1(0);
-          setParam2(0);
-        }}
-      >
-        {behaviors.map((b) => (
-          <option key={b.id} value={b.id}>
-            {b.displayName}
-          </option>
-        ))}
-      </select>
+    <div className="flex flex-col gap-2">
+      <div>
+        <label>Behavior: </label>
+        <select
+          value={behaviorId}
+          className="h-8 rounded"
+          onChange={(e) => {
+            setBehaviorId(parseInt(e.target.value));
+            setParam1(0);
+            setParam2(0);
+          }}
+        >
+          {behaviors.map((b) => (
+            <option key={b.id} value={b.id}>
+              {b.displayName}
+            </option>
+          ))}
+        </select>
+      </div>
       {metadata && (
         <BehaviorParametersPicker
           metadata={metadata}

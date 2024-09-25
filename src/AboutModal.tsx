@@ -40,6 +40,7 @@ import mekiboDarkMode from "./assets/mekibo-dark-mode.png";
 
 import splitkb from "./assets/splitkb.png";
 import splitkbDarkMode from "./assets/splitkb-dark-mode.png";
+import { GenericModal } from "./GenericModal";
 
 export interface AboutModalProps {
   open: boolean;
@@ -177,9 +178,9 @@ export const AboutModal = ({ open, onClose }: AboutModalProps) => {
   const ref = useModalRef(open, true);
 
   return (
-    <dialog
+    <GenericModal
       ref={ref}
-      className="p-5 rounded-lg border-text-base border min-w-min w-[70vw]"
+      className="min-w-min w-[70vw]"
       onClose={onClose}
     >
       <div className="flex justify-between items-start">
@@ -238,6 +239,6 @@ export const AboutModal = ({ open, onClose }: AboutModalProps) => {
           );
         })}
       </div>
-    </dialog>
+    </GenericModal>
   );
 };

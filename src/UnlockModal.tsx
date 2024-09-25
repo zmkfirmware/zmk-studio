@@ -6,6 +6,7 @@ import { LockStateContext } from "./rpc/LockStateContext";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { ConnectionContext } from "./rpc/ConnectionContext";
 import { useModalRef } from "./misc/useModalRef";
+import { GenericModal } from "./GenericModal";
 
 export type TransportFactory = {
   label: string;
@@ -30,12 +31,12 @@ export const UnlockModal = ({}: UnlockModalProps) => {
   const dialog = useModalRef(open, false, false);
 
   return (
-    <dialog ref={dialog} className="p-5 rounded-lg border-text-base border">
+    <GenericModal ref={dialog}>
       <h1 className="text-xl">Unlock To Continue</h1>
       <p>
         For security reasons, your keyboard requires unlocking before using ZMK
         Studio.
       </p>
-    </dialog>
+    </GenericModal>
   );
 };
