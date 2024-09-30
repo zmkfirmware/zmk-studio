@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
   release:
-    type: [published]
+    types: [published]
 
 jobs:
   publish-tauri:
