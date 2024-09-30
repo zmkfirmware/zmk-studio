@@ -3,6 +3,8 @@ name: "tauri-build"
 on:
   workflow_dispatch:
   push:
+  release:
+    type: [published]
 
 jobs:
   publish-tauri:
@@ -34,6 +36,13 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev libudev-dev patchelf
+
+      - name: Get release
+        id: get_release
+        if: github.event_name == 'release'
+        uses: bruceadams/get-release@v1.3.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: install dependencies (windows only)
         if: matrix.platform == 'windows-latest'
@@ -80,6 +89,7 @@ jobs:
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         with:
+          releaseId: ${{ steps.get_release.outputs.id }}
           args: ${{ matrix.args }}
 
       - uses: actions/upload-artifact@v4
