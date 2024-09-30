@@ -19,3 +19,13 @@ jobs:
         with:
           token: ${{ secrets.ZMK_STUDIO_RELEASE_TOKEN }}
           release-type: node
+      - uses: actions/checkout@v4
+        if: ${{ steps.release.outputs.release_created }}
+        args:
+          ref: prod
+      - name: publish to prod branch
+        if: ${{ steps.release.outputs.release_created }}
+        run: |
+          git pull --ff-only main
+          git remote set-url origin "https://x-access-token:${{ secrets.ZMK_STUDIO_RELEASE_TOKEN }}@github.com/${{ github.repository }}.git"
+          git push
