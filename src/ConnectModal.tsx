@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { RpcTransport } from "@zmkfirmware/zmk-studio-ts-client/transport/index";
+import { UserCancelledError } from "@zmkfirmware/zmk-studio-ts-client/transport/errors";
 import type { AvailableDevice } from "./tauri/index";
 import { Bluetooth, RefreshCw } from "lucide-react";
 import { Key, ListBox, ListBoxItem, Selection } from "react-aria-components";
@@ -92,7 +93,9 @@ function deviceList(
           onClick={onRefresh}
         >
           <RefreshCw
-            className={`size-5 transition-transform ${refreshing ? "animate-spin" : ""}`}
+            className={`size-5 transition-transform ${
+              refreshing ? "animate-spin" : ""
+            }`}
           />
         </button>
       </div>
@@ -151,8 +154,12 @@ function simpleDevicePicker(
             }
             setSelectedTransport(undefined);
           }
-        } catch {
+        } catch (e) {
           if (!ignore) {
+            console.error(e);
+            if (e instanceof Error && !(e instanceof UserCancelledError)) {
+              alert(e.message);
+            }
             setSelectedTransport(undefined);
           }
         }
