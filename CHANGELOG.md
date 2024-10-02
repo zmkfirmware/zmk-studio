@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.3](https://github.com/zmkfirmware/zmk-studio/compare/v0.0.2...v0.0.3) (2024-10-02)
+
+
+### Miscellaneous Chores
+
+* Fixes for prod push for releases. ([#45](https://github.com/zmkfirmware/zmk-studio/issues/45)) ([6e05f49](https://github.com/zmkfirmware/zmk-studio/commit/6e05f49b42343c202b0da2bfa8da01bfebe3c550))
+
 ## [0.0.2](https://github.com/zmkfirmware/zmk-studio/compare/v0.0.1...v0.0.2) (2024-10-02)
 
 
