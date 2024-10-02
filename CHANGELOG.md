@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.2](https://github.com/zmkfirmware/zmk-studio/compare/v0.0.1...v0.0.2) (2024-10-02)
+
+
+### Miscellaneous Chores
+
+* Bump to Tauri v2 release. ([#42](https://github.com/zmkfirmware/zmk-studio/issues/42)) ([57b3274](https://github.com/zmkfirmware/zmk-studio/commit/57b3274688161a3599f96fba5db1cd671620cf0c))
+* Fix release-please automation. ([#43](https://github.com/zmkfirmware/zmk-studio/issues/43)) ([1156c47](https://github.com/zmkfirmware/zmk-studio/commit/1156c47fe3c761e2240128b77f5a72d8dfe17efe))
+
 ## 0.0.1 (2024-09-30)
 
 
