@@ -26,6 +26,7 @@ jobs:
       - name: publish to prod branch
         if: ${{ steps.release.outputs.release_created }}
         run: |
-          git pull --ff-only main
+          git fetch origin main
+          git pull --ff-only origin main
           git remote set-url origin "https://x-access-token:${{ secrets.ZMK_STUDIO_RELEASE_TOKEN }}@github.com/${{ github.repository }}.git"
           git push
