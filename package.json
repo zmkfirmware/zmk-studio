@@ -13,9 +13,9 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@tauri-apps/api": "^2.0.0-beta.16",
-    "@tauri-apps/plugin-cli": "^2.0.0-beta.8",
-    "@zmkfirmware/zmk-studio-ts-client": "^0.0.16",
+    "@tauri-apps/api": "^2.0.0",
+    "@tauri-apps/plugin-cli": "^2.0.0",
+    "@zmkfirmware/zmk-studio-ts-client": "^0.0.17",
     "emittery": "^1.0.3",
     "immer": "^10.1.1",
     "lucide-react": "^0.445.0",
