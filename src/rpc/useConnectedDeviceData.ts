@@ -1,11 +1,9 @@
 import React, { SetStateAction, useContext, useEffect, useState } from "react";
 import { ConnectionContext } from "./ConnectionContext";
 
-import {
-  call_rpc,
-  Request,
-  RequestResponse,
-} from "@zmkfirmware/zmk-studio-ts-client";
+import { call_rpc } from "./logging";
+
+import { Request, RequestResponse } from "@zmkfirmware/zmk-studio-ts-client";
 import { LockStateContext } from "./LockStateContext";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 

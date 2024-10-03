@@ -209,8 +209,8 @@ function App() {
       }
 
       let resp = await call_rpc(conn.conn, { keymap: { saveChanges: true } });
-      if (!resp.keymap?.saveChanges) {
-        console.error("Failed to save changes", resp);
+      if (!resp.keymap?.saveChanges || resp.keymap?.saveChanges.err) {
+        console.error("Failed to save changes", resp.keymap?.saveChanges);
       }
     }
 
