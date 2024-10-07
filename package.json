@@ -20,7 +20,7 @@
     "immer": "^10.1.1",
     "lucide-react": "^0.445.0",
     "react": "^18.2.0",
-    "react-aria-components": "^1.2.1",
+    "react-aria-components": "^1.4.0",
     "react-dom": "^18.2.0",
     "tailwindcss-react-aria-components": "^1.1.3"
   },
