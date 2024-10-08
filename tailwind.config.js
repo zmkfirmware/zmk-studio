@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 import trac from "tailwindcss-react-aria-components";
+import contQueries from "@tailwindcss/container-queries";
 
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -28,5 +29,5 @@ export default {
       keycap: ["Inter", "system-ui"],
     },
   },
-  plugins: [trac({ prefix: "rac" })],
+  plugins: [contQueries, trac({ prefix: "rac" })],
 };

@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 import { PhysicalLayout } from "./PhysicalLayout";
+import { HidUsageLabel } from "./HidUsageLabel";
+import { hid_usage_from_page_and_id } from "../hid-usages";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -21,9 +23,15 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const TOP = ["Esc", ..."QWERTYUIOP"];
-const MIDDLE = [..."ASDFGHJKL;"];
-const LOWER = [..."ZXCVBNM<>", "Up", "Shift"];
+const TOP = [41, ...[..."QWERTYUIOP"].map((c) => c.charCodeAt(0) - 61)];
+const MIDDLE = [...[..."ASDFGHJKL"].map((c) => c.charCodeAt(0) - 61), 51];
+const LOWER = [
+  ...[..."ZXCVBNM"].map((c) => c.charCodeAt(0) - 61),
+  54,
+  55,
+  82,
+  229,
+];
 
 const MINIVAN_POSITIONS = [
   ...TOP.map((k, i) => ({
@@ -32,7 +40,7 @@ const MINIVAN_POSITIONS = [
     x: i,
     y: 0,
     header: "Key Press",
-    children: [<span>{k}</span>],
+    children: [<HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, k)} />],
   })),
   {
     x: TOP.length,
@@ -40,7 +48,7 @@ const MINIVAN_POSITIONS = [
     width: 1.75,
     height: 1,
     header: "Key Press",
-    children: [<span>Backspace</span>],
+    children: [<HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 42)} />],
   },
   {
     x: 0,
@@ -56,7 +64,7 @@ const MINIVAN_POSITIONS = [
     width: 1,
     height: 1,
     header: "Key Press",
-    children: [<span>{k}</span>],
+    children: [<HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, k)} />],
   })),
   {
     x: MIDDLE.length + 1.25,
@@ -64,7 +72,7 @@ const MINIVAN_POSITIONS = [
     width: 1.5,
     height: 1,
     header: "Key Press",
-    children: [<span>Enter</span>],
+    children: [<HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 40)} />],
   },
   {
     x: 0,
@@ -72,7 +80,9 @@ const MINIVAN_POSITIONS = [
     width: 1.75,
     height: 1,
     header: "Key Press",
-    children: [<span>Shift</span>],
+    children: [
+      <HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 225)} />,
+    ],
   },
   ...LOWER.map((k, i) => ({
     x: i + 1.75,
@@ -80,7 +90,7 @@ const MINIVAN_POSITIONS = [
     width: 1,
     height: 1,
     header: "Key Press",
-    children: [<span>{k}</span>],
+    children: [<HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, k)} />],
   })),
   {
     x: 0,
@@ -88,7 +98,9 @@ const MINIVAN_POSITIONS = [
     width: 1.25,
     height: 1,
     header: "Key Press",
-    children: [<span>Control</span>],
+    children: [
+      <HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 224)} />,
+    ],
   },
   {
     x: 1.25,
@@ -96,7 +108,9 @@ const MINIVAN_POSITIONS = [
     width: 1.5,
     height: 1,
     header: "Key Press",
-    children: [<span>Code</span>],
+    children: [
+      <HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 227)} />,
+    ],
   },
   {
     x: 2.75,
@@ -104,7 +118,9 @@ const MINIVAN_POSITIONS = [
     width: 1.25,
     height: 1,
     header: "Key Press",
-    children: [<span>Alt</span>],
+    children: [
+      <HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 226)} />,
+    ],
   },
   {
     x: 4,
@@ -128,7 +144,9 @@ const MINIVAN_POSITIONS = [
     width: 1.5,
     height: 1,
     header: "Key Press",
-    children: [<span>Alt</span>],
+    children: [
+      <HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 230)} />,
+    ],
   },
   {
     x: 9.75,
@@ -136,7 +154,7 @@ const MINIVAN_POSITIONS = [
     width: 1,
     height: 1,
     header: "Key Press",
-    children: [<span>Left</span>],
+    children: [<HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 80)} />],
   },
   {
     x: 10.75,
@@ -144,7 +162,7 @@ const MINIVAN_POSITIONS = [
     width: 1,
     height: 1,
     header: "Key Press",
-    children: [<span>Down</span>],
+    children: [<HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 81)} />],
   },
   {
     x: 11.75,
@@ -152,7 +170,7 @@ const MINIVAN_POSITIONS = [
     width: 1,
     height: 1,
     header: "Key Press",
-    children: [<span>Right</span>],
+    children: [<HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 79)} />],
   },
 ];
 
