@@ -5,11 +5,10 @@ import {
 import type { GetBehaviorDetailsResponse } from "@zmkfirmware/zmk-studio-ts-client/behaviors";
 
 import {
-  hid_usage_get_label,
-  hid_usage_page_and_id_from_usage,
-} from "../hid-usages";
-
-import { LayoutZoom, PhysicalLayout as PhysicalLayoutComp } from "./PhysicalLayout";
+  LayoutZoom,
+  PhysicalLayout as PhysicalLayoutComp,
+} from "./PhysicalLayout";
+import { HidUsageLabel } from "./HidUsageLabel";
 
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
@@ -48,15 +47,6 @@ export const Keymap = ({
       };
     }
 
-    let [page, id] = hid_usage_page_and_id_from_usage(
-      keymap.layers[selectedLayerIndex].bindings[i].param1
-    );
-
-    // TODO: Do something with implicit mods!
-    page &= 0xff;
-
-    let label = hid_usage_get_label(page, id)?.replace(/^Keyboard /, "");
-
     return {
       header:
         behaviors[keymap.layers[selectedLayerIndex].bindings[i].behaviorId]
@@ -68,7 +58,11 @@ export const Keymap = ({
       r: (k.r || 0) / 100.0,
       rx: (k.rx || 0) / 100.0,
       ry: (k.ry || 0) / 100.0,
-      children: <span>{label}</span>,
+      children: (
+        <HidUsageLabel
+          hid_usage={keymap.layers[selectedLayerIndex].bindings[i].param1}
+        />
+      ),
     };
   });
 
