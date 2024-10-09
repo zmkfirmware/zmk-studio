@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.0](https://github.com/zmkfirmware/zmk-studio/compare/v0.0.3...v0.1.0) (2024-10-09)
+
+
+### Features
+
+* Add alert on connect failures, bump deps. ([#47](https://github.com/zmkfirmware/zmk-studio/issues/47)) ([997edc9](https://github.com/zmkfirmware/zmk-studio/commit/997edc97754c3e831175d0c065202c61fcf12a3f))
+* Detailed save changes response data. ([#49](https://github.com/zmkfirmware/zmk-studio/issues/49)) ([967aff4](https://github.com/zmkfirmware/zmk-studio/commit/967aff48eee504fe0f1a8b22fc36146536c70368))
+* Improved key rendering for HID usages. ([#53](https://github.com/zmkfirmware/zmk-studio/issues/53)) ([14bcaa7](https://github.com/zmkfirmware/zmk-studio/commit/14bcaa79781e53e11af7e9c9d50ae7b7999747d0))
+
+
+### Bug Fixes
+
+* **app:** Handle manual disconnect for serial transport ([#55](https://github.com/zmkfirmware/zmk-studio/issues/55)) ([3da464f](https://github.com/zmkfirmware/zmk-studio/commit/3da464f892edfe3a459de78b5da862fa938cf3b4))
+* Fix Wayland resize/decoration bug. ([#51](https://github.com/zmkfirmware/zmk-studio/issues/51)) ([3ca0679](https://github.com/zmkfirmware/zmk-studio/commit/3ca0679c8238eef02fbfaadd84f712beb2f6735b))
+
 ## [0.0.3](https://github.com/zmkfirmware/zmk-studio/compare/v0.0.2...v0.0.3) (2024-10-02)
 
 
