@@ -24,15 +24,11 @@ pub async fn serial_connect(
 
             let (mut reader, mut writer) = tokio::io::split(port);
 
+            let ahc = app_handle.clone();
             let (send, mut recv) = channel(5);
             *state.conn.lock().await = Some(Box::new(send));
-            tauri::async_runtime::spawn(async move {
-                while let Some(data) = recv.next().await {
-                    let _res = writer.write(&data).await;
-                }
-            });
 
-            tauri::async_runtime::spawn(async move {
+            let read_process = tauri::async_runtime::spawn(async move {
                 use tauri::Manager;
                 use tauri::Emitter;
 
@@ -49,6 +45,18 @@ pub async fn serial_connect(
                 *state.conn.lock().await = None;
 
                 app_handle.emit("connection_disconnected", ());
+            });
+
+            tauri::async_runtime::spawn(async move {
+                use tauri::Manager;
+
+                while let Some(data) = recv.next().await {
+                    let _res = writer.write(&data).await;
+                }
+
+                let state = ahc.state::<super::commands::ActiveConnection>();
+                read_process.abort();
+                *state.conn.lock().await = None;
             });
 
             Ok(true)
