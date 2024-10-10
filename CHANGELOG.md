@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.1](https://github.com/zmkfirmware/zmk-studio/compare/v0.1.0...v0.1.1) (2024-10-10)
+
+
+### Bug Fixes
+
+* Add beta warning to the connect modal. ([#58](https://github.com/zmkfirmware/zmk-studio/issues/58)) ([5152b1d](https://github.com/zmkfirmware/zmk-studio/commit/5152b1d2f795c7647ad77facbd3a1480c56949ce))
+* Add ZMK links to the about modal. ([#56](https://github.com/zmkfirmware/zmk-studio/issues/56)) ([3c319b5](https://github.com/zmkfirmware/zmk-studio/commit/3c319b5668279c9f118cf6721b64ce203e882613))
+
 ## [0.1.0](https://github.com/zmkfirmware/zmk-studio/compare/v0.0.3...v0.1.0) (2024-10-09)
 
 
