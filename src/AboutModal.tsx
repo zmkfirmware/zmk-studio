@@ -41,6 +41,7 @@ import mekiboDarkMode from "./assets/mekibo-dark-mode.png";
 import splitkb from "./assets/splitkb.png";
 import splitkbDarkMode from "./assets/splitkb-dark-mode.png";
 import { GenericModal } from "./GenericModal";
+import { ExternalLink } from "./misc/ExternalLink";
 
 export interface AboutModalProps {
   open: boolean;
@@ -178,16 +179,18 @@ export const AboutModal = ({ open, onClose }: AboutModalProps) => {
   const ref = useModalRef(open, true);
 
   return (
-    <GenericModal
-      ref={ref}
-      className="min-w-min w-[70vw]"
-      onClose={onClose}
-    >
+    <GenericModal ref={ref} className="min-w-min w-[70vw]" onClose={onClose}>
       <div className="flex justify-between items-start">
-        <p className="py-1 mr-2">
-          ZMK Studio is made possible thanks to the generous donation of time
-          from our contributors, as well as the financial sponsorship from the
-          following vendors:
+        <p>
+          The ZMK Project:{" "}
+          <ExternalLink href="https://zmk.dev/">website</ExternalLink>,{" "}
+          <ExternalLink href="https://github.com/zmkfirmware/zmk/issues/">
+            GitHub Issues
+          </ExternalLink>
+          ,{" "}
+          <ExternalLink href="https://zmk.dev/community/discord/invite">
+            Discord Server
+          </ExternalLink>
         </p>
         <button
           className="p-1.5 rounded-md bg-gray-100 text-black hover:bg-gray-300"
@@ -195,6 +198,13 @@ export const AboutModal = ({ open, onClose }: AboutModalProps) => {
         >
           Close
         </button>
+      </div>
+      <div>
+        <p className="py-1 mr-2">
+          ZMK Studio is made possible thanks to the generous donation of time
+          from our contributors, as well as the financial sponsorship from the
+          following vendors:
+        </p>
       </div>
       <div className="grid gap-2 auto-rows-auto grid-cols-[auto_minmax(min-content,1fr)] justify-items-center items-center">
         {sponsors.map((s) => {
