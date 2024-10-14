@@ -58,7 +58,7 @@ export const BehaviorBindingPicker = ({
     if (
       binding.behaviorId === behaviorId &&
       binding.param1 === param1 &&
-      binding.param2 == param2
+      binding.param2 === param2
     ) {
       return;
     }
