@@ -151,7 +151,7 @@ export const HidUsagePicker = ({
     <div className="flex gap-2 relative">
       {label && <Label id="hid-usage-picker">{label}:</Label>}
       <ComboBox
-        selectedKey={value ? mask_mods(value) : undefined}
+        selectedKey={value ? mask_mods(value) : null}
         onSelectionChange={selectionChanged}
         aria-labelledby="hid-usage-picker"
       >
