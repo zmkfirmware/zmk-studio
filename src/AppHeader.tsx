@@ -57,11 +57,11 @@ export const AppHeader = ({
   const showSettingsRef = useModalRef(showSettingsReset);
   const [unsaved, setUnsaved] = useConnectedDeviceData<boolean>(
     { keymap: { checkUnsavedChanges: true } },
-    (r) => r.keymap?.checkUnsavedChanges,
+    (r) => r.keymap?.checkUnsavedChanges
   );
 
   useSub("rpc_notification.keymap.unsavedChangesStatusChanged", (unsaved) =>
-    setUnsaved(unsaved),
+    setUnsaved(unsaved)
   );
 
   return (
@@ -71,7 +71,7 @@ export const AppHeader = ({
         <p>Studio</p>
       </div>
       <GenericModal ref={showSettingsRef} className="max-w-[50vw]">
-        <h2 className="my-2 text-lg">Settings Reset</h2>
+        <h2 className="my-2 text-lg">Restore Stock Settings</h2>
         <div>
           <p>
             Settings reset will remove any customizations previously made in ZMK
@@ -92,7 +92,7 @@ export const AppHeader = ({
                 onResetSettings?.();
               }}
             >
-              Reset Settings
+              Restore Stock Settings
             </Button>
           </div>
         </div>
@@ -107,14 +107,17 @@ export const AppHeader = ({
         </Button>
         <Popover>
           <Menu className="shadow-md rounded bg-base-100 text-base-content cursor-pointer overflow-hidden">
-            <MenuItem className="px-2 py-1 hover:bg-base-200" onAction={onDisconnect}>
+            <MenuItem
+              className="px-2 py-1 hover:bg-base-200"
+              onAction={onDisconnect}
+            >
               Disconnect
             </MenuItem>
             <MenuItem
               className="px-2 py-1 hover:bg-base-200"
               onAction={() => setShowSettingsReset(true)}
             >
-              Settings Reset
+              Restore Stock Settings
             </MenuItem>
           </Menu>
         </Popover>
