@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/zmkfirmware/zmk-studio/compare/v0.1.1...v0.1.2) (2024-10-16)
+
+
+### Bug Fixes
+
+* Raise and report errors on connect. ([#65](https://github.com/zmkfirmware/zmk-studio/issues/65)) ([957aabe](https://github.com/zmkfirmware/zmk-studio/commit/957aabea1bf9b7316b81e0d9b68580b398f816c2))
+
 ## [0.1.1](https://github.com/zmkfirmware/zmk-studio/compare/v0.1.0...v0.1.1) (2024-10-10)
 
 
