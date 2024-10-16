@@ -77,7 +77,10 @@ function deviceList(
       }
       const dev = devices.find(([_t, d]) => keys.has(d.id));
       if (dev) {
-        onTransportCreated(await dev[0].pick_and_connect!.connect(dev[1]));
+        dev[0]
+          .pick_and_connect!.connect(dev[1])
+          .then(onTransportCreated)
+          .catch((e) => alert(e));
       }
     },
     [devices, onTransportCreated]
