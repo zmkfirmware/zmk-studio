@@ -18,22 +18,22 @@ pub async fn gatt_connect(
     id: String,
     app_handle: AppHandle,
     state: State<'_, super::commands::ActiveConnection<'_>>,
-) -> Result<bool, ()> {
-    let adapter = Adapter::default().await.ok_or(())?;
+) -> Result<bool, String> {
+    let adapter = Adapter::default().await.ok_or("Failed to access the BT adapter".to_string())?;
 
-    adapter.wait_available().await.map_err(|_| ())?;
+    adapter.wait_available().await.map_err(|e| format!("Failed to wait for the BT adapter access: {}", e.message()))?;
 
     let device_id: DeviceId = serde_json::from_str(&id).unwrap();
-    let d = adapter.open_device(&device_id).await.map_err(|_| ())?;
+    let d = adapter.open_device(&device_id).await.map_err(|e| format!("Failed to open the device: {}", e.message()))?;
 
     if !d.is_connected().await {
-        adapter.connect_device(&d).await.map_err(|_| ())?;
+        adapter.connect_device(&d).await.map_err(|e| format!("Failed to connect to the device: {}", e.message()))?;
     }
 
     let service = d
         .discover_services_with_uuid(SVC_UUID)
         .await
-        .map_err(|e| ())?
+        .map_err(|e| format!("Failed to find the device services: {}", e.message()))?
         .get(0)
         .cloned();
 
@@ -41,7 +41,7 @@ pub async fn gatt_connect(
         let char = s
             .discover_characteristics_with_uuid(RPC_CHRC_UUID)
             .await
-            .map_err(|_| ())?
+            .map_err(|e| format!("Failed to find the studio service characteristics: {}", e.message()))?
             .get(0)
             .cloned();
 
@@ -95,10 +95,10 @@ pub async fn gatt_connect(
 
             Ok(true)
         } else {
-            Err(())
+            Err("Failed to connect: Unable to locate the required studio GATT characteristic".to_string())
         }
     } else {
-        Err(())
+        Err("Failed to connect: Unable to locate the required studio GATT service".to_string())
     }
 }
 

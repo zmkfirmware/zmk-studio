@@ -15,7 +15,7 @@ pub async fn serial_connect(
     id: String,
     app_handle: AppHandle,
     state: State<'_, super::commands::ActiveConnection<'_>>,
-) -> Result<bool, ()> {
+) -> Result<bool, String> {
     match tokio_serial::new(id, 9600).open_native_async() {
         Ok(mut port) => {
             #[cfg(unix)]
@@ -62,7 +62,7 @@ pub async fn serial_connect(
             Ok(true)
         }
         Err(e) => {
-            Err(())
+            Err(format!("Failed to open the serial port: {}", e.description))
         }
     }
 }
