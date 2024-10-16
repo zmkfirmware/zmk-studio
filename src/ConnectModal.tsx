@@ -227,11 +227,11 @@ function noTransportsOptionsPrompt() {
   return (
     <div className="m-4 flex flex-col gap-2">
       <p>
-        Your browser is not supported. ZMK Studio uses{" "}
+        Your browser is not supported. ZMK Studio uses either{" "}
         <ExternalLink href="https://caniuse.com/web-serial">
           Web Serial
         </ExternalLink>{" "}
-        and{" "}
+        or{" "}
         <ExternalLink href="https://caniuse.com/web-bluetooth">
           Web Bluetooth
         </ExternalLink>{" "}
