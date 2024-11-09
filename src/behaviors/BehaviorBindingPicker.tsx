@@ -54,6 +54,11 @@ export const BehaviorBindingPicker = ({
     [behaviorId, behaviors]
   );
 
+  const sortedBehaviors = useMemo(
+    () => behaviors.sort((a, b) => a.displayName.localeCompare(b.displayName)),
+    [behaviors]
+  );
+
   useEffect(() => {
     if (
       binding.behaviorId === behaviorId &&
@@ -106,7 +111,7 @@ export const BehaviorBindingPicker = ({
             setParam2(0);
           }}
         >
-          {behaviors.map((b) => (
+          {sortedBehaviors.map((b) => (
             <option key={b.id} value={b.id}>
               {b.displayName}
             </option>
