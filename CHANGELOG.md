@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/zmkfirmware/zmk-studio/compare/v0.1.2...v0.2.0) (2024-11-11)
+
+
+### Features
+
+* Sort behaviors by label ([#75](https://github.com/zmkfirmware/zmk-studio/issues/75)) ([a996e4e](https://github.com/zmkfirmware/zmk-studio/commit/a996e4efefd9405cbf35f35d3ceaa62b71b0deb9))
+
 ## [0.1.2](https://github.com/zmkfirmware/zmk-studio/compare/v0.1.1...v0.1.2) (2024-10-16)
 
 
