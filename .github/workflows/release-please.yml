@@ -18,7 +18,6 @@ jobs:
         id: release
         with:
           token: ${{ secrets.ZMK_STUDIO_RELEASE_TOKEN }}
-          release-type: node
       - uses: actions/checkout@v4
         if: ${{ steps.release.outputs.release_created }}
         with:
