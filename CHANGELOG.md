@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/zmkfirmware/zmk-studio/compare/v0.2.0...v0.2.1) (2024-11-12)
+
+
+### Bug Fixes
+
+* **ci:** Proper release-please support for Tauri ([#77](https://github.com/zmkfirmware/zmk-studio/issues/77)) ([0902316](https://github.com/zmkfirmware/zmk-studio/commit/0902316fb498d7801d99d4ac021b69ca0b2ee7fd))
+
 ## [0.2.0](https://github.com/zmkfirmware/zmk-studio/compare/v0.1.2...v0.2.0) (2024-11-11)
 
 
