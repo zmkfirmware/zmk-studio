@@ -7,7 +7,7 @@
     "frontendDist": "../dist/"
   },
   "productName": "zmk-studio",
-  "version": "0.1.0",
+  "version": "0.2.2",
   "identifier": "dev.zmk.studio",
   "bundle": {
     "active": true,
@@ -47,7 +47,7 @@
       "args": [
         {
           "name": "serial-port",
-	  "takesValue": true,
+          "takesValue": true,
           "description": "Specific serial port to connect to"
         }
       ]
@@ -55,10 +55,12 @@
   },
   "app": {
     "security": {
-      "capabilities": ["default"],
+      "capabilities": [
+        "default"
+      ],
       "csp": {
         "default-src": "'self' customprotocol: asset:",
-	"connect-src": "ipc: http://ipc.localhost"
+        "connect-src": "ipc: http://ipc.localhost"
       }
     },
     "windows": [

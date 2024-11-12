@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/zmkfirmware/zmk-studio/compare/v0.2.1...v0.2.2) (2024-11-12)
+
+
+### Bug Fixes
+
+* **ci:** Bump tauri.conf.json version as well. ([#84](https://github.com/zmkfirmware/zmk-studio/issues/84)) ([435512a](https://github.com/zmkfirmware/zmk-studio/commit/435512a27bd55978e925db95b271fe844befb688))
+
 ## [0.2.1](https://github.com/zmkfirmware/zmk-studio/compare/v0.2.0...v0.2.1) (2024-11-12)
 
 
