@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { RpcTransport } from "@zmkfirmware/zmk-studio-ts-client/transport/index";
 import { UserCancelledError } from "@zmkfirmware/zmk-studio-ts-client/transport/errors";
 import type { AvailableDevice } from "./tauri/index";
-import { Bluetooth, RefreshCw, TriangleAlert } from "lucide-react";
+import { Bluetooth, RefreshCw } from "lucide-react";
 import { Key, ListBox, ListBoxItem, Selection } from "react-aria-components";
 import { useModalRef } from "./misc/useModalRef";
 import { ExternalLink } from "./misc/ExternalLink";
@@ -284,18 +284,6 @@ export const ConnectModal = ({
 
   return (
     <GenericModal ref={dialog} className="max-w-xl">
-      <div className="rounded my-2 p-2 border">
-        <TriangleAlert className="size-8 inline-block m-2 float-left" />
-        <p className="text-lg">ZMK Studio is in beta testing.</p>
-        <p>
-          Although every effort has been made to provide a stable experience,
-          you may still encounter issues during use. Please report any issues to{" "}
-          <ExternalLink href="https://github.com/zmkfirmware/zmk-studio/issues">
-            GitHub issues
-          </ExternalLink>
-          .
-        </p>
-      </div>
       <h1 className="text-xl">Welcome to ZMK Studio</h1>
       {haveTransports
         ? connectOptions(transports, onTransportCreated, open)
