@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.3](https://github.com/zmkfirmware/zmk-studio/compare/v0.2.2...v0.2.3) (2024-11-13)
+
+
+### Bug Fixes
+
+* Add link to unlock behavior docs in unlock modal ([#90](https://github.com/zmkfirmware/zmk-studio/issues/90)) ([9d35061](https://github.com/zmkfirmware/zmk-studio/commit/9d35061b30b394b21dd12df6d763cd9daeed355e))
+* Remove beta warning from connect modal. ([#88](https://github.com/zmkfirmware/zmk-studio/issues/88)) ([6edb4b0](https://github.com/zmkfirmware/zmk-studio/commit/6edb4b02a104add079ae2f85cfa0d239a54f553b)), closes [#87](https://github.com/zmkfirmware/zmk-studio/issues/87)
+
 ## [0.2.2](https://github.com/zmkfirmware/zmk-studio/compare/v0.2.1...v0.2.2) (2024-11-12)
 
 
