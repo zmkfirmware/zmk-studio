@@ -7,7 +7,7 @@
     "frontendDist": "../dist/"
   },
   "productName": "zmk-studio",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "identifier": "dev.zmk.studio",
   "bundle": {
     "active": true,

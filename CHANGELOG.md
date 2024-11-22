@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.4](https://github.com/zmkfirmware/zmk-studio/compare/v0.2.3...v0.2.4) (2024-11-22)
+
+
+### Bug Fixes
+
+* **app:** Tweak webkit dep version for CI builds ([#92](https://github.com/zmkfirmware/zmk-studio/issues/92)) ([5c018bc](https://github.com/zmkfirmware/zmk-studio/commit/5c018bcbc44d0dfb219cab239877a9b1d441c101))
+
 ## [0.2.3](https://github.com/zmkfirmware/zmk-studio/compare/v0.2.2...v0.2.3) (2024-11-13)
 
 
