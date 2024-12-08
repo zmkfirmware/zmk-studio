@@ -122,7 +122,7 @@ export const Download = () => {
     <div className="bg-base-300 text-base-content min-h-full w-full flex flex-col justify-center items-center p-10 pb-48">
       <img src="/zmk-mac-download.webp" alt="ZMK Studio" className="w-64" />
       <div className="text-3xl mb-4">Download ZMK Studio</div>
-      <div className="bg-base-100 p-8 max-w-md w-full m-2 rounded-lg shadow-xl">
+      <div className="bg-base-200 p-8 max-w-md w-full m-2 rounded-lg shadow-lg">
         {PlatformLinks[platform].length > 0 && (
           <>
             <div className="text-2xl mb-4">
