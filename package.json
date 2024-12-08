@@ -13,6 +13,9 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.7.1",
+    "@fortawesome/free-brands-svg-icons": "^6.7.1",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@tailwindcss/container-queries": "^0.1.1",
     "@tauri-apps/api": "^2.0.0",
     "@tauri-apps/plugin-cli": "^2.0.0",
