@@ -130,14 +130,14 @@ export const Download = () => {
       <div className="bg-base-100 p-8 max-w-md w-full m-2 rounded-lg shadow-lg dark:shadow-xl">
         {PlatformLinks[platform].length > 0 && (
           <>
-            <div>
+            <div className="flex flex-col gap-3 mb-3">
               {PlatformLinks[platform].map((link) => (
                 <a
                   key={link.name}
                   href={getUrlFromPattern(releaseAssets, link.urlPattern)}
-                  className="p-3 text-lg mb-3 bg-primary hover:opacity-85 active:opacity-70 text-primary-content rounded-lg justify-center items-center gap-3 flex"
+                  className="p-3 text-lg bg-primary hover:opacity-85 active:opacity-70 text-primary-content rounded-lg justify-center items-center gap-3 flex"
                 >
-                  <FontAwesomeIcon icon={PlatformMetadata[platform].icon} />{" "}
+                  <FontAwesomeIcon icon={PlatformMetadata[platform].icon} className="h-6"/>{" "}
                   Download for {link.name}
                 </a>
               ))}
