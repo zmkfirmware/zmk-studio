@@ -52,21 +52,22 @@ export const AppHeader = ({
     ) {
       setShowSettingsReset(false);
     }
-  }, [lockState, showSettingsReset]);
+  }, [connectionState.conn, lockState, showSettingsReset]);
 
   const showSettingsRef = useModalRef(showSettingsReset);
   const [unsaved, setUnsaved] = useConnectedDeviceData<boolean>(
     { keymap: { checkUnsavedChanges: true } },
-    (r) => r.keymap?.checkUnsavedChanges
+    (r) => r.keymap?.checkUnsavedChanges,
   );
 
-  useSub("rpc_notification.keymap.unsavedChangesStatusChanged", (unsaved) =>
-    setUnsaved(unsaved)
+  useSub(
+    "rpc_notification.keymap.unsavedChangesStatusChanged",
+    (unsaved: boolean) => setUnsaved(unsaved),
   );
 
   return (
-    <header className="top-0 left-0 right-0 grid grid-cols-[1fr_auto_1fr] items-center justify-between h-10 max-w-full">
-      <div className="flex px-3 items-center gap-1">
+    <header className="inset-x-0 top-0 grid h-10 max-w-full grid-cols-[1fr_auto_1fr] items-center justify-between">
+      <div className="flex items-center gap-1 px-3">
         <img src="/zmk.svg" alt="ZMK Logo" className="h-8 rounded" />
         <p>Studio</p>
       </div>
@@ -78,15 +79,15 @@ export const AppHeader = ({
             Studio and restore the stock keymap
           </p>
           <p>Continue?</p>
-          <div className="flex justify-end my-2 gap-3">
+          <div className="my-2 flex justify-end gap-3">
             <Button
-              className="rounded bg-base-200 hover:bg-base-300 px-3 py-2"
+              className="rounded bg-base-200 px-3 py-2 hover:bg-base-300"
               onPress={() => setShowSettingsReset(false)}
             >
               Cancel
             </Button>
             <Button
-              className="rounded bg-base-200 hover:bg-base-300 px-3 py-2"
+              className="rounded bg-base-200 px-3 py-2 hover:bg-base-300"
               onPress={() => {
                 setShowSettingsReset(false);
                 onResetSettings?.();
@@ -99,14 +100,14 @@ export const AppHeader = ({
       </GenericModal>
       <MenuTrigger>
         <Button
-          className="text-center rac-disabled:opacity-0 hover:bg-base-300 transition-all duration-100 p-1 pl-2 rounded-lg"
+          className="rounded-lg p-1 pl-2 text-center transition-all duration-100 hover:bg-base-300 rac-disabled:opacity-0"
           isDisabled={!connectedDeviceLabel}
         >
           {connectedDeviceLabel}
           <ChevronDown className="inline-block w-4" />
         </Button>
         <Popover>
-          <Menu className="shadow-md rounded bg-base-100 text-base-content cursor-pointer overflow-hidden">
+          <Menu className="cursor-pointer overflow-hidden rounded bg-base-100 text-base-content shadow-md">
             <MenuItem
               className="px-2 py-1 hover:bg-base-200"
               onAction={onDisconnect}
@@ -126,11 +127,11 @@ export const AppHeader = ({
         {onUndo && (
           <Tooltip label="Undo">
             <Button
-              className="flex items-center justify-center p-1.5 rounded enabled:hover:bg-base-300 disabled:opacity-50"
+              className="flex items-center justify-center rounded p-1.5 enabled:hover:bg-base-300 disabled:opacity-50"
               isDisabled={!canUndo}
               onPress={onUndo}
             >
-              <Undo2 className="inline-block w-4 mx-1" aria-label="Undo" />
+              <Undo2 className="mx-1 inline-block w-4" aria-label="Undo" />
             </Button>
           </Tooltip>
         )}
@@ -138,30 +139,30 @@ export const AppHeader = ({
         {onRedo && (
           <Tooltip label="Redo">
             <Button
-              className="flex items-center justify-center p-1.5 rounded enabled:hover:bg-base-300 disabled:opacity-50"
+              className="flex items-center justify-center rounded p-1.5 enabled:hover:bg-base-300 disabled:opacity-50"
               isDisabled={!canRedo}
               onPress={onRedo}
             >
-              <Redo2 className="inline-block w-4 mx-1" aria-label="Redo" />
+              <Redo2 className="mx-1 inline-block w-4" aria-label="Redo" />
             </Button>
           </Tooltip>
         )}
         <Tooltip label="Save">
           <Button
-            className="flex items-center justify-center p-1.5 rounded enabled:hover:bg-base-300 disabled:opacity-50"
+            className="flex items-center justify-center rounded p-1.5 enabled:hover:bg-base-300 disabled:opacity-50"
             isDisabled={!unsaved}
             onPress={onSave}
           >
-            <Save className="inline-block w-4 mx-1" aria-label="Save" />
+            <Save className="mx-1 inline-block w-4" aria-label="Save" />
           </Button>
         </Tooltip>
         <Tooltip label="Discard">
           <Button
-            className="flex items-center justify-center p-1.5 rounded enabled:hover:bg-base-300 disabled:opacity-50"
+            className="flex items-center justify-center rounded p-1.5 enabled:hover:bg-base-300 disabled:opacity-50"
             onPress={onDiscard}
             isDisabled={!unsaved}
           >
-            <Trash2 className="inline-block w-4 mx-1" aria-label="Discard" />
+            <Trash2 className="mx-1 inline-block w-4" aria-label="Discard" />
           </Button>
         </Tooltip>
       </div>

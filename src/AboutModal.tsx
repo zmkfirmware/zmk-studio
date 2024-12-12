@@ -179,8 +179,8 @@ export const AboutModal = ({ open, onClose }: AboutModalProps) => {
   const ref = useModalRef(open, true);
 
   return (
-    <GenericModal ref={ref} className="min-w-min w-[70vw]" onClose={onClose}>
-      <div className="flex justify-between items-start">
+    <GenericModal ref={ref} className="w-[70vw] min-w-min" onClose={onClose}>
+      <div className="flex items-start justify-between">
         <p>
           The ZMK Project:{" "}
           <ExternalLink href="https://zmk.dev/">website</ExternalLink>,{" "}
@@ -193,20 +193,20 @@ export const AboutModal = ({ open, onClose }: AboutModalProps) => {
           </ExternalLink>
         </p>
         <button
-          className="p-1.5 rounded-md bg-gray-100 text-black hover:bg-gray-300"
+          className="rounded-md bg-gray-100 p-1.5 text-black hover:bg-gray-300"
           onClick={onClose}
         >
           Close
         </button>
       </div>
       <div>
-        <p className="py-1 mr-2">
+        <p className="mr-2 py-1">
           ZMK Studio is made possible thanks to the generous donation of time
           from our contributors, as well as the financial sponsorship from the
           following vendors:
         </p>
       </div>
-      <div className="grid gap-2 auto-rows-auto grid-cols-[auto_minmax(min-content,1fr)] justify-items-center items-center">
+      <div className="grid auto-rows-auto grid-cols-[auto_minmax(min-content,1fr)] items-center justify-items-center gap-2">
         {sponsors.map((s) => {
           const heightVariants = {
             [SponsorSize.Large]: "h-16",
@@ -218,7 +218,7 @@ export const AboutModal = ({ open, onClose }: AboutModalProps) => {
             <React.Fragment key={s.level}>
               <label>{s.level}</label>
               <div
-                className={`grid grid-rows-1 gap-x-1 auto-cols-fr grid-flow-col justify-items-center items-center ${
+                className={`grid auto-cols-fr grid-flow-col grid-rows-1 items-center justify-items-center gap-x-1 ${
                   heightVariants[s.size]
                 }`}
               >
