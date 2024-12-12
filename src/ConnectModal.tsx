@@ -38,7 +38,7 @@ function deviceList(
 
   async function LoadEm() {
     setRefreshing(true);
-    let entries: Array<[TransportFactory, AvailableDevice]> = [];
+    const entries: Array<[TransportFactory, AvailableDevice]> = [];
     for (const t of transports.filter((t) => t.pick_and_connect)) {
       const devices = await t.pick_and_connect?.list();
       if (!devices) {
@@ -91,7 +91,7 @@ function deviceList(
       <div className="grid grid-cols-[1fr_auto]">
         <label>Select A Device:</label>
         <button
-          className="p-1 rounded hover:bg-base-300 disabled:bg-base-100 disabled:opacity-75"
+          className="rounded p-1 hover:bg-base-300 disabled:bg-base-100 disabled:opacity-75"
           disabled={refreshing}
           onClick={onRefresh}
         >
@@ -112,12 +112,12 @@ function deviceList(
       >
         {([t, d]) => (
           <ListBoxItem
-            className="grid grid-cols-[1em_1fr] rounded hover:bg-base-300 cursor-pointer px-1"
+            className="grid cursor-pointer grid-cols-[1em_1fr] rounded px-1 hover:bg-base-300"
             id={d.id}
             aria-label={d.label}
           >
             {t.isWireless && (
-              <Bluetooth className="w-4 justify-center content-center h-full" />
+              <Bluetooth className="h-full w-4 content-center justify-center" />
             )}
             <span className="col-start-2">{d.label}</span>
           </ListBoxItem>
@@ -186,10 +186,10 @@ function simpleDevicePicker(
     };
   }, [selectedTransport]);
 
-  let connections = transports.map((t) => (
+  const connections = transports.map((t) => (
     <li key={t.label} className="list-none">
       <button
-        className="bg-base-300 hover:bg-primary hover:text-primary-content rounded px-2 py-1"
+        className="rounded bg-base-300 px-2 py-1 hover:bg-primary hover:text-primary-content"
         type="button"
         onClick={async () => setSelectedTransport(t)}
       >
@@ -240,7 +240,7 @@ function noTransportsOptionsPrompt() {
 
       <div>
         <p>To use ZMK Studio, either:</p>
-        <ul className="list-disc list-inside">
+        <ul className="list-inside list-disc">
           <li>
             Use a browser that supports the above web technologies, e.g.
             Chrome/Edge, or

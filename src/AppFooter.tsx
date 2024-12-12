@@ -8,14 +8,14 @@ export const AppFooter = ({
   onShowLicenseNotice,
 }: AppFooterProps) => {
   return (
-    <div className="grid justify-center p-1 bg-base-200">
+    <div className="grid justify-center bg-base-200 p-1">
       <div>
         <span>&copy; 2024 - The ZMK Contributors</span> -{" "}
-        <a className="hover:text-primary hover:cursor-pointer" onClick={onShowAbout}>
+        <a className="hover:cursor-pointer hover:text-primary" onClick={onShowAbout}>
           About ZMK Studio
         </a>{" "}
         -{" "}
-        <a className="hover:text-primary hover:cursor-pointer" onClick={onShowLicenseNotice}>
+        <a className="hover:cursor-pointer hover:text-primary" onClick={onShowLicenseNotice}>
           License NOTICE
         </a>
       </div>

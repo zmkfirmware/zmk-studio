@@ -68,19 +68,19 @@ const TRANSPORTS: TransportFactory[] = [
 
 async function listen_for_notifications(
   notification_stream: ReadableStream<Notification>,
-  signal: AbortSignal
+  signal: AbortSignal,
 ): Promise<void> {
-  let reader = notification_stream.getReader();
+  const reader = notification_stream.getReader();
   const onAbort = () => {
     reader.cancel();
     reader.releaseLock();
   };
   signal.addEventListener("abort", onAbort, { once: true });
   do {
-    let pub = usePub();
+    const pub = usePub();
 
     try {
-      let { done, value } = await reader.read();
+      const { done, value } = await reader.read();
       if (done) {
         break;
       }
@@ -93,7 +93,7 @@ async function listen_for_notifications(
       pub("rpc_notification", value);
 
       const subsystem = Object.entries(value).find(
-        ([_k, v]) => v !== undefined
+        ([_k, v]) => v !== undefined,
       );
       if (!subsystem) {
         continue;
@@ -126,11 +126,11 @@ async function connect(
   transport: RpcTransport,
   setConn: Dispatch<ConnectionState>,
   setConnectedDeviceName: Dispatch<string | undefined>,
-  signal: AbortSignal
+  signal: AbortSignal,
 ) {
-  let conn = await create_rpc_connection(transport, { signal });
+  const conn = await create_rpc_connection(transport, { signal });
 
-  let details = await Promise.race([
+  const details = await Promise.race([
     call_rpc(conn, { core: { getDeviceInfo: true } })
       .then((r) => r?.core?.getDeviceInfo)
       .catch((e) => {
@@ -171,11 +171,11 @@ function App() {
   const [connectionAbort, setConnectionAbort] = useState(new AbortController());
 
   const [lockState, setLockState] = useState<LockState>(
-    LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED
+    LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED,
   );
 
-  useSub("rpc_notification.core.lockStateChanged", (ls) => {
-    setLockState(ls);
+  useSub("rpc_notification.core.lockStateChanged", (ls: unknown) => {
+    setLockState(ls as LockState);
   });
 
   useEffect(() => {
@@ -189,13 +189,13 @@ function App() {
         return;
       }
 
-      let locked_resp = await call_rpc(conn.conn, {
+      const locked_resp = await call_rpc(conn.conn, {
         core: { getLockState: true },
       });
 
       setLockState(
         locked_resp.core?.getLockState ||
-          LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED
+          LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED,
       );
     }
 
@@ -208,7 +208,7 @@ function App() {
         return;
       }
 
-      let resp = await call_rpc(conn.conn, { keymap: { saveChanges: true } });
+      const resp = await call_rpc(conn.conn, { keymap: { saveChanges: true } });
       if (!resp.keymap?.saveChanges || resp.keymap?.saveChanges.err) {
         console.error("Failed to save changes", resp.keymap?.saveChanges);
       }
@@ -223,7 +223,7 @@ function App() {
         return;
       }
 
-      let resp = await call_rpc(conn.conn, {
+      const resp = await call_rpc(conn.conn, {
         keymap: { discardChanges: true },
       });
       if (!resp.keymap?.discardChanges) {
@@ -243,7 +243,7 @@ function App() {
         return;
       }
 
-      let resp = await call_rpc(conn.conn, {
+      const resp = await call_rpc(conn.conn, {
         core: { resetSettings: true },
       });
       if (!resp.core?.resetSettings) {
@@ -277,7 +277,7 @@ function App() {
       setConnectionAbort(ac);
       connect(t, setConn, setConnectedDeviceName, ac.signal);
     },
-    [setConn, setConnectedDeviceName, setConnectedDeviceName]
+    [setConn, setConnectedDeviceName, setConnectedDeviceName],
   );
 
   return (
@@ -295,7 +295,7 @@ function App() {
             open={showLicenseNotice}
             onClose={() => setShowLicenseNotice(false)}
           />
-          <div className="bg-base-100 text-base-content h-full max-h-[100vh] w-full max-w-[100vw] inline-grid grid-cols-[auto] grid-rows-[auto_1fr_auto] overflow-hidden">
+          <div className="inline-grid size-full max-h-screen max-w-[100vw] grid-cols-[auto] grid-rows-[auto_1fr_auto] overflow-hidden bg-base-100 text-base-content">
             <AppHeader
               connectedDeviceLabel={connectedDeviceName}
               canUndo={canUndo}

@@ -3,12 +3,14 @@ import { useEffect } from "react";
 
 const emitter = new Emittery();
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const usePub = () => (name: PropertyKey, data: any) =>
   emitter.emit(name, data);
 
 export const useSub = (
   name: PropertyKey,
-  callback: (data: any) => void | Promise<void>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  callback: (data: any) => void | Promise<void>,
 ) => {
   const unsub = () => emitter.off(name, callback);
 
