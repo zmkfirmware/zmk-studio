@@ -9,6 +9,7 @@ import {
   PhysicalLayout as PhysicalLayoutComp,
 } from "./PhysicalLayout";
 import { HidUsageLabel } from "./HidUsageLabel";
+import { Dispatch, SetStateAction } from "react";
 
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
@@ -19,7 +20,7 @@ export interface KeymapProps {
   scale: LayoutZoom;
   selectedLayerIndex: number;
   selectedKeyPosition: number | undefined;
-  onKeyPositionClicked: (keyPosition: number) => void;
+  onKeyPositionClicked: Dispatch<SetStateAction<number | undefined>>
 }
 
 export const Keymap = ({
