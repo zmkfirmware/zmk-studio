@@ -32,7 +32,7 @@ interface LayerPickerProps {
   onLayerNameChanged?: (
     id: number,
     oldName: string,
-    newName: string
+    newName: string,
   ) => void | Promise<void>;
 }
 
@@ -53,7 +53,7 @@ const EditLabelModal = ({
   handleSaveNewLabel: (
     id: number,
     oldName: string,
-    newName: string | null
+    newName: string | null,
   ) => void;
 }) => {
   const ref = useModalRef(open);
@@ -115,7 +115,7 @@ export const LayerPicker = ({
   ...props
 }: LayerPickerProps) => {
   const [editLabelData, setEditLabelData] = useState<EditLabelData | null>(
-    null
+    null,
   );
 
   const layer_items = useMemo(() => {
@@ -135,10 +135,10 @@ export const LayerPicker = ({
 
       onLayerClicked?.(layer_items.findIndex((l) => s.has(l.id)));
     },
-    [onLayerClicked, layer_items]
+    [onLayerClicked, layer_items],
   );
 
-  let { dragAndDropHooks } = useDragAndDrop({
+  const { dragAndDropHooks } = useDragAndDrop({
     renderDropIndicator(target) {
       return (
         <DropIndicator
@@ -150,8 +150,8 @@ export const LayerPicker = ({
     getItems: (keys) =>
       [...keys].map((key) => ({ "text/plain": key.toLocaleString() })),
     onReorder(e) {
-      let startIndex = layer_items.findIndex((l) => e.keys.has(l.id));
-      let endIndex = layer_items.findIndex((l) => l.id === e.target.key);
+      const startIndex = layer_items.findIndex((l) => e.keys.has(l.id));
+      const endIndex = layer_items.findIndex((l) => l.id === e.target.key);
       onLayerMoved?.(startIndex, endIndex);
     },
   });
@@ -162,17 +162,17 @@ export const LayerPicker = ({
         onLayerNameChanged?.(id, oldName, newName);
       }
     },
-    [onLayerNameChanged]
+    [onLayerNameChanged],
   );
 
   return (
     <div className="flex flex-col min-w-40">
-      <div className="grid grid-cols-[1fr_auto_auto] items-center">
+      <div className="grid grid-cols-[1fr_auto_auto] items-center gap-1">
         <Label className="after:content-[':'] text-sm">Layers</Label>
         {onRemoveClicked && (
           <button
             type="button"
-            className="hover:text-primary-content hover:bg-primary rounded-sm"
+            className="hover:text-primary-content hover:bg-primary rounded-sm disabled:opacity-50 disabled:pointer-events-none"
             disabled={!canRemove}
             onClick={onRemoveClicked}
           >
@@ -183,7 +183,7 @@ export const LayerPicker = ({
           <button
             type="button"
             disabled={!canAdd}
-            className="hover:text-primary-content ml-1 hover:bg-primary rounded-sm disabled:text-gray-500 disabled:hover:bg-base-300 disabled:cursor-not-allowed"
+            className="hover:text-primary-content hover:bg-primary rounded-sm disabled:opacity-50 disabled:pointer-events-none"
             onClick={onAddClicked}
           >
             <Plus className="size-4" />
