@@ -172,7 +172,7 @@ export const LayerPicker = ({
         {onRemoveClicked && (
           <button
             type="button"
-            className="hover:text-primary-content hover:bg-primary rounded-sm disabled:hover:text-primary-content disabled:hover:bg-transparent disabled:cursor-not-allowed disabled:opacity-20"
+            className="hover:text-primary-content hover:bg-primary rounded-sm disabled:opacity-50 disabled:pointer-events-none"
             disabled={!canRemove}
             onClick={onRemoveClicked}
           >
@@ -183,7 +183,7 @@ export const LayerPicker = ({
           <button
             type="button"
             disabled={!canAdd}
-            className="hover:text-primary-content hover:bg-primary rounded-sm disabled:hover:text-primary-content disabled:hover:bg-transparent disabled:cursor-not-allowed disabled:opacity-20"
+            className="hover:text-primary-content hover:bg-primary rounded-sm disabled:opacity-50 disabled:pointer-events-none"
             onClick={onAddClicked}
           >
             <Plus className="size-4" />
