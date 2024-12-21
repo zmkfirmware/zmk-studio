@@ -60,9 +60,9 @@ export const AppHeader = ({
     (r) => r.keymap?.checkUnsavedChanges,
   );
 
-  useSub(
+  useSub<boolean>(
     "rpc_notification.keymap.unsavedChangesStatusChanged",
-    (unsaved: boolean) => setUnsaved(unsaved),
+    (unsaved) => void setUnsaved(unsaved),
   );
 
   return (

@@ -21,7 +21,7 @@ import {
 } from "./tauri/serial";
 import Keyboard from "./keyboard/Keyboard";
 import { UndoRedoContext, useUndoRedo } from "./undoRedo";
-import { usePub, useSub } from "./usePubSub";
+import { emitter, useSub } from "./usePubSub";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { LockStateContext } from "./rpc/LockStateContext";
 import { UnlockModal } from "./UnlockModal";
@@ -77,8 +77,6 @@ async function listen_for_notifications(
   };
   signal.addEventListener("abort", onAbort, { once: true });
   do {
-    const pub = usePub();
-
     try {
       const { done, value } = await reader.read();
       if (done) {
@@ -90,7 +88,7 @@ async function listen_for_notifications(
       }
 
       console.log("Notification", value);
-      pub("rpc_notification", value);
+      await emitter.emit("rpc_notification", value);
 
       const subsystem = Object.entries(value).find(
         ([_k, v]) => v !== undefined,
@@ -109,17 +107,18 @@ async function listen_for_notifications(
       const [eventName, eventData] = event;
       const topic = ["rpc_notification", subId, eventName].join(".");
 
-      pub(topic, eventData);
+      await emitter.emit(topic, eventData);
     } catch (e) {
       signal.removeEventListener("abort", onAbort);
       reader.releaseLock();
       throw e;
     }
+    // eslint-disable-next-line no-constant-condition
   } while (true);
 
   signal.removeEventListener("abort", onAbort);
   reader.releaseLock();
-  notification_stream.cancel();
+  await notification_stream.cancel();
 }
 
 async function connect(
@@ -128,7 +127,7 @@ async function connect(
   setConnectedDeviceName: Dispatch<string | undefined>,
   signal: AbortSignal,
 ) {
-  const conn = await create_rpc_connection(transport, { signal });
+  const conn = create_rpc_connection(transport, { signal });
 
   const details = await Promise.race([
     call_rpc(conn, { core: { getDeviceInfo: true } })
@@ -174,9 +173,10 @@ function App() {
     LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED,
   );
 
-  useSub("rpc_notification.core.lockStateChanged", (ls: unknown) => {
-    setLockState(ls as LockState);
-  });
+  useSub<LockState>(
+    "rpc_notification.core.lockStateChanged",
+    (ls) => void setLockState(ls),
+  );
 
   useEffect(() => {
     if (!conn) {
@@ -199,8 +199,8 @@ function App() {
       );
     }
 
-    updateLockState();
-  }, [conn, setLockState]);
+    updateLockState().then(console.info).catch(console.error);
+  }, [conn, reset, setLockState]);
 
   const save = useCallback(() => {
     async function doSave() {
@@ -214,7 +214,7 @@ function App() {
       }
     }
 
-    doSave();
+    doSave().then(console.info).catch(console.error);
   }, [conn]);
 
   const discard = useCallback(() => {
@@ -234,8 +234,8 @@ function App() {
       setConn({ conn: conn.conn });
     }
 
-    doDiscard();
-  }, [conn]);
+    doDiscard().then(console.info).catch(console.error);
+  }, [conn.conn, reset]);
 
   const resetSettings = useCallback(() => {
     async function doReset() {
@@ -254,8 +254,8 @@ function App() {
       setConn({ conn: conn.conn });
     }
 
-    doReset();
-  }, [conn]);
+    doReset().then(console.info).catch(console.error);
+  }, [conn.conn, reset]);
 
   const disconnect = useCallback(() => {
     async function doDisconnect() {
@@ -268,16 +268,18 @@ function App() {
       setConnectionAbort(new AbortController());
     }
 
-    doDisconnect();
-  }, [conn]);
+    doDisconnect().then(console.info).catch(console.error);
+  }, [conn.conn, connectionAbort]);
 
   const onConnect = useCallback(
     (t: RpcTransport) => {
       const ac = new AbortController();
       setConnectionAbort(ac);
-      connect(t, setConn, setConnectedDeviceName, ac.signal);
+      connect(t, setConn, setConnectedDeviceName, ac.signal)
+        .then(console.info)
+        .catch(console.error);
     },
-    [setConn, setConnectedDeviceName, setConnectedDeviceName],
+    [setConn, setConnectedDeviceName],
   );
 
   return (
