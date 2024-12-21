@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 
 import type { RpcTransport } from "@zmkfirmware/zmk-studio-ts-client/transport/index";
 import { UserCancelledError } from "@zmkfirmware/zmk-studio-ts-client/transport/errors";
@@ -25,11 +25,11 @@ export interface ConnectModalProps {
   onTransportCreated: (t: RpcTransport) => void;
 }
 
-function useDeviceList(
-  open: boolean,
-  transports: TransportFactory[],
-  onTransportCreated: (t: RpcTransport) => void,
-) {
+const DeviceList: FC<ConnectModalProps> = ({
+  open,
+  transports,
+  onTransportCreated,
+}) => {
   const [devices, setDevices] = useState<
     Array<[TransportFactory, AvailableDevice]>
   >([]);
@@ -125,12 +125,12 @@ function useDeviceList(
       </ListBox>
     </div>
   );
-}
+};
 
-function useSimpleDevicePicker(
-  transports: TransportFactory[],
-  onTransportCreated: (t: RpcTransport) => void,
-) {
+const SimpleDevicePicker: FC<Omit<ConnectModalProps, "open">> = ({
+  transports,
+  onTransportCreated,
+}) => {
   const [availableDevices, setAvailableDevices] = useState<
     AvailableDevice[] | undefined
   >(undefined);
@@ -222,9 +222,9 @@ function useSimpleDevicePicker(
       )}
     </div>
   );
-}
+};
 
-function noTransportsOptionsPrompt() {
+const NoTransportsOptionsPrompt: FC = () => {
   return (
     <div className="m-4 flex flex-col gap-2">
       <p>
@@ -257,27 +257,24 @@ function noTransportsOptionsPrompt() {
       </div>
     </div>
   );
-}
+};
 
-function useConnectOptions(
-  transports: TransportFactory[],
-  onTransportCreated: (t: RpcTransport) => void,
-  open?: boolean,
-) {
-  const useSimplePicker = useMemo(
+const ConnectOptions: FC<ConnectModalProps> = ({
+  open,
+  transports,
+  onTransportCreated,
+}) => {
+  const simpleMode = useMemo(
     () => transports.every((t) => !t.pick_and_connect),
     [transports],
   );
 
-  const devicePicker = useSimpleDevicePicker(transports, onTransportCreated);
-  const deviceList = useDeviceList(
-    open || false,
-    transports,
-    onTransportCreated,
-  );
+  if (simpleMode) {
+    return <SimpleDevicePicker {...{ transports, onTransportCreated }} />;
+  }
 
-  return useSimplePicker ? devicePicker : deviceList;
-}
+  return <DeviceList {...{ open, transports, onTransportCreated }} />;
+};
 
 export const ConnectModal = ({
   open,
@@ -285,16 +282,16 @@ export const ConnectModal = ({
   onTransportCreated,
 }: ConnectModalProps) => {
   const dialog = useModalRef(open || false, false, false);
-
   const haveTransports = useMemo(() => transports.length > 0, [transports]);
-
-  const connectOpts = useConnectOptions(transports, onTransportCreated, open);
-  const noTransportOpts = noTransportsOptionsPrompt();
 
   return (
     <GenericModal ref={dialog} className="max-w-xl">
       <h1 className="text-xl">Welcome to ZMK Studio</h1>
-      {haveTransports ? connectOpts : noTransportOpts}
+      {haveTransports ? (
+        <ConnectOptions {...{ open, transports, onTransportCreated }} />
+      ) : (
+        <NoTransportsOptionsPrompt />
+      )}
     </GenericModal>
   );
 };
