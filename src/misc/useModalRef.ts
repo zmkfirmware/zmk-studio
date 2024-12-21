@@ -3,11 +3,11 @@ import { MutableRefObject, useEffect, useRef } from "react";
 export function useModalRef(
   open: boolean,
   closeOnOutsideClick?: boolean,
-  allowCancel?: boolean
+  allowCancel?: boolean,
 ): MutableRefObject<HTMLDialogElement | null> {
   const ref = useRef<HTMLDialogElement | null>(null);
 
-  let reopen = async () => {
+  const reopen = async () => {
     // We do this in a timeout so it runs after the modal has actually closed.
     setTimeout(() => ref.current?.showModal());
   };
@@ -46,7 +46,7 @@ export function useModalRef(
       ref.current?.close();
       ref.current?.removeEventListener("cancel", reopen);
     }
-  }, [open, closeOnOutsideClick]);
+  }, [open, allowCancel, closeOnOutsideClick]);
 
   return ref;
 }

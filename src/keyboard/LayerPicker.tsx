@@ -68,11 +68,11 @@ const EditLabelModal = ({
     <GenericModal
       ref={ref}
       onClose={onClose}
-      className="min-w-min w-[30vw] flex flex-col"
+      className="flex w-[30vw] min-w-min flex-col"
     >
       <span className="mb-3 text-lg">New Layer Name</span>
       <input
-        className="p-1 border rounded border-base-content border-solid"
+        className="rounded border border-solid border-base-content p-1"
         type="text"
         defaultValue={editLabelData.name}
         autoFocus
@@ -85,11 +85,11 @@ const EditLabelModal = ({
         }}
       />
       <div className="mt-4 flex justify-end">
-        <button className="py-1.5 px-2" type="button" onClick={onClose}>
+        <button className="px-2 py-1.5" type="button" onClick={onClose}>
           Cancel
         </button>
         <button
-          className="py-1.5 px-2 ml-4 rounded-md bg-gray-100 text-black hover:bg-gray-300"
+          className="ml-4 rounded-md bg-gray-100 px-2 py-1.5 text-black hover:bg-gray-300"
           type="button"
           onClick={() => {
             handleSave();
@@ -138,20 +138,20 @@ export const LayerPicker = ({
     [onLayerClicked, layer_items]
   );
 
-  let { dragAndDropHooks } = useDragAndDrop({
+  const { dragAndDropHooks } = useDragAndDrop({
     renderDropIndicator(target) {
       return (
         <DropIndicator
           target={target}
-          className={"data-[drop-target]:outline outline-1 outline-accent"}
+          className={"outline-1 outline-accent data-[drop-target]:outline"}
         />
       );
     },
     getItems: (keys) =>
       [...keys].map((key) => ({ "text/plain": key.toLocaleString() })),
     onReorder(e) {
-      let startIndex = layer_items.findIndex((l) => e.keys.has(l.id));
-      let endIndex = layer_items.findIndex((l) => l.id === e.target.key);
+      const startIndex = layer_items.findIndex((l) => e.keys.has(l.id));
+      const endIndex = layer_items.findIndex((l) => l.id === e.target.key);
       onLayerMoved?.(startIndex, endIndex);
     },
   });
@@ -166,13 +166,13 @@ export const LayerPicker = ({
   );
 
   return (
-    <div className="flex flex-col min-w-40">
+    <div className="flex min-w-40 flex-col">
       <div className="grid grid-cols-[1fr_auto_auto] items-center">
-        <Label className="after:content-[':'] text-sm">Layers</Label>
+        <Label className="text-sm after:content-[':']">Layers</Label>
         {onRemoveClicked && (
           <button
             type="button"
-            className="hover:text-primary-content hover:bg-primary rounded-sm"
+            className="rounded-sm hover:bg-primary hover:text-primary-content"
             disabled={!canRemove}
             onClick={onRemoveClicked}
           >
@@ -183,7 +183,7 @@ export const LayerPicker = ({
           <button
             type="button"
             disabled={!canAdd}
-            className="hover:text-primary-content ml-1 hover:bg-primary rounded-sm disabled:text-gray-500 disabled:hover:bg-base-300 disabled:cursor-not-allowed"
+            className="ml-1 rounded-sm hover:bg-primary hover:text-primary-content disabled:cursor-not-allowed disabled:text-gray-500 disabled:hover:bg-base-300"
             onClick={onAddClicked}
           >
             <Plus className="size-4" />
@@ -208,7 +208,7 @@ export const LayerPicker = ({
             ? [layer_items[selectedLayerIndex].id]
             : []
         }
-        className="ml-2 items-center justify-center cursor-pointer"
+        className="ml-2 cursor-pointer items-center justify-center"
         onSelectionChange={selectionChanged}
         dragAndDropHooks={dragAndDropHooks}
         {...props}
@@ -216,11 +216,11 @@ export const LayerPicker = ({
         {(layer_item) => (
           <ListBoxItem
             textValue={layer_item.name}
-            className="p-1 b-1 my-1 group grid grid-cols-[1fr_auto] items-center aria-selected:bg-primary aria-selected:text-primary-content border rounded border-transparent border-solid hover:bg-base-300"
+            className="b-1 group my-1 grid grid-cols-[1fr_auto] items-center rounded border border-solid border-transparent p-1 hover:bg-base-300 aria-selected:bg-primary aria-selected:text-primary-content"
           >
             <span>{layer_item.name}</span>
             <Pencil
-              className="h-4 w-4 mx-1 invisible group-hover:visible"
+              className="invisible mx-1 size-4 group-hover:visible"
               onClick={() =>
                 setEditLabelData({ id: layer_item.id, name: layer_item.name })
               }

@@ -38,13 +38,13 @@ type UsageSectionProps = HidUsagePage;
 const UsageSection = ({ id, min, max }: UsageSectionProps) => {
   const info = useMemo(() => hid_usage_page_get_ids(id), [id]);
 
-  let usages = useMemo(() => {
+  const usages = useMemo(() => {
     let usages = info?.UsageIds || [];
     if (max || min) {
       usages = usages.filter(
         (i) =>
           (i.Id <= (max || Number.MAX_SAFE_INTEGER) && i.Id >= (min || 0)) ||
-          (id === 7 && i.Id >= 0xe0 && i.Id <= 0xe7)
+          (id === 7 && i.Id >= 0xe0 && i.Id <= 0xe7),
       );
     }
 
@@ -57,8 +57,9 @@ const UsageSection = ({ id, min, max }: UsageSectionProps) => {
       <Collection items={usages}>
         {(i) => (
           <ListBoxItem
-            className="rac-hover:bg-base-300 pl-3 relative rac-focus:bg-base-300 cursor-default select-none rac-selected:before:content-['✔'] before:absolute before:left-[0] before:top-[0]"
+            className="relative cursor-default select-none pl-3 before:absolute before:left-0 before:top-0 rac-hover:bg-base-300 rac-focus:bg-base-300 rac-selected:before:content-['✔']"
             id={hid_usage_from_page_and_id(id, i.Id)}
+            key={i.Id}
           >
             {i.Name}
           </ListBoxItem>
@@ -116,7 +117,7 @@ export const HidUsagePicker = ({
   onValueChanged,
 }: HidUsagePickerProps) => {
   const mods = useMemo(() => {
-    let flags = value ? value >> 24 : 0;
+    const flags = value ? value >> 24 : 0;
 
     return all_mods.filter((m) => m & flags).map((m) => m.toLocaleString());
   }, [value]);
@@ -125,13 +126,13 @@ export const HidUsagePicker = ({
     (e: Key | null) => {
       let value = typeof e == "number" ? e : undefined;
       if (value !== undefined) {
-        let mod_flags = mods_to_flags(mods.map((m) => parseInt(m)));
+        const mod_flags = mods_to_flags(mods.map((m) => parseInt(m)));
         value = value | (mod_flags << 24);
       }
 
       onValueChanged(value);
     },
-    [onValueChanged, mods]
+    [onValueChanged, mods],
   );
 
   const modifiersChanged = useCallback(
@@ -140,15 +141,15 @@ export const HidUsagePicker = ({
         return;
       }
 
-      let mod_flags = mods_to_flags(m.map((m) => parseInt(m)));
-      let new_value = mask_mods(value) | (mod_flags << 24);
+      const mod_flags = mods_to_flags(m.map((m) => parseInt(m)));
+      const new_value = mask_mods(value) | (mod_flags << 24);
       onValueChanged(new_value);
     },
-    [value]
+    [onValueChanged, value],
   );
 
   return (
-    <div className="flex gap-2 relative">
+    <div className="relative flex gap-2">
       {label && <Label id="hid-usage-picker">{label}:</Label>}
       <ComboBox
         selectedKey={value ? mask_mods(value) : null}
@@ -156,12 +157,12 @@ export const HidUsagePicker = ({
         aria-labelledby="hid-usage-picker"
       >
         <div className="flex">
-          <Input className="p-1 rounded-l" />
-          <Button className="rounded-r bg-primary text-primary-content w-8 h-8 flex justify-center items-center">
+          <Input className="rounded-l p-1" />
+          <Button className="flex size-8 items-center justify-center rounded-r bg-primary text-primary-content">
             <ChevronDown className="size-4" />
           </Button>
         </div>
-        <Popover className="w-[var(--trigger-width)] max-h-4 shadow-md text-base-content rounded border-base-content bg-base-100">
+        <Popover className="max-h-4 w-[var(--trigger-width)] rounded border-base-content bg-base-100 text-base-content shadow-md">
           <ListBox
             items={usagePages}
             className="block max-h-[30vh] min-h-[unset] overflow-auto p-2"
@@ -173,15 +174,15 @@ export const HidUsagePicker = ({
       </ComboBox>
       <CheckboxGroup
         aria-label="Implicit Modifiers"
-        className="grid grid-flow-col gap-x-px auto-cols-[minmax(min-content,1fr)] content-stretch divide-x rounded-md"
+        className="grid auto-cols-[minmax(min-content,1fr)] grid-flow-col content-stretch gap-x-px divide-x rounded-md"
         value={mods}
         onChange={modifiersChanged}
       >
         {all_mods.map((m) => (
           <Checkbox
-            key={m}
+            key={m.toLocaleString()}
             value={m.toLocaleString()}
-            className="text-nowrap cursor-pointer grid px-2 content-center justify-center rac-selected:bg-primary border-base-100 bg-base-300 hover:bg-base-100 first:rounded-s-md last:rounded-e-md rac-selected:text-primary-content"
+            className="grid cursor-pointer content-center justify-center text-nowrap border-base-100 bg-base-300 px-2 first:rounded-s-md last:rounded-e-md hover:bg-base-100 rac-selected:bg-primary rac-selected:text-primary-content"
           >
             {mod_labels[m]}
           </Checkbox>

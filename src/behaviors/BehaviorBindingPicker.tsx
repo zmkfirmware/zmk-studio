@@ -19,7 +19,7 @@ function validateBinding(
   metadata: BehaviorBindingParametersSet[],
   layerIds: number[],
   param1?: number,
-  param2?: number
+  param2?: number,
 ): boolean {
   if (
     (param1 === undefined || param1 === 0) &&
@@ -28,8 +28,8 @@ function validateBinding(
     return true;
   }
 
-  let matchingSet = metadata.find((s) =>
-    validateValue(layerIds, param1, s.param1)
+  const matchingSet = metadata.find((s) =>
+    validateValue(layerIds, param1, s.param1),
   );
 
   if (!matchingSet) {
@@ -51,12 +51,12 @@ export const BehaviorBindingPicker = ({
 
   const metadata = useMemo(
     () => behaviors.find((b) => b.id == behaviorId)?.metadata,
-    [behaviorId, behaviors]
+    [behaviorId, behaviors],
   );
 
   const sortedBehaviors = useMemo(
     () => behaviors.sort((a, b) => a.displayName.localeCompare(b.displayName)),
-    [behaviors]
+    [behaviors],
   );
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export const BehaviorBindingPicker = ({
     if (!metadata) {
       console.error(
         "Can't find metadata for the selected behaviorId",
-        behaviorId
+        behaviorId,
       );
       return;
     }
@@ -81,7 +81,7 @@ export const BehaviorBindingPicker = ({
         metadata,
         layers.map(({ id }) => id),
         param1,
-        param2
+        param2,
       )
     ) {
       onBindingChanged({
@@ -90,6 +90,7 @@ export const BehaviorBindingPicker = ({
         param2: param2 || 0,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [behaviorId, param1, param2]);
 
   useEffect(() => {
