@@ -96,7 +96,7 @@ For Tauri-specific commands, you can use:
 1. **Run Tauri development server**:
 
    ```sh
-   npm run tauri dev
+   npm run tauri -- dev
    ```
 
    This will start the Tauri development server for building and testing the desktop application.
@@ -104,7 +104,7 @@ For Tauri-specific commands, you can use:
 2. **Build Tauri application**:
 
    ```sh
-   npm run tauri build
+   npm run tauri -- build
    ```
 
    This will build the Tauri desktop application for production.
