@@ -33,7 +33,7 @@ interface KeyDimension {
 
 function makeSize(
   { width, height }: KeyDimension,
-  oneU: number
+  oneU: number,
 ): CSSProperties {
   width *= oneU;
   height *= oneU;
@@ -81,10 +81,10 @@ export const Key = ({
           oneU > 20 ? "rounded-md" : "rounded",
           "relative w-[var(--zmk-key-center-width)] h-[var(--zmk-key-center-height)] bg-base-100 border border-transparent",
           "group-hover:border-base-content aria-selected:bg-primary aria-selected:text-primary-content @container",
-        ].join(' ')}
+        ].join(" ")}
       >
         {header && (
-          <span className="opacity-80 truncate hidden group-hover:block text-xs text-center uppercase absolute top-1 left-[4px] right-[4px] max-w-[90%] h-4 leading-none">
+          <span className="w-9/12	absolute text-micro top-1 left-1 right-1 leading-none text-cemter group-hover:block uppercase h-4 hidden truncate whitespace-nowrap">
             {header}
           </span>
         )}
