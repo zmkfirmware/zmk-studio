@@ -69,7 +69,7 @@ export const Key = ({
 
   return (
     <div
-      className="group justify-content-center group items-center select-none transition-transform origin-center data-[zoomer=true]:hover:scale-[2] data-[zoomer=true]:hover:z-20"
+      className="justify-content-center group origin-center select-none items-center transition-transform data-[zoomer=true]:hover:z-20 data-[zoomer=true]:hover:scale-[2]"
       data-zoomer={hoverZoom}
       style={size}
       {...props}
@@ -84,7 +84,7 @@ export const Key = ({
         ].join(" ")}
       >
         {header && (
-          <span className="w-9/12	absolute text-micro top-1 left-1 right-1 leading-none text-cemter group-hover:block uppercase h-4 hidden truncate whitespace-nowrap">
+          <span className="absolute	inset-x-1 top-1 hidden h-4 w-9/12 truncate whitespace-nowrap text-center text-micro uppercase leading-none group-hover:block">
             {header}
           </span>
         )}
