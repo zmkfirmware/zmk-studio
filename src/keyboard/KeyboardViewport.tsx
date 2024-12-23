@@ -1,45 +1,27 @@
 import { FC, PropsWithChildren, useEffect, useRef } from "react";
+import { useLocalStorageState } from "../misc/useLocalStorageState";
+import { ExpandIcon, MaximizeIcon, ShrinkIcon } from "lucide-react";
 
 type KeyboardViewportType = PropsWithChildren<{
   className?: string;
 }>;
 
-const KEYMAP_SCALE = "keymap:scale";
-const DEFAULT_SCALE = window.localStorage.getItem(KEYMAP_SCALE) ?? "1";
+const KEYMAP_SCALE = "keymapScale";
+const DEFAULT_SCALE = 1;
 
 export const KeyboardViewport: FC<KeyboardViewportType> = ({
   children,
   className,
 }) => {
   const targetRef = useRef<HTMLDivElement>(null);
-  const scaleRef = useRef<HTMLInputElement>(null);
 
-  const setScale = (param: "increase" | "decrease") => {
-    if (!targetRef.current || !scaleRef.current) return;
-
-    const current = scaleRef.current.value;
-
-    if (param === "increase" && Number(current) < 2) {
-      scaleRef.current.value = String(Number(scaleRef.current.value) + 0.2);
-    }
-
-    if (param === "decrease" && Number(current) > 0.2) {
-      scaleRef.current.value = String(Number(scaleRef.current.value) - 0.2);
-    }
-
-    localStorage.setItem(KEYMAP_SCALE, scaleRef.current.value);
-    targetRef.current.style.setProperty(
-      "transform",
-      `scale(${scaleRef.current.value})`,
-    );
-  };
+  const [scale, setScale] = useLocalStorageState(KEYMAP_SCALE, DEFAULT_SCALE);
 
   const resetScale = () => {
-    if (!targetRef.current || !scaleRef.current) return;
+    if (!targetRef.current) return;
     targetRef.current.style.translate = "unset";
     targetRef.current.style.setProperty("transform", "scale(1)");
-    scaleRef.current.value = "1";
-    localStorage.setItem(KEYMAP_SCALE, "1");
+    setScale(DEFAULT_SCALE);
   };
 
   useEffect(() => {
@@ -49,7 +31,7 @@ export const KeyboardViewport: FC<KeyboardViewportType> = ({
     const offset = { x: 0, y: 0 };
     let isPanningActive = false;
 
-    function panStart(e: KeyboardEvent) {
+    function keyDownPanStart(e: KeyboardEvent) {
       if (e.key !== " ") return;
       e.preventDefault();
 
@@ -57,7 +39,15 @@ export const KeyboardViewport: FC<KeyboardViewportType> = ({
       isPanningActive = true;
     }
 
-    function panEnd(e: KeyboardEvent) {
+    function pointerDownPanStart(e: PointerEvent) {
+      if (e.button !== 0) return;
+      e.preventDefault();
+
+      target.style.cursor = "grab";
+      isPanningActive = true;
+    }
+
+    function keyUpPanEnd(e: KeyboardEvent) {
       if (e.key !== " ") return;
       isPanningActive = false;
       target.style.cursor = "unset";
@@ -70,35 +60,27 @@ export const KeyboardViewport: FC<KeyboardViewportType> = ({
       target.style.translate = `${offset.x}px ${offset.y}px`;
     }
 
-    document.addEventListener("keydown", panStart);
-    document.addEventListener("keyup", panEnd);
-    target.addEventListener("pointermove", panMove);
-
-    return () => {
-      document.removeEventListener("keydown", panStart);
-      document.removeEventListener("keyup", panEnd);
-      target.removeEventListener("pointermove", panMove);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!scaleRef.current || !targetRef.current) return;
-
-    const input = scaleRef.current;
-    const target = targetRef.current;
-
-    input.value = DEFAULT_SCALE;
-    target.style.setProperty("transform", `scale(${DEFAULT_SCALE})`);
-
-    function onInputChange(e: Event) {
-      const value = (e.currentTarget as HTMLInputElement).value;
-      target.style.setProperty("transform", `scale(${value})`);
-      localStorage.setItem(KEYMAP_SCALE, value);
+    function pointerUpPanEnd() {
+      isPanningActive = false;
+      target.style.cursor = "unset";
     }
 
-    input.addEventListener("change", onInputChange);
+    document.addEventListener("keydown", keyDownPanStart);
+    document.addEventListener("keyup", keyUpPanEnd);
+
+    target.addEventListener("pointermove", panMove);
+    target.addEventListener("pointerdown", pointerDownPanStart);
+    target.addEventListener("pointerup", pointerUpPanEnd);
+    target.addEventListener("pointerleave", pointerUpPanEnd);
+
     return () => {
-      input.removeEventListener("change", onInputChange);
+      document.removeEventListener("keydown", keyDownPanStart);
+      document.removeEventListener("keyup", keyUpPanEnd);
+
+      target.removeEventListener("pointermove", panMove);
+      target.removeEventListener("pointerdown", pointerDownPanStart);
+      target.removeEventListener("pointerup", pointerUpPanEnd);
+      target.removeEventListener("pointerleave", pointerUpPanEnd);
     };
   }, []);
 
@@ -111,17 +93,20 @@ export const KeyboardViewport: FC<KeyboardViewportType> = ({
     >
       <div
         ref={targetRef}
+        style={{ transform: `scale(${scale})` }}
         className="flex size-full origin-center items-center justify-center transition-transform"
       >
         {children}
       </div>
 
-      <div className="absolute bottom-[10px] left-1/2 ml-[-170px] flex justify-center items-center w-[298px] gap-1 rounded-xl bg-muted py-1 select-none bg-base-300">
+      <div className="absolute bottom-8 left-0 flex justify-center items-center w-full gap-1 rounded-xl bg-muted py-1 select-none bg-base-300">
         <button
-          className="block px-4 py-1.5 bg-base-100 rounded-l-lg"
-          onClick={() => setScale("decrease")}
+          className="block h-9 px-4 py-1.5 bg-base-100 rounded-l-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={scale <= 0.25}
+          onClick={() => setScale((prev: number) => prev - 0.05)}
         >
-          -
+          <ShrinkIcon className="size-4" />
+          <span className="sr-only">Decrease scale</span>
         </button>
         <div className="flex h-9 px-2 justify-center items-center bg-base-100">
           <input
@@ -130,22 +115,25 @@ export const KeyboardViewport: FC<KeyboardViewportType> = ({
             min={0.25}
             max={2}
             step={0.01}
-            ref={scaleRef}
-            defaultValue={DEFAULT_SCALE}
             className="mx-auto h-1 w-28 cursor-pointer appearance-none rounded-lg"
+            value={scale}
+            onChange={(e) => setScale(Number(e.target.value))}
           />
         </div>
         <button
-          className="block px-4 py-1.5 bg-base-100"
-          onClick={() => setScale("increase")}
+          className="block h-9 px-4 py-1.5 bg-base-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={scale >= 2}
+          onClick={() => setScale((prev: number) => prev + 0.05)}
         >
-          +
+          <ExpandIcon className="size-4" />
+          <span className="sr-only">Increase scale</span>
         </button>
         <button
-          className="block px-4 py-1.5 bg-base-100 rounded-r-lg"
+          className="block px-4 py-1.5 bg-base-100 rounded-r-lg h-9 disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={resetScale}
         >
-          Auto
+          <MaximizeIcon className="size-4" />
+          <span className="sr-only">Reset scale</span>
         </button>
       </div>
     </div>
