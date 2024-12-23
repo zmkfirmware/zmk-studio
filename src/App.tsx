@@ -21,7 +21,7 @@ import {
 } from "./tauri/serial";
 import Keyboard from "./keyboard/Keyboard";
 import { UndoRedoContext, useUndoRedo } from "./undoRedo";
-import { usePub, useSub } from "./usePubSub";
+import { emitter, useSub } from "./usePubSub";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { LockStateContext } from "./rpc/LockStateContext";
 import { UnlockModal } from "./UnlockModal";
@@ -68,19 +68,17 @@ const TRANSPORTS: TransportFactory[] = [
 
 async function listen_for_notifications(
   notification_stream: ReadableStream<Notification>,
-  signal: AbortSignal
+  signal: AbortSignal,
 ): Promise<void> {
-  let reader = notification_stream.getReader();
+  const reader = notification_stream.getReader();
   const onAbort = () => {
     reader.cancel();
     reader.releaseLock();
   };
   signal.addEventListener("abort", onAbort, { once: true });
   do {
-    let pub = usePub();
-
     try {
-      let { done, value } = await reader.read();
+      const { done, value } = await reader.read();
       if (done) {
         break;
       }
@@ -90,10 +88,10 @@ async function listen_for_notifications(
       }
 
       console.log("Notification", value);
-      pub("rpc_notification", value);
+      await emitter.emit("rpc_notification", value);
 
       const subsystem = Object.entries(value).find(
-        ([_k, v]) => v !== undefined
+        ([_k, v]) => v !== undefined,
       );
       if (!subsystem) {
         continue;
@@ -109,28 +107,29 @@ async function listen_for_notifications(
       const [eventName, eventData] = event;
       const topic = ["rpc_notification", subId, eventName].join(".");
 
-      pub(topic, eventData);
+      await emitter.emit(topic, eventData);
     } catch (e) {
       signal.removeEventListener("abort", onAbort);
       reader.releaseLock();
       throw e;
     }
+    // eslint-disable-next-line no-constant-condition
   } while (true);
 
   signal.removeEventListener("abort", onAbort);
   reader.releaseLock();
-  notification_stream.cancel();
+  await notification_stream.cancel();
 }
 
 async function connect(
   transport: RpcTransport,
   setConn: Dispatch<ConnectionState>,
   setConnectedDeviceName: Dispatch<string | undefined>,
-  signal: AbortSignal
+  signal: AbortSignal,
 ) {
-  let conn = await create_rpc_connection(transport, { signal });
+  const conn = create_rpc_connection(transport, { signal });
 
-  let details = await Promise.race([
+  const details = await Promise.race([
     call_rpc(conn, { core: { getDeviceInfo: true } })
       .then((r) => r?.core?.getDeviceInfo)
       .catch((e) => {
@@ -171,12 +170,13 @@ function App() {
   const [connectionAbort, setConnectionAbort] = useState(new AbortController());
 
   const [lockState, setLockState] = useState<LockState>(
-    LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED
+    LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED,
   );
 
-  useSub("rpc_notification.core.lockStateChanged", (ls) => {
-    setLockState(ls);
-  });
+  useSub<LockState>(
+    "rpc_notification.core.lockStateChanged",
+    (ls) => void setLockState(ls),
+  );
 
   useEffect(() => {
     if (!conn) {
@@ -189,18 +189,18 @@ function App() {
         return;
       }
 
-      let locked_resp = await call_rpc(conn.conn, {
+      const locked_resp = await call_rpc(conn.conn, {
         core: { getLockState: true },
       });
 
       setLockState(
         locked_resp.core?.getLockState ||
-          LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED
+          LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED,
       );
     }
 
-    updateLockState();
-  }, [conn, setLockState]);
+    updateLockState().then(console.info).catch(console.error);
+  }, [conn, reset, setLockState]);
 
   const save = useCallback(() => {
     async function doSave() {
@@ -208,13 +208,13 @@ function App() {
         return;
       }
 
-      let resp = await call_rpc(conn.conn, { keymap: { saveChanges: true } });
+      const resp = await call_rpc(conn.conn, { keymap: { saveChanges: true } });
       if (!resp.keymap?.saveChanges || resp.keymap?.saveChanges.err) {
         console.error("Failed to save changes", resp.keymap?.saveChanges);
       }
     }
 
-    doSave();
+    doSave().then(console.info).catch(console.error);
   }, [conn]);
 
   const discard = useCallback(() => {
@@ -223,7 +223,7 @@ function App() {
         return;
       }
 
-      let resp = await call_rpc(conn.conn, {
+      const resp = await call_rpc(conn.conn, {
         keymap: { discardChanges: true },
       });
       if (!resp.keymap?.discardChanges) {
@@ -234,8 +234,8 @@ function App() {
       setConn({ conn: conn.conn });
     }
 
-    doDiscard();
-  }, [conn]);
+    doDiscard().then(console.info).catch(console.error);
+  }, [conn.conn, reset]);
 
   const resetSettings = useCallback(() => {
     async function doReset() {
@@ -243,7 +243,7 @@ function App() {
         return;
       }
 
-      let resp = await call_rpc(conn.conn, {
+      const resp = await call_rpc(conn.conn, {
         core: { resetSettings: true },
       });
       if (!resp.core?.resetSettings) {
@@ -254,8 +254,8 @@ function App() {
       setConn({ conn: conn.conn });
     }
 
-    doReset();
-  }, [conn]);
+    doReset().then(console.info).catch(console.error);
+  }, [conn.conn, reset]);
 
   const disconnect = useCallback(() => {
     async function doDisconnect() {
@@ -268,16 +268,18 @@ function App() {
       setConnectionAbort(new AbortController());
     }
 
-    doDisconnect();
-  }, [conn]);
+    doDisconnect().then(console.info).catch(console.error);
+  }, [conn.conn, connectionAbort]);
 
   const onConnect = useCallback(
     (t: RpcTransport) => {
       const ac = new AbortController();
       setConnectionAbort(ac);
-      connect(t, setConn, setConnectedDeviceName, ac.signal);
+      connect(t, setConn, setConnectedDeviceName, ac.signal)
+        .then(console.info)
+        .catch(console.error);
     },
-    [setConn, setConnectedDeviceName, setConnectedDeviceName]
+    [setConn, setConnectedDeviceName],
   );
 
   return (
@@ -295,7 +297,7 @@ function App() {
             open={showLicenseNotice}
             onClose={() => setShowLicenseNotice(false)}
           />
-          <div className="bg-base-100 text-base-content h-full max-h-[100vh] w-full max-w-[100vw] inline-grid grid-cols-[auto] grid-rows-[auto_1fr_auto] overflow-hidden">
+          <div className="inline-grid size-full max-h-screen max-w-[100vw] grid-cols-[auto] grid-rows-[auto_1fr_auto] overflow-hidden bg-base-100 text-base-content">
             <AppHeader
               connectedDeviceLabel={connectedDeviceName}
               canUndo={canUndo}

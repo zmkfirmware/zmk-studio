@@ -10,11 +10,11 @@ import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 export function useConnectedDeviceData<T>(
   req: Omit<Request, "requestId">,
   response_mapper: (resp: RequestResponse) => T | undefined,
-  requireUnlock?: boolean
+  requireUnlock?: boolean,
 ): [T | undefined, React.Dispatch<SetStateAction<T | undefined>>] {
-  let connection = useContext(ConnectionContext);
-  let lockState = useContext(LockStateContext);
-  let [data, setData] = useState<T | undefined>(undefined);
+  const connection = useContext(ConnectionContext);
+  const lockState = useContext(LockStateContext);
+  const [data, setData] = useState<T | undefined>(undefined);
 
   useEffect(
     () => {
@@ -33,7 +33,7 @@ export function useConnectedDeviceData<T>(
           return;
         }
 
-        let response = response_mapper(await call_rpc(connection.conn, req));
+        const response = response_mapper(await call_rpc(connection.conn, req));
 
         if (!ignore) {
           setData(response);
@@ -47,9 +47,10 @@ export function useConnectedDeviceData<T>(
         ignore = true;
       };
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     requireUnlock
       ? [connection, requireUnlock, lockState]
-      : [connection, requireUnlock]
+      : [connection, requireUnlock],
   );
 
   return [data, setData];

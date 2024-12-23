@@ -20,14 +20,15 @@ export type TransportFactory = {
 
 export interface UnlockModalProps {}
 
+// eslint-disable-next-line no-empty-pattern
 export const UnlockModal = ({}: UnlockModalProps) => {
-  let conn = useContext(ConnectionContext);
-  let lockState = useContext(LockStateContext);
+  const conn = useContext(ConnectionContext);
+  const lockState = useContext(LockStateContext);
 
-  let open = useMemo(
+  const open = useMemo(
     () =>
       !!conn.conn && lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED,
-    [conn, lockState]
+    [conn, lockState],
   );
   const dialog = useModalRef(open, false, false);
 

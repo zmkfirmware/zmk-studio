@@ -9,7 +9,7 @@ export const Tooltip = ({ children, label }: TooltipProps) => {
   return (
     <TooltipTrigger delay={1000} closeDelay={500}>
       {children}
-      <AriaTooltip offset={5} className="bg-base-200 text-base-content px-2 py-1 rounded shadow-md">
+      <AriaTooltip offset={5} className="rounded bg-base-200 px-2 py-1 text-base-content shadow-md">
         {label}
       </AriaTooltip>
     </TooltipTrigger>

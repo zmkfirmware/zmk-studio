@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 
 import type { RpcTransport } from "@zmkfirmware/zmk-studio-ts-client/transport/index";
 import { UserCancelledError } from "@zmkfirmware/zmk-studio-ts-client/transport/errors";
@@ -25,20 +25,20 @@ export interface ConnectModalProps {
   onTransportCreated: (t: RpcTransport) => void;
 }
 
-function deviceList(
-  open: boolean,
-  transports: TransportFactory[],
-  onTransportCreated: (t: RpcTransport) => void
-) {
+const DeviceList: FC<ConnectModalProps> = ({
+  open,
+  transports,
+  onTransportCreated,
+}) => {
   const [devices, setDevices] = useState<
     Array<[TransportFactory, AvailableDevice]>
   >([]);
   const [selectedDev, setSelectedDev] = useState(new Set<Key>());
   const [refreshing, setRefreshing] = useState(false);
 
-  async function LoadEm() {
+  const LoadEm = useCallback(async () => {
     setRefreshing(true);
-    let entries: Array<[TransportFactory, AvailableDevice]> = [];
+    const entries: Array<[TransportFactory, AvailableDevice]> = [];
     for (const t of transports.filter((t) => t.pick_and_connect)) {
       const devices = await t.pick_and_connect?.list();
       if (!devices) {
@@ -48,27 +48,27 @@ function deviceList(
       entries.push(
         ...devices.map<[TransportFactory, AvailableDevice]>((d) => {
           return [t, d];
-        })
+        }),
       );
     }
 
     setDevices(entries);
     setRefreshing(false);
-  }
+  }, [transports]);
 
   useEffect(() => {
     setSelectedDev(new Set());
     setDevices([]);
 
-    LoadEm();
-  }, [transports, open, setDevices]);
+    LoadEm().then(console.info).catch(console.error);
+  }, [transports, open, setDevices, LoadEm]);
 
   const onRefresh = useCallback(() => {
     setSelectedDev(new Set());
     setDevices([]);
 
-    LoadEm();
-  }, [setDevices]);
+    LoadEm().then(console.info).catch(console.error);
+  }, [LoadEm]);
 
   const onSelect = useCallback(
     async (keys: Selection) => {
@@ -83,7 +83,7 @@ function deviceList(
           .catch((e) => alert(e));
       }
     },
-    [devices, onTransportCreated]
+    [devices, onTransportCreated],
   );
 
   return (
@@ -91,7 +91,7 @@ function deviceList(
       <div className="grid grid-cols-[1fr_auto]">
         <label>Select A Device:</label>
         <button
-          className="p-1 rounded hover:bg-base-300 disabled:bg-base-100 disabled:opacity-75"
+          className="rounded p-1 hover:bg-base-300 disabled:bg-base-100 disabled:opacity-75"
           disabled={refreshing}
           onClick={onRefresh}
         >
@@ -112,12 +112,12 @@ function deviceList(
       >
         {([t, d]) => (
           <ListBoxItem
-            className="grid grid-cols-[1em_1fr] rounded hover:bg-base-300 cursor-pointer px-1"
+            className="grid cursor-pointer grid-cols-[1em_1fr] rounded px-1 hover:bg-base-300"
             id={d.id}
             aria-label={d.label}
           >
             {t.isWireless && (
-              <Bluetooth className="w-4 justify-center content-center h-full" />
+              <Bluetooth className="h-full w-4 content-center justify-center" />
             )}
             <span className="col-start-2">{d.label}</span>
           </ListBoxItem>
@@ -125,12 +125,12 @@ function deviceList(
       </ListBox>
     </div>
   );
-}
+};
 
-function simpleDevicePicker(
-  transports: TransportFactory[],
-  onTransportCreated: (t: RpcTransport) => void
-) {
+const SimpleDevicePicker: FC<Omit<ConnectModalProps, "open">> = ({
+  transports,
+  onTransportCreated,
+}) => {
   const [availableDevices, setAvailableDevices] = useState<
     AvailableDevice[] | undefined
   >(undefined);
@@ -146,50 +146,50 @@ function simpleDevicePicker(
 
     let ignore = false;
 
-    if (selectedTransport.connect) {
-      async function connectTransport() {
-        try {
-          const transport = await selectedTransport?.connect?.();
-
-          if (!ignore) {
-            if (transport) {
-              onTransportCreated(transport);
-            }
-            setSelectedTransport(undefined);
-          }
-        } catch (e) {
-          if (!ignore) {
-            console.error(e);
-            if (e instanceof Error && !(e instanceof UserCancelledError)) {
-              alert(e.message);
-            }
-            setSelectedTransport(undefined);
-          }
-        }
-      }
-
-      connectTransport();
-    } else {
-      async function loadAvailableDevices() {
-        const devices = await selectedTransport?.pick_and_connect?.list();
+    async function connectTransport() {
+      try {
+        const transport = await selectedTransport?.connect?.();
 
         if (!ignore) {
-          setAvailableDevices(devices);
+          if (transport) {
+            onTransportCreated(transport);
+          }
+          setSelectedTransport(undefined);
+        }
+      } catch (e) {
+        if (!ignore) {
+          console.error(e);
+          if (e instanceof Error && !(e instanceof UserCancelledError)) {
+            alert(e.message);
+          }
+          setSelectedTransport(undefined);
         }
       }
-
-      loadAvailableDevices();
     }
 
+    async function loadAvailableDevices() {
+      const devices = await selectedTransport?.pick_and_connect?.list();
+
+      if (!ignore) {
+        setAvailableDevices(devices);
+      }
+    }
+
+    if (selectedTransport.connect) {
+      connectTransport().then(console.info).catch(console.error);
+      return;
+    }
+
+    loadAvailableDevices().then(console.info).catch(console.error);
     return () => {
       ignore = true;
     };
-  }, [selectedTransport]);
+  }, [onTransportCreated, selectedTransport]);
 
-  let connections = transports.map((t) => (
+  const connections = transports.map((t) => (
     <li key={t.label} className="list-none">
       <button
-        className="bg-base-300 hover:bg-primary hover:text-primary-content rounded px-2 py-1"
+        className="rounded bg-base-300 px-2 py-1 hover:bg-primary hover:text-primary-content"
         type="button"
         onClick={async () => setSelectedTransport(t)}
       >
@@ -197,6 +197,7 @@ function simpleDevicePicker(
       </button>
     </li>
   ));
+
   return (
     <div>
       <p className="text-sm">Select a connection type.</p>
@@ -209,7 +210,7 @@ function simpleDevicePicker(
               className="m-1 p-1"
               onClick={async () => {
                 onTransportCreated(
-                  await selectedTransport!.pick_and_connect!.connect(d)
+                  await selectedTransport!.pick_and_connect!.connect(d),
                 );
                 setSelectedTransport(undefined);
               }}
@@ -221,9 +222,9 @@ function simpleDevicePicker(
       )}
     </div>
   );
-}
+};
 
-function noTransportsOptionsPrompt() {
+const NoTransportsOptionsPrompt: FC = () => {
   return (
     <div className="m-4 flex flex-col gap-2">
       <p>
@@ -240,7 +241,7 @@ function noTransportsOptionsPrompt() {
 
       <div>
         <p>To use ZMK Studio, either:</p>
-        <ul className="list-disc list-inside">
+        <ul className="list-inside list-disc">
           <li>
             Use a browser that supports the above web technologies, e.g.
             Chrome/Edge, or
@@ -256,22 +257,24 @@ function noTransportsOptionsPrompt() {
       </div>
     </div>
   );
-}
+};
 
-function connectOptions(
-  transports: TransportFactory[],
-  onTransportCreated: (t: RpcTransport) => void,
-  open?: boolean
-) {
-  const useSimplePicker = useMemo(
+const ConnectOptions: FC<ConnectModalProps> = ({
+  open,
+  transports,
+  onTransportCreated,
+}) => {
+  const simpleMode = useMemo(
     () => transports.every((t) => !t.pick_and_connect),
-    [transports]
+    [transports],
   );
 
-  return useSimplePicker
-    ? simpleDevicePicker(transports, onTransportCreated)
-    : deviceList(open || false, transports, onTransportCreated);
-}
+  if (simpleMode) {
+    return <SimpleDevicePicker {...{ transports, onTransportCreated }} />;
+  }
+
+  return <DeviceList {...{ open, transports, onTransportCreated }} />;
+};
 
 export const ConnectModal = ({
   open,
@@ -279,15 +282,16 @@ export const ConnectModal = ({
   onTransportCreated,
 }: ConnectModalProps) => {
   const dialog = useModalRef(open || false, false, false);
-
   const haveTransports = useMemo(() => transports.length > 0, [transports]);
 
   return (
     <GenericModal ref={dialog} className="max-w-xl">
       <h1 className="text-xl">Welcome to ZMK Studio</h1>
-      {haveTransports
-        ? connectOptions(transports, onTransportCreated, open)
-        : noTransportsOptionsPrompt()}
+      {haveTransports ? (
+        <ConnectOptions {...{ open, transports, onTransportCreated }} />
+      ) : (
+        <NoTransportsOptionsPrompt />
+      )}
     </GenericModal>
   );
 };

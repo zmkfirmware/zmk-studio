@@ -8,6 +8,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Inter", "system-ui"],
+        keycap: ["Inter", "system-ui"],
       },
       colors: {
         primary:
@@ -23,10 +24,6 @@ export default {
         "base-200": "light-dark(#F2F2F2, #191e24)",
         "base-300": "light-dark(#E5E6E6, #15191e)",
       },
-    },
-
-    fontFamily: {
-      keycap: ["Inter", "system-ui"],
     },
   },
   plugins: [contQueries, trac({ prefix: "rac" })],
