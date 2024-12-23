@@ -15,11 +15,7 @@ export const LicenseNoticeModal = ({
   const ref = useModalRef(open, true);
 
   return (
-    <GenericModal
-      ref={ref}
-      className="w-[60vw] min-w-min"
-      onClose={onClose}
-    >
+    <GenericModal ref={ref} className="w-[60vw] min-w-min" onClose={onClose}>
       <div>
         <div className="flex items-start justify-between">
           <p className="mr-2">
@@ -34,7 +30,7 @@ export const LicenseNoticeModal = ({
             Close
           </button>
         </div>
-        <pre className="font-mono m-4 text-xs">{NOTICE}</pre>
+        <pre className="m-4 font-mono text-xs">{NOTICE}</pre>
       </div>
     </GenericModal>
   );

@@ -32,7 +32,7 @@ interface LayerPickerProps {
   onLayerNameChanged?: (
     id: number,
     oldName: string,
-    newName: string
+    newName: string,
   ) => void | Promise<void>;
 }
 
@@ -53,7 +53,7 @@ const EditLabelModal = ({
   handleSaveNewLabel: (
     id: number,
     oldName: string,
-    newName: string | null
+    newName: string | null,
   ) => void;
 }) => {
   const ref = useModalRef(open);
@@ -115,7 +115,7 @@ export const LayerPicker = ({
   ...props
 }: LayerPickerProps) => {
   const [editLabelData, setEditLabelData] = useState<EditLabelData | null>(
-    null
+    null,
   );
 
   const layer_items = useMemo(() => {
@@ -135,7 +135,7 @@ export const LayerPicker = ({
 
       onLayerClicked?.(layer_items.findIndex((l) => s.has(l.id)));
     },
-    [onLayerClicked, layer_items]
+    [onLayerClicked, layer_items],
   );
 
   const { dragAndDropHooks } = useDragAndDrop({
@@ -162,7 +162,7 @@ export const LayerPicker = ({
         onLayerNameChanged?.(id, oldName, newName);
       }
     },
-    [onLayerNameChanged]
+    [onLayerNameChanged],
   );
 
   return (
@@ -216,7 +216,7 @@ export const LayerPicker = ({
         {(layer_item) => (
           <ListBoxItem
             textValue={layer_item.name}
-            className="b-1 group my-1 grid grid-cols-[1fr_auto] items-center rounded border border-solid border-transparent p-1 hover:bg-base-300 aria-selected:bg-primary aria-selected:text-primary-content"
+            className="group my-1 grid grid-cols-[1fr_auto] items-center rounded border border-solid border-transparent p-1 hover:bg-base-300 aria-selected:bg-primary aria-selected:text-primary-content"
           >
             <span>{layer_item.name}</span>
             <Pencil
