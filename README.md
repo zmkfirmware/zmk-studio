@@ -22,9 +22,7 @@ To contribute to ZMK Studio, follow these steps:
 Ensure you have the following installed on your system:
 
 - [Node.js](https://nodejs.org/) (version 22 or later)
-- [npm](https://www.npmjs.com/) (version 10 or later)
-- [Rust](https://www.rust-lang.org/tools/install) (for building Tauri applications)
-- [Tauri CLI](https://tauri.app/v1/guides/getting-started/prerequisites/)
+- [Tauri CLI](https://v2.tauri.app/start/prerequisites/)
 
 ### Setup
 
