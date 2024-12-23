@@ -7,9 +7,6 @@ ZMK Studio is a powerful and user-friendly graphical interface for configuring a
 ZMK Studio offers a range of capabilities to enhance the user experience:
 
 - **Graphical Keymap Editor**: Easily create and modify keymaps with a visual editor.
-- **Device Management**: Connect to your keyboard via USB or Bluetooth and manage its settings.
-- **Firmware Updates**: Flash new firmware to your device directly from the application.
-- **Real-time Feedback**: Receive real-time notifications and feedback from your device.
 
 For more detailed information on the features and capabilities of ZMK Studio, please visit the [ZMK Studio Documentation](https://zmk.dev/docs/features/studio#capabilities).
 
