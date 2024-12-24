@@ -7,14 +7,28 @@ import {
 } from "react-aria-components";
 import { useConnectedDeviceData } from "./rpc/useConnectedDeviceData";
 import { useSub } from "./usePubSub";
-import { useContext, useEffect, useState } from "react";
-import { useModalRef } from "./misc/useModalRef";
+import {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { LockStateContext } from "./rpc/LockStateContext";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { ConnectionContext } from "./rpc/ConnectionContext";
-import { ChevronDown, Undo2, Redo2, Save, Trash2 } from "lucide-react";
+import {
+  ChevronDown,
+  Undo2,
+  Redo2,
+  Save,
+  Trash2,
+  AlertTriangle,
+} from "lucide-react";
 import { Tooltip } from "./misc/Tooltip";
-import { GenericModal } from "./GenericModal";
+import { Modal, ModalContent } from "./modal/Modal";
 
 export interface AppHeaderProps {
   connectedDeviceLabel?: string;
@@ -27,6 +41,57 @@ export interface AppHeaderProps {
   canUndo?: boolean;
   canRedo?: boolean;
 }
+
+const RestoreSettingsPrompt: FC<
+  Pick<AppHeaderProps, "onResetSettings"> & {
+    open: boolean;
+    onOpenChange: (value: boolean) => void | Dispatch<SetStateAction<boolean>>;
+  }
+> = ({ onResetSettings, open, onOpenChange }) => {
+  const handleContinue = useCallback(() => {
+    onOpenChange(false);
+    onResetSettings?.();
+  }, [onOpenChange, onResetSettings]);
+
+  return (
+    <Modal open={open} onOpenChange={onOpenChange}>
+      <ModalContent className="relative w-96 pt-8 px-6">
+        <div className="space-y-6">
+          <div className="flex flex-row gap-2 justify-center items-center">
+            <AlertTriangle className="size-6 text-amber-500" />
+            <span className="text-lg text-base-content">
+              Restore stock settings.
+            </span>
+          </div>
+          <div className="space-y-4 text-center text-sm">
+            <p className="text-base-content tracking-wide">
+              Reset will restore the default keymap and remove all ZMK Studio
+              customizations.
+            </p>
+
+            <p className="text-base-content">
+              Are you sure you want to continue?
+            </p>
+          </div>
+          <div className="flex justify-end items-center gap-3">
+            <button
+              className="rounded bg-base-300 hover:bg-base-300 px-3 py-2"
+              onClick={() => onOpenChange(false)}
+            >
+              <span>Cancel</span>
+            </button>
+            <button
+              className="rounded bg-red-800 hover:bg-red-600 px-3 py-2 text-white"
+              onClick={handleContinue}
+            >
+              <span>Reset Settings</span>
+            </button>
+          </div>
+        </div>
+      </ModalContent>
+    </Modal>
+  );
+};
 
 export const AppHeader = ({
   connectedDeviceLabel,
@@ -44,6 +109,8 @@ export const AppHeader = ({
   const lockState = useContext(LockStateContext);
   const connectionState = useContext(ConnectionContext);
 
+  const [promptRestoreSettings, setPromptRestoreSettings] = useState(false);
+
   useEffect(() => {
     if (
       (!connectionState.conn ||
@@ -54,14 +121,14 @@ export const AppHeader = ({
     }
   }, [lockState, showSettingsReset]);
 
-  const showSettingsRef = useModalRef(showSettingsReset);
+
   const [unsaved, setUnsaved] = useConnectedDeviceData<boolean>(
     { keymap: { checkUnsavedChanges: true } },
-    (r) => r.keymap?.checkUnsavedChanges
+    (r) => r.keymap?.checkUnsavedChanges,
   );
 
   useSub("rpc_notification.keymap.unsavedChangesStatusChanged", (unsaved) =>
-    setUnsaved(unsaved)
+    setUnsaved(unsaved),
   );
 
   return (
@@ -70,33 +137,7 @@ export const AppHeader = ({
         <img src="/zmk.svg" alt="ZMK Logo" className="h-8 rounded" />
         <p>Studio</p>
       </div>
-      <GenericModal ref={showSettingsRef} className="max-w-[50vw]">
-        <h2 className="my-2 text-lg">Restore Stock Settings</h2>
-        <div>
-          <p>
-            Settings reset will remove any customizations previously made in ZMK
-            Studio and restore the stock keymap
-          </p>
-          <p>Continue?</p>
-          <div className="flex justify-end my-2 gap-3">
-            <Button
-              className="rounded bg-base-200 hover:bg-base-300 px-3 py-2"
-              onPress={() => setShowSettingsReset(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              className="rounded bg-base-200 hover:bg-base-300 px-3 py-2"
-              onPress={() => {
-                setShowSettingsReset(false);
-                onResetSettings?.();
-              }}
-            >
-              Restore Stock Settings
-            </Button>
-          </div>
-        </div>
-      </GenericModal>
+
       <MenuTrigger>
         <Button
           className="text-center rac-disabled:opacity-0 hover:bg-base-300 transition-all duration-100 p-1 pl-2 rounded-lg"
@@ -115,7 +156,7 @@ export const AppHeader = ({
             </MenuItem>
             <MenuItem
               className="px-2 py-1 hover:bg-base-200"
-              onAction={() => setShowSettingsReset(true)}
+              onAction={() => setPromptRestoreSettings(true)}
             >
               Restore Stock Settings
             </MenuItem>
@@ -165,6 +206,12 @@ export const AppHeader = ({
           </Button>
         </Tooltip>
       </div>
+
+      <RestoreSettingsPrompt
+        open={promptRestoreSettings}
+        onOpenChange={setPromptRestoreSettings}
+        onResetSettings={onResetSettings}
+      />
     </header>
   );
 };

@@ -5,9 +5,8 @@ import { UserCancelledError } from "@zmkfirmware/zmk-studio-ts-client/transport/
 import type { AvailableDevice } from "./tauri/index";
 import { Bluetooth, RefreshCw } from "lucide-react";
 import { Key, ListBox, ListBoxItem, Selection } from "react-aria-components";
-import { useModalRef } from "./misc/useModalRef";
 import { ExternalLink } from "./misc/ExternalLink";
-import { GenericModal } from "./GenericModal";
+import { Modal, ModalContent } from "./modal/Modal";
 
 export type TransportFactory = {
   label: string;
@@ -278,16 +277,16 @@ export const ConnectModal = ({
   transports,
   onTransportCreated,
 }: ConnectModalProps) => {
-  const dialog = useModalRef(open || false, false, false);
-
   const haveTransports = useMemo(() => transports.length > 0, [transports]);
 
   return (
-    <GenericModal ref={dialog} className="max-w-xl">
-      <h1 className="text-xl">Welcome to ZMK Studio</h1>
-      {haveTransports
-        ? connectOptions(transports, onTransportCreated, open)
-        : noTransportsOptionsPrompt()}
-    </GenericModal>
+    <Modal open={open ?? true} onOpenChange={()=> {}} onEscapeClose={false} onBackdropClose={false}>
+      <ModalContent className="w-96" showCloseButton={false}>
+        <h1 className="text-xl">Welcome to ZMK Studio</h1>
+        {haveTransports
+          ? connectOptions(transports, onTransportCreated, open)
+          : noTransportsOptionsPrompt()}
+      </ModalContent>
+    </Modal>
   );
 };
