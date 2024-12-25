@@ -48,8 +48,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Modal: Story = {
   args: {
-    onBackdropClose: false,
-    onEscapeClose: false,
+    onBackdropClose: true,
+    onEscapeClose: true,
   },
 
   render: (args) => {
