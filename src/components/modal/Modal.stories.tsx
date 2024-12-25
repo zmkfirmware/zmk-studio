@@ -3,6 +3,7 @@ import { Modal as ModalComponent, ModalContent as Content } from "./Modal";
 
 import { useState } from "react";
 import { ModalContent } from "./ModalContent.stories";
+import { ZmkStudio } from "../ZmkStudio";
 
 const meta = {
   title: "UI/Modal",
@@ -63,6 +64,7 @@ export const Modal: Story = {
           onEscapeClose={args.onEscapeClose}
         >
           <Content {...ModalContent.args}>
+            <ZmkStudio />
             <div>Hello World</div>
           </Content>
         </ModalComponent>

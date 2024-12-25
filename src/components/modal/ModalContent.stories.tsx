@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Modal as ModalComponent, ModalContent as Content } from "./Modal";
+import { ZmkStudio } from "../ZmkStudio";
 
 const meta = {
   title: "UI/Modal/ModalContent",
@@ -37,7 +38,10 @@ export const ModalContent: ModalContentStory = {
   },
   render: (args) => (
     <ModalComponent open={true} onOpenChange={() => {}}>
-      <Content {...args}>Hello</Content>
+      <Content {...args}>
+        <ZmkStudio />
+        <div>Hello World</div>
+      </Content>
     </ModalComponent>
   ),
 };
