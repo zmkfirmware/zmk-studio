@@ -8,7 +8,6 @@ import { Key, ListBox, ListBoxItem, Selection } from "react-aria-components";
 import { ExternalLink } from "./misc/ExternalLink";
 import { Modal, ModalContent } from "./components/modal/Modal";
 import { ZmkStudio } from "./components/ZmkStudio";
-import { AppFooter } from './AppFooter'
 
 export type TransportFactory = {
   label: string;
@@ -289,8 +288,8 @@ export const ConnectModal = ({
           ? connectOptions(transports, onTransportCreated, open)
           : noTransportsOptionsPrompt()}
 
-        <div className="text-xs opacity-40 pointer-events-none select-none">
-          <AppFooter />
+        <div className="text-xs text-center opacity-40 select-none">
+          <span>&copy; 2024 - The ZMK Contributors</span>
         </div>
       </ModalContent>
     </Modal>
