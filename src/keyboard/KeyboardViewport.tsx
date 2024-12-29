@@ -99,42 +99,44 @@ export const KeyboardViewport: FC<KeyboardViewportType> = ({
         {children}
       </div>
 
-      <div className="absolute bottom-8 left-0 flex justify-center items-center w-full gap-1 rounded-xl bg-muted py-1 select-none bg-base-300">
-        <button
-          className="block h-9 px-4 py-1.5 bg-base-100 rounded-l-lg disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={scale <= 0.25}
-          onClick={() => setScale((prev: number) => prev - 0.05)}
-        >
-          <ShrinkIcon className="size-4" />
-          <span className="sr-only">Decrease scale</span>
-        </button>
-        <div className="flex h-9 px-2 justify-center items-center bg-base-100">
-          <input
-            type="range"
-            name="scale"
-            min={0.25}
-            max={2}
-            step={0.01}
-            className="mx-auto h-1 w-28 cursor-pointer appearance-none rounded-lg"
-            value={scale}
-            onChange={(e) => setScale(Number(e.target.value))}
-          />
+      <div className="absolute bottom-8 left-0 flex justify-center items-center w-full bg-muted select-none">
+        <div className="flex justify-center items-center gap-0.5 rounded-xl drop-shadow-lg bg-base-300 p-0.5">
+          <button
+            className="block h-9 px-4 py-1.5 bg-base-100 rounded-l-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={scale <= 0.25}
+            onClick={() => setScale((prev: number) => prev - 0.05)}
+          >
+            <ShrinkIcon className="size-4" />
+            <span className="sr-only">Decrease scale</span>
+          </button>
+          <div className="flex h-9 px-2 justify-center items-center bg-base-100">
+            <input
+              type="range"
+              name="scale"
+              min={0.25}
+              max={2}
+              step={0.01}
+              className="mx-auto h-1 w-28 cursor-pointer appearance-none rounded-lg"
+              value={scale}
+              onChange={(e) => setScale(Number(e.target.value))}
+            />
+          </div>
+          <button
+            className="block h-9 px-4 py-1.5 bg-base-100 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={scale >= 2}
+            onClick={() => setScale((prev: number) => prev + 0.05)}
+          >
+            <ExpandIcon className="size-4" />
+            <span className="sr-only">Increase scale</span>
+          </button>
+          <button
+            className="block px-4 py-1.5 bg-base-100 rounded-r-lg h-9 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={resetScale}
+          >
+            <MaximizeIcon className="size-4" />
+            <span className="sr-only">Reset scale</span>
+          </button>
         </div>
-        <button
-          className="block h-9 px-4 py-1.5 bg-base-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={scale >= 2}
-          onClick={() => setScale((prev: number) => prev + 0.05)}
-        >
-          <ExpandIcon className="size-4" />
-          <span className="sr-only">Increase scale</span>
-        </button>
-        <button
-          className="block px-4 py-1.5 bg-base-100 rounded-r-lg h-9 disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={resetScale}
-        >
-          <MaximizeIcon className="size-4" />
-          <span className="sr-only">Reset scale</span>
-        </button>
       </div>
     </div>
   );
