@@ -50,23 +50,23 @@ type DownloadLink = {
 const DownloadLinks: Record<string, DownloadLink> = {
   windows_exe: {
     name: "Windows (exe)",
-    urlPattern: /.*.exe/,
+    urlPattern: /.*\.exe/,
   },
   windows_msi: {
     name: "Windows (msi)",
-    urlPattern: /.*.msi/,
+    urlPattern: /.*\.msi/,
   },
   macos: {
     name: "macOS",
-    urlPattern: /.*.dmg/,
+    urlPattern: /.*\.dmg/,
   },
   linux_appimage: {
     name: "Linux (AppImage)",
-    urlPattern: /.*.AppImage/,
+    urlPattern: /.*\.AppImage/,
   },
   linux_deb: {
     name: "Linux (deb)",
-    urlPattern: /.*.deb/,
+    urlPattern: /.*\.deb/,
   },
 };
 
