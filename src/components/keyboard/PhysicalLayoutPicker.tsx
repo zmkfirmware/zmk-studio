@@ -9,7 +9,7 @@ import {
   SelectValue,
   Text,
 } from "react-aria-components";
-import { PhysicalLayout, type KeyPosition } from "./PhysicalLayout";
+import { PhysicalLayout, type KeyPosition } from "./PhysicalLayout.tsx";
 import { useCallback } from "react";
 
 export interface PhysicalLayoutItem {

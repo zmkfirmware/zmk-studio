@@ -1,7 +1,7 @@
 import {
   hid_usage_get_labels,
   hid_usage_page_and_id_from_usage,
-} from "../hid-usages";
+} from "../../hid-usages.ts";
 
 export interface HidUsageLabelProps {
   hid_usage: number;

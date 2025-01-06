@@ -2,12 +2,12 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { RpcTransport } from "@zmkfirmware/zmk-studio-ts-client/transport/index";
 import { UserCancelledError } from "@zmkfirmware/zmk-studio-ts-client/transport/errors";
-import type { AvailableDevice } from "./tauri/index";
+import type { AvailableDevice } from "../tauri";
 import { Bluetooth, RefreshCw } from "lucide-react";
 import { Key, ListBox, ListBoxItem, Selection } from "react-aria-components";
-import { useModalRef } from "./misc/useModalRef";
-import { ExternalLink } from "./misc/ExternalLink";
-import { GenericModal } from "./GenericModal";
+import { useModalRef } from "../misc/useModalRef.ts";
+import { ExternalLink } from "../misc/ExternalLink.tsx";
+import { GenericModal } from "./GenericModal.tsx";
 
 export type TransportFactory = {
   label: string;
@@ -28,7 +28,7 @@ export interface ConnectModalProps {
 function deviceList(
   open: boolean,
   transports: TransportFactory[],
-  onTransportCreated: (t: RpcTransport) => void
+  onTransportCreated: (t: RpcTransport) => void,
 ) {
   const [devices, setDevices] = useState<
     Array<[TransportFactory, AvailableDevice]>
@@ -48,7 +48,7 @@ function deviceList(
       entries.push(
         ...devices.map<[TransportFactory, AvailableDevice]>((d) => {
           return [t, d];
-        })
+        }),
       );
     }
 
@@ -83,7 +83,7 @@ function deviceList(
           .catch((e) => alert(e));
       }
     },
-    [devices, onTransportCreated]
+    [devices, onTransportCreated],
   );
 
   return (
@@ -96,9 +96,7 @@ function deviceList(
           onClick={onRefresh}
         >
           <RefreshCw
-            className={`size-5 transition-transform ${
-              refreshing ? "animate-spin" : ""
-            }`}
+            className={`size-5 transition-transform ${refreshing ? "animate-spin" : ""}`}
           />
         </button>
       </div>
@@ -129,7 +127,7 @@ function deviceList(
 
 function simpleDevicePicker(
   transports: TransportFactory[],
-  onTransportCreated: (t: RpcTransport) => void
+  onTransportCreated: (t: RpcTransport) => void,
 ) {
   const [availableDevices, setAvailableDevices] = useState<
     AvailableDevice[] | undefined
@@ -209,7 +207,7 @@ function simpleDevicePicker(
               className="m-1 p-1"
               onClick={async () => {
                 onTransportCreated(
-                  await selectedTransport!.pick_and_connect!.connect(d)
+                  await selectedTransport!.pick_and_connect!.connect(d),
                 );
                 setSelectedTransport(undefined);
               }}
@@ -261,11 +259,11 @@ function noTransportsOptionsPrompt() {
 function connectOptions(
   transports: TransportFactory[],
   onTransportCreated: (t: RpcTransport) => void,
-  open?: boolean
+  open?: boolean,
 ) {
   const useSimplePicker = useMemo(
     () => transports.every((t) => !t.pick_and_connect),
-    [transports]
+    [transports],
   );
 
   return useSimplePicker

@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
-import { Key } from "./Key";
+import { LayerPicker } from "./LayerPicker.tsx";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
-  title: "Keyboard/Key",
-  component: Key,
+  title: "Keyboard/LayerPicker",
+  component: LayerPicker,
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
     layout: "centered",
@@ -17,37 +17,29 @@ const meta = {
     // backgroundColor: { control: 'color' },
   },
   // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
-  args: { oneU: 48, onClick: fn() },
-} satisfies Meta<typeof Key>;
+  args: {
+    onLayerClicked: fn(),
+  },
+} satisfies Meta<typeof LayerPicker>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
-export const Normal: Story = {
+export const Named: Story = {
   args: {
-    width: 1,
-    height: 1,
-    header: "Key Press",
-    children: [<span>A</span>],
+    layers: [
+      { id: 1, name: "Base" },
+      { id: 2, name: "Num" },
+      { id: 3, name: "Nav" },
+      { id: 4, name: "Symbol" },
+    ],
+    selectedLayerIndex: 2,
   },
 };
 
-export const Selected: Story = {
+export const NoNames: Story = {
   args: {
-    selected: true,
-    width: 1,
-    height: 1,
-    header: "Key Press",
-    children: [<span>B</span>],
-  },
-};
-
-export const Large: Story = {
-  args: {
-    width: 2,
-    height: 1,
-    header: "Key Press",
-    children: [<span>C</span>],
+    layers: [{ id: 1 }, { id: 2 }, { id: 3 }],
+    selectedLayerIndex: 0,
   },
 };

@@ -10,7 +10,7 @@ export function useUndoRedo(): [
   () => Promise<void>,
   boolean,
   boolean,
-  () => void
+  () => void,
 ] {
   const [locked, setLocked] = useState<boolean>(false);
   const [undoStack, setUndoStack] = useState<Array<[DoCallback, UndoCallback]>>(
@@ -20,11 +20,11 @@ export function useUndoRedo(): [
 
   const canUndo = useMemo(
     () => !locked && undoStack.length > 0,
-    [locked, undoStack]
+    [locked, undoStack],
   );
   const canRedo = useMemo(
     () => !locked && redoStack.length > 0,
-    [locked, redoStack]
+    [locked, redoStack],
   );
 
   const doIt = async (doCb: DoCallback, preserveRedo?: boolean) => {

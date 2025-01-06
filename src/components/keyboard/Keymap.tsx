@@ -7,8 +7,8 @@ import type { GetBehaviorDetailsResponse } from "@zmkfirmware/zmk-studio-ts-clie
 import {
   LayoutZoom,
   PhysicalLayout as PhysicalLayoutComp,
-} from "./PhysicalLayout";
-import { HidUsageLabel } from "./HidUsageLabel";
+} from "./PhysicalLayout.tsx";
+import { HidUsageLabel } from "./HidUsageLabel.tsx";
 
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 

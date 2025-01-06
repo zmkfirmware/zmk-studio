@@ -8,8 +8,8 @@ import {
   Selection,
   useDragAndDrop,
 } from "react-aria-components";
-import { useModalRef } from "../misc/useModalRef";
-import { GenericModal } from "../GenericModal";
+import { useModalRef } from "../../misc/useModalRef.ts";
+import { GenericModal } from "../GenericModal.tsx";
 
 interface Layer {
   id: number;

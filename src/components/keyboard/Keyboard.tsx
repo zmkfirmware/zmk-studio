@@ -8,7 +8,7 @@ import React, {
 } from "react";
 
 import { Request } from "@zmkfirmware/zmk-studio-ts-client";
-import { call_rpc } from "../rpc/logging";
+import { call_rpc } from "../../rpc/logging.ts";
 import {
   PhysicalLayout,
   Keymap,
@@ -19,18 +19,18 @@ import {
 } from "@zmkfirmware/zmk-studio-ts-client/keymap";
 import type { GetBehaviorDetailsResponse } from "@zmkfirmware/zmk-studio-ts-client/behaviors";
 
-import { LayerPicker } from "./LayerPicker";
-import { PhysicalLayoutPicker } from "./PhysicalLayoutPicker";
-import { Keymap as KeymapComp } from "./Keymap";
-import { useConnectedDeviceData } from "../rpc/useConnectedDeviceData";
-import { ConnectionContext } from "../rpc/ConnectionContext";
-import { UndoRedoContext } from "../undoRedo";
-import { BehaviorBindingPicker } from "../behaviors/BehaviorBindingPicker";
+import { LayerPicker } from "./LayerPicker.tsx";
+import { PhysicalLayoutPicker } from "./PhysicalLayoutPicker.tsx";
+import { Keymap as KeymapComp } from "./Keymap.tsx";
+import { useConnectedDeviceData } from "../../rpc/useConnectedDeviceData.ts";
+import { ConnectionContext } from "../../rpc/ConnectionContext.ts";
+import { UndoRedoContext } from "../../helpers/undoRedo.ts";
+import { BehaviorBindingPicker } from "../../behaviors/BehaviorBindingPicker.tsx";
 import { produce } from "immer";
-import { LockStateContext } from "../rpc/LockStateContext";
+import { LockStateContext } from "../../rpc/LockStateContext.ts";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
-import { deserializeLayoutZoom, LayoutZoom } from "./PhysicalLayout";
-import { useLocalStorageState } from "../misc/useLocalStorageState";
+import { deserializeLayoutZoom, LayoutZoom } from "./PhysicalLayout.tsx";
+import { useLocalStorageState } from "../../misc/useLocalStorageState.ts";
 
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 

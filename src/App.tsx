@@ -6,7 +6,7 @@ import { call_rpc } from "./rpc/logging";
 import type { Notification } from "@zmkfirmware/zmk-studio-ts-client/studio";
 import { ConnectionState, ConnectionContext } from "./rpc/ConnectionContext";
 import { Dispatch, useCallback, useEffect, useState } from "react";
-import { ConnectModal, TransportFactory } from "./ConnectModal";
+import { ConnectModal, TransportFactory } from "./components/ConnectModal.tsx";
 
 import type { RpcTransport } from "@zmkfirmware/zmk-studio-ts-client/transport/index";
 import { connect as gatt_connect } from "@zmkfirmware/zmk-studio-ts-client/transport/gatt";
@@ -19,15 +19,15 @@ import {
   connect as tauri_serial_connect,
   list_devices as serial_list_devices,
 } from "./tauri/serial";
-import Keyboard from "./keyboard/Keyboard";
-import { UndoRedoContext, useUndoRedo } from "./undoRedo";
-import { usePub, useSub } from "./usePubSub";
+import Keyboard from "./components/keyboard/Keyboard";
+import { UndoRedoContext, useUndoRedo } from "./helpers/undoRedo.ts";
+import { usePub, useSub } from "./helpers/usePubSub.ts";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { LockStateContext } from "./rpc/LockStateContext";
-import { UnlockModal } from "./UnlockModal";
-import { valueAfter } from "./misc/async";
+import { UnlockModal } from "./components/UnlockModal.tsx";
+import { valueAfter } from "./helpers/async.ts";
 import { AppFooter } from "./AppFooter";
-import { AboutModal } from "./AboutModal";
+import { AboutModal } from "./components/AboutModal.tsx";
 import { LicenseNoticeModal } from "./misc/LicenseNoticeModal";
 
 declare global {
@@ -162,17 +162,12 @@ async function connect(
 
 function App() {
   const [conn, setConn] = useState<ConnectionState>({ conn: null });
-  const [connectedDeviceName, setConnectedDeviceName] = useState<
-    string | undefined
-  >(undefined);
+  const [connectedDeviceName, setConnectedDeviceName] = useState<string | undefined>(undefined);
   const [doIt, undo, redo, canUndo, canRedo, reset] = useUndoRedo();
   const [showAbout, setShowAbout] = useState(false);
   const [showLicenseNotice, setShowLicenseNotice] = useState(false);
   const [connectionAbort, setConnectionAbort] = useState(new AbortController());
-
-  const [lockState, setLockState] = useState<LockState>(
-    LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED
-  );
+  const [lockState, setLockState] = useState<LockState>( LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED );
 
   useSub("rpc_notification.core.lockStateChanged", (ls) => {
     setLockState(ls);

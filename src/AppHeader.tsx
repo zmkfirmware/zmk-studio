@@ -6,7 +6,7 @@ import {
   Popover,
 } from "react-aria-components";
 import { useConnectedDeviceData } from "./rpc/useConnectedDeviceData";
-import { useSub } from "./usePubSub";
+import { useSub } from "./helpers/usePubSub.ts";
 import { useContext, useEffect, useState } from "react";
 import { useModalRef } from "./misc/useModalRef";
 import { LockStateContext } from "./rpc/LockStateContext";
@@ -14,7 +14,7 @@ import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { ConnectionContext } from "./rpc/ConnectionContext";
 import { ChevronDown, Undo2, Redo2, Save, Trash2 } from "lucide-react";
 import { Tooltip } from "./misc/Tooltip";
-import { GenericModal } from "./GenericModal";
+import { GenericModal } from "./components/GenericModal.tsx";
 
 export interface AppHeaderProps {
   connectedDeviceLabel?: string;
