@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/zmkfirmware/zmk-studio/compare/v0.2.4...v0.3.0) (2025-01-06)
+
+
+### Features
+
+* Support MacOS Universal Installer ([c43357e](https://github.com/zmkfirmware/zmk-studio/commit/c43357e3784da10ca4129ac02a20b6159e0a1c3b))
+* Support MacOS Universal Installer ([#104](https://github.com/zmkfirmware/zmk-studio/issues/104)) ([c43357e](https://github.com/zmkfirmware/zmk-studio/commit/c43357e3784da10ca4129ac02a20b6159e0a1c3b))
+
 ## [0.2.4](https://github.com/zmkfirmware/zmk-studio/compare/v0.2.3...v0.2.4) (2024-11-22)
 
 
