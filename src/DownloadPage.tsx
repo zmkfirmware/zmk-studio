@@ -8,6 +8,7 @@ import {
   IconDefinition,
 } from "@fortawesome/free-brands-svg-icons";
 import { DownloadIcon } from "lucide-react";
+import releaseData from "./data/release-data.json";
 
 type Platform = "windows" | "mac" | "linux" | "ios" | "android" | "unknown";
 
@@ -78,16 +79,19 @@ const PlatformLinks: Record<Platform, DownloadLink[]> = {
   unknown: [],
 };
 
+const ReleaseAssets = releaseData.assets.map((asset: any) => asset.browser_download_url);
+const ReleaseVersion = releaseData.tag_name;
+
 function detectPlatform(): Platform {
   if (typeof window === "undefined") return "unknown";
 
   const userAgent = window.navigator.userAgent.toLowerCase();
 
-  if (userAgent.indexOf("win") > -1) return "windows";
-  if (userAgent.indexOf("mac") > -1) return "mac";
-  if (userAgent.indexOf("linux") > -1) return "linux";
+  if (userAgent.includes("win")) return "windows";
+  if (userAgent.includes("mac")) return "mac";
+  if (userAgent.includes("linux")) return "linux";
   if (/iphone|ipad|ipod/.test(userAgent)) return "ios";
-  if (userAgent.indexOf("android") > -1) return "android";
+  if (userAgent.includes("android")) return "android";
 
   return "unknown";
 }
@@ -100,8 +104,6 @@ function getUrlFromPattern(assets: string[], pattern: RegExp) {
 export const Download = () => {
   const [platform, setPlatform] = useState<Platform>("unknown");
   const [showAll, setShowAll] = useState(false);
-  const [releaseAssets, setReleaseAssets] = useState([]);
-  const [version, setVersion] = useState("");
 
   useEffect(() => {
     const platform = detectPlatform();
@@ -109,15 +111,6 @@ export const Download = () => {
     if (PlatformLinks[platform].length === 0) {
       setShowAll(true);
     }
-
-    fetch("https://api.github.com/repos/zmkfirmware/zmk-studio/releases/latest")
-      .then((response) => response.json())
-      .then((data) => {
-        setReleaseAssets(
-          data.assets.map((asset: any) => asset.browser_download_url),
-        );
-        setVersion(data.tag_name);
-      });
   }, []);
 
   return (
@@ -125,7 +118,7 @@ export const Download = () => {
       <img src="/zmk-mac-download.webp" alt="ZMK Studio" className="w-64" />
       <div className="text-3xl mb-1">ZMK Studio</div>
       <div className="text-md mb-1 opacity-70">
-        {version}
+        {ReleaseVersion}
       </div>
       <div className="bg-base-100 p-8 max-w-md w-full m-2 rounded-lg shadow-lg dark:shadow-xl">
         {PlatformLinks[platform].length > 0 && (
@@ -134,7 +127,7 @@ export const Download = () => {
               {PlatformLinks[platform].map((link) => (
                 <a
                   key={link.name}
-                  href={getUrlFromPattern(releaseAssets, link.urlPattern)}
+                  href={getUrlFromPattern(ReleaseAssets, link.urlPattern)}
                   className="p-3 text-lg bg-primary hover:opacity-85 active:opacity-70 text-primary-content rounded-lg justify-center items-center gap-3 flex"
                 >
                   <FontAwesomeIcon icon={PlatformMetadata[platform].icon} className="h-6"/>{" "}
@@ -160,7 +153,7 @@ export const Download = () => {
                   {links.map((link) => (
                     <a
                       key={link.name}
-                      href={getUrlFromPattern(releaseAssets, link.urlPattern)}
+                      href={getUrlFromPattern(ReleaseAssets, link.urlPattern)}
                       className="flex gap-1 mb-3 text-base-content hover:underline"
                     >
                       <DownloadIcon className="w-5" />
