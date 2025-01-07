@@ -31,6 +31,8 @@ import { LockStateContext } from "../../rpc/LockStateContext.ts";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { deserializeLayoutZoom, LayoutZoom } from "./PhysicalLayout.tsx";
 import { useLocalStorageState } from "../../misc/useLocalStorageState.ts";
+import Keys from "../Keys.tsx";
+import { UsagePages } from "../../data/keyboard-and-consumer-usage-tables.json";
 
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
@@ -551,6 +553,7 @@ export default function Keyboard() {
       )}
       {keymap && selectedBinding && (
         <div className="p-2 col-start-2 row-start-2 bg-base-200">
+          <Keys></Keys>
           <BehaviorBindingPicker
             binding={selectedBinding}
             behaviors={Object.values(behaviors)}

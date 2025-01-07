@@ -1,13 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 import trac from "tailwindcss-react-aria-components";
 import contQueries from "@tailwindcss/container-queries";
+import defaultTheme from "tailwindcss/defaultTheme";
 
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter", "system-ui"],
+        // sans: ["Inter", "system-ui"],
+        sans: ['InterVariable', ...defaultTheme.fontFamily.sans],
       },
       colors: {
         primary:
