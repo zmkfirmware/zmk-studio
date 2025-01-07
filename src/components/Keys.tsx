@@ -44,7 +44,7 @@ export default function Keys( props: TabsProps) {
       <div className="p-4 border border-gray-200 rounded-b-md">
         {keyboards[activeTab].UsageIds.map(function (tab, index) {
           return (
-            <Key oneU={48} width={1.5} height={1.5} hoverZoom={false}>
+            <Key oneU={38} width={1.5} height={1.5} hoverZoom={false}>
               <button
                 key={tab.Id}
                 onClick={function () {
