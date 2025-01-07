@@ -1,5 +1,4 @@
-import React from "react";
-import { useModalRef } from "./misc/useModalRef";
+import React, { FC, PropsWithChildren, useState } from "react";
 
 import cannonKeys from "./assets/cannonkeys.png";
 import cannonKeysDarkMode from "./assets/cannonkeys-dark-mode.png";
@@ -40,13 +39,8 @@ import mekiboDarkMode from "./assets/mekibo-dark-mode.png";
 
 import splitkb from "./assets/splitkb.png";
 import splitkbDarkMode from "./assets/splitkb-dark-mode.png";
-import { GenericModal } from "./GenericModal";
 import { ExternalLink } from "./misc/ExternalLink";
-
-export interface AboutModalProps {
-  open: boolean;
-  onClose: () => void;
-}
+import { Modal, ModalContent } from "./components/modal/Modal";
 
 enum SponsorSize {
   Large,
@@ -175,80 +169,87 @@ const sponsors = [
   },
 ];
 
-export const AboutModal = ({ open, onClose }: AboutModalProps) => {
-  const ref = useModalRef(open, true);
-
+export const AboutModal: FC<PropsWithChildren> = ({ children }) => {
+  const [open, setOpen] = useState(false);
   return (
-    <GenericModal ref={ref} className="min-w-min w-[70vw]" onClose={onClose}>
-      <div className="flex justify-between items-start">
-        <p>
-          The ZMK Project:{" "}
-          <ExternalLink href="https://zmk.dev/">website</ExternalLink>,{" "}
-          <ExternalLink href="https://github.com/zmkfirmware/zmk/issues/">
-            GitHub Issues
-          </ExternalLink>
-          ,{" "}
-          <ExternalLink href="https://zmk.dev/community/discord/invite">
-            Discord Server
-          </ExternalLink>
-        </p>
-        <button
-          className="p-1.5 rounded-md bg-gray-100 text-black hover:bg-gray-300"
-          onClick={onClose}
-        >
-          Close
-        </button>
-      </div>
-      <div>
-        <p className="py-1 mr-2">
-          ZMK Studio is made possible thanks to the generous donation of time
-          from our contributors, as well as the financial sponsorship from the
-          following vendors:
-        </p>
-      </div>
-      <div className="grid gap-2 auto-rows-auto grid-cols-[auto_minmax(min-content,1fr)] justify-items-center items-center">
-        {sponsors.map((s) => {
-          const heightVariants = {
-            [SponsorSize.Large]: "h-16",
-            [SponsorSize.Medium]: "h-12",
-            [SponsorSize.Small]: "h-8",
-          };
+    <>
+      <a
+        role="button"
+        className="hover:text-primary hover:cursor-pointer"
+        onClick={() => setOpen(true)}
+      >
+        {children}
+      </a>
+      <Modal open={open} onOpenChange={setOpen}>
+        <ModalContent className="w-[70vw]">
+          <div className="flex justify-between items-start">
+            <p>
+              The ZMK Project:{" "}
+              <ExternalLink href="https://zmk.dev/">website</ExternalLink>,{" "}
+              <ExternalLink href="https://github.com/zmkfirmware/zmk/issues/">
+                GitHub Issues
+              </ExternalLink>
+              ,{" "}
+              <ExternalLink href="https://zmk.dev/community/discord/invite">
+                Discord Server
+              </ExternalLink>
+            </p>
+          </div>
+          <div>
+            <p className="py-1 mr-2">
+              ZMK Studio is made possible thanks to the generous donation of
+              time from our contributors, as well as the financial sponsorship
+              from the following vendors:
+            </p>
+          </div>
+          <div className="grid gap-2 auto-rows-auto grid-cols-[auto_minmax(min-content,1fr)] justify-items-center items-center">
+            {sponsors.map((s) => {
+              const heightVariants = {
+                [SponsorSize.Large]: "h-16",
+                [SponsorSize.Medium]: "h-12",
+                [SponsorSize.Small]: "h-8",
+              };
 
-          return (
-            <React.Fragment key={s.level}>
-              <label>{s.level}</label>
-              <div
-                className={`grid grid-rows-1 gap-x-1 auto-cols-fr grid-flow-col justify-items-center items-center ${
-                  heightVariants[s.size]
-                }`}
-              >
-                {s.vendors.map((v) => {
-                  const maxSizeVariants = {
-                    [SponsorSize.Large]: "max-h-16",
-                    [SponsorSize.Medium]: "max-h-12",
-                    [SponsorSize.Small]: "max-h-8",
-                  };
+              return (
+                <React.Fragment key={s.level}>
+                  <label>{s.level}</label>
+                  <div
+                    className={`grid grid-rows-1 gap-x-1 auto-cols-fr grid-flow-col justify-items-center items-center ${
+                      heightVariants[s.size]
+                    }`}
+                  >
+                    {s.vendors.map((v) => {
+                      const maxSizeVariants = {
+                        [SponsorSize.Large]: "max-h-16",
+                        [SponsorSize.Medium]: "max-h-12",
+                        [SponsorSize.Small]: "max-h-8",
+                      };
 
-                  return (
-                    <a key={v.name} href={v.url} target="_blank">
-                      <picture aria-label={v.name}>
-                        {v.darkModeImg && (
-                          <source
-                            className={maxSizeVariants[s.size]}
-                            srcSet={v.darkModeImg}
-                            media="(prefers-color-scheme: dark)"
-                          />
-                        )}
-                        <img className={maxSizeVariants[s.size]} src={v.img} />
-                      </picture>
-                    </a>
-                  );
-                })}
-              </div>
-            </React.Fragment>
-          );
-        })}
-      </div>
-    </GenericModal>
+                      return (
+                        <a key={v.name} href={v.url} target="_blank">
+                          <picture aria-label={v.name}>
+                            {v.darkModeImg && (
+                              <source
+                                className={maxSizeVariants[s.size]}
+                                srcSet={v.darkModeImg}
+                                media="(prefers-color-scheme: dark)"
+                              />
+                            )}
+                            <img
+                              className={maxSizeVariants[s.size]}
+                              src={v.img}
+                            />
+                          </picture>
+                        </a>
+                      );
+                    })}
+                  </div>
+                </React.Fragment>
+              );
+            })}
+          </div>
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
