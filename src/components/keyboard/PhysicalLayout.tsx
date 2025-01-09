@@ -1,11 +1,11 @@
 import {
-  CSSProperties,
   PropsWithChildren,
   useLayoutEffect,
   useRef,
   useState,
 } from "react";
 import { Key } from "./Key.tsx";
+import { scalePosition } from "../../helpers/scalePosition.ts";
 
 export type KeyPosition = PropsWithChildren<{
   header?: string;
@@ -20,13 +20,6 @@ export type KeyPosition = PropsWithChildren<{
 
 export type LayoutZoom = number | "auto";
 
-export function deserializeLayoutZoom(value: string): LayoutZoom {
-  if (value === "auto") {
-    return "auto";
-  }
-  return parseFloat(value) || "auto";
-}
-
 interface PhysicalLayoutProps {
   positions: Array<KeyPosition>;
   selectedPosition?: number;
@@ -36,37 +29,12 @@ interface PhysicalLayoutProps {
   onPositionClicked?: (position: number) => void;
 }
 
-interface PhysicalLayoutPositionLocation {
+export interface PhysicalLayoutPositionLocation {
   x: number;
   y: number;
   r?: number;
   rx?: number;
   ry?: number;
-}
-
-function scalePosition(
-  { x, y, r, rx, ry }: PhysicalLayoutPositionLocation,
-  oneU: number,
-): CSSProperties {
-  let left = x * oneU;
-  let top = y * oneU;
-  let transformOrigin = undefined;
-  let transform = undefined;
-
-  if (r) {
-    let transformX = ((rx || x) - x) * oneU;
-    let transformY = ((ry || y) - y) * oneU;
-    transformOrigin = `${transformX}px ${transformY}px`;
-    transform = `rotate(${r}deg)`;
-  }
-
-  return {
-    top,
-    left,
-    transformOrigin,
-    transform,
-    willChange: "transform",
-  };
 }
 
 export const PhysicalLayout = ({
@@ -115,10 +83,10 @@ export const PhysicalLayout = ({
   }, [props.zoom]);
 
   // TODO: Add a bit of padding for rotation when supported
-  let rightMost = positions
+  const rightMost = positions
     .map((k) => k.x + k.width)
     .reduce((a, b) => Math.max(a, b), 0);
-  let bottomMost = positions
+  const bottomMost = positions
     .map((k) => k.y + k.height)
     .reduce((a, b) => Math.max(a, b), 0);
 
@@ -138,7 +106,7 @@ export const PhysicalLayout = ({
       />
     </div>
   ));
-
+  console.log( positions, oneU);
   return (
     <div
       className="relative"

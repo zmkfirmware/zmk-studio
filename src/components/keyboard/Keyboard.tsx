@@ -7,17 +7,17 @@ import React, {
   useState,
 } from "react";
 
-import { Request } from "@zmkfirmware/zmk-studio-ts-client";
+// import { Request } from "@zmkfirmware/zmk-studio-ts-client";
 import { call_rpc } from "../../rpc/logging.ts";
 import {
-  PhysicalLayout,
+  // PhysicalLayout,
   Keymap,
   SetLayerBindingResponse,
   SetLayerPropsResponse,
   BehaviorBinding,
   Layer,
 } from "@zmkfirmware/zmk-studio-ts-client/keymap";
-import type { GetBehaviorDetailsResponse } from "@zmkfirmware/zmk-studio-ts-client/behaviors";
+// import type { GetBehaviorDetailsResponse } from "@zmkfirmware/zmk-studio-ts-client/behaviors";
 
 import { LayerPicker } from "./LayerPicker.tsx";
 import { PhysicalLayoutPicker } from "./PhysicalLayoutPicker.tsx";
@@ -27,138 +27,15 @@ import { ConnectionContext } from "../../rpc/ConnectionContext.ts";
 import { UndoRedoContext } from "../../helpers/undoRedo.ts";
 import { BehaviorBindingPicker } from "../../behaviors/BehaviorBindingPicker.tsx";
 import { produce } from "immer";
-import { LockStateContext } from "../../rpc/LockStateContext.ts";
-import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
-import { deserializeLayoutZoom, LayoutZoom } from "./PhysicalLayout.tsx";
+// import { LockStateContext } from "../../rpc/LockStateContext.ts";
+// import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
+import {  LayoutZoom } from "./PhysicalLayout.tsx";
 import { useLocalStorageState } from "../../misc/useLocalStorageState.ts";
-import Keys from "../Keys.tsx";
-import { UsagePages } from "../../data/keyboard-and-consumer-usage-tables.json";
+import { KeysLayout } from "../keycodes/KeysLayout.tsx";
+import { deserializeLayoutZoom } from "../../helpers/helpers.ts";
+import { useBehaviors, useLayouts } from "../../helpers/useLayouts.ts";
 
-type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
-function useBehaviors(): BehaviorMap {
-  let connection = useContext(ConnectionContext);
-  let lockState = useContext(LockStateContext);
-
-  const [behaviors, setBehaviors] = useState<BehaviorMap>({});
-
-  useEffect(() => {
-    if (
-      !connection.conn ||
-      lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED
-    ) {
-      setBehaviors({});
-      return;
-    }
-
-    async function startRequest() {
-      setBehaviors({});
-
-      if (!connection.conn) {
-        return;
-      }
-
-      let get_behaviors: Request = {
-        behaviors: { listAllBehaviors: true },
-        requestId: 0,
-      };
-
-      let behavior_list = await call_rpc(connection.conn, get_behaviors);
-      if (!ignore) {
-        let behavior_map: BehaviorMap = {};
-        for (let behaviorId of behavior_list.behaviors?.listAllBehaviors
-          ?.behaviors || []) {
-          if (ignore) {
-            break;
-          }
-          let details_req = {
-            behaviors: { getBehaviorDetails: { behaviorId } },
-            requestId: 0,
-          };
-          let behavior_details = await call_rpc(connection.conn, details_req);
-          let dets: GetBehaviorDetailsResponse | undefined =
-            behavior_details?.behaviors?.getBehaviorDetails;
-
-          if (dets) {
-            behavior_map[dets.id] = dets;
-          }
-        }
-
-        if (!ignore) {
-          setBehaviors(behavior_map);
-        }
-      }
-    }
-
-    let ignore = false;
-    startRequest();
-
-    return () => {
-      ignore = true;
-    };
-  }, [connection, lockState]);
-
-  return behaviors;
-}
-
-function useLayouts(): [
-  PhysicalLayout[] | undefined,
-  React.Dispatch<SetStateAction<PhysicalLayout[] | undefined>>,
-  number,
-  React.Dispatch<SetStateAction<number>>
-] {
-  let connection = useContext(ConnectionContext);
-  let lockState = useContext(LockStateContext);
-
-  const [layouts, setLayouts] = useState<PhysicalLayout[] | undefined>(
-    undefined
-  );
-  const [selectedPhysicalLayoutIndex, setSelectedPhysicalLayoutIndex] =
-    useState<number>(0);
-
-  useEffect(() => {
-    if (
-      !connection.conn ||
-      lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED
-    ) {
-      setLayouts(undefined);
-      return;
-    }
-
-    async function startRequest() {
-      setLayouts(undefined);
-
-      if (!connection.conn) {
-        return;
-      }
-
-      let response = await call_rpc(connection.conn, {
-        keymap: { getPhysicalLayouts: true },
-      });
-
-      if (!ignore) {
-        setLayouts(response?.keymap?.getPhysicalLayouts?.layouts);
-        setSelectedPhysicalLayoutIndex(
-          response?.keymap?.getPhysicalLayouts?.activeLayoutIndex || 0
-        );
-      }
-    }
-
-    let ignore = false;
-    startRequest();
-
-    return () => {
-      ignore = true;
-    };
-  }, [connection, lockState]);
-
-  return [
-    layouts,
-    setLayouts,
-    selectedPhysicalLayoutIndex,
-    setSelectedPhysicalLayoutIndex,
-  ];
-}
 
 export default function Keyboard() {
   const [
@@ -200,11 +77,11 @@ export default function Keyboard() {
         return;
       }
 
-      let resp = await call_rpc(conn.conn, {
+      const resp = await call_rpc(conn.conn, {
         keymap: { setActivePhysicalLayout: selectedPhysicalLayoutIndex },
       });
 
-      let new_keymap = resp?.keymap?.setActivePhysicalLayout?.ok;
+      const new_keymap = resp?.keymap?.setActivePhysicalLayout?.ok;
       if (new_keymap) {
         setKeymap(new_keymap);
       } else {
@@ -218,9 +95,9 @@ export default function Keyboard() {
     performSetRequest();
   }, [selectedPhysicalLayoutIndex]);
 
-  let doSelectPhysicalLayout = useCallback(
+  const doSelectPhysicalLayout = useCallback(
     (i: number) => {
-      let oldLayout = selectedPhysicalLayoutIndex;
+      const oldLayout = selectedPhysicalLayoutIndex;
       undoRedo?.(async () => {
         setSelectedPhysicalLayoutIndex(i);
 
@@ -232,7 +109,7 @@ export default function Keyboard() {
     [undoRedo, selectedPhysicalLayoutIndex]
   );
 
-  let doUpdateBinding = useCallback(
+  const doUpdateBinding = useCallback(
     (binding: BehaviorBinding) => {
       if (!keymap || selectedKeyPosition === undefined) {
         console.error(
@@ -250,7 +127,7 @@ export default function Keyboard() {
           throw new Error("Not connected");
         }
 
-        let resp = await call_rpc(conn.conn, {
+        const resp = await call_rpc(conn.conn, {
           keymap: { setLayerBinding: { layerId, keyPosition, binding } },
         });
 
@@ -272,7 +149,7 @@ export default function Keyboard() {
             return;
           }
 
-          let resp = await call_rpc(conn.conn, {
+          const resp = await call_rpc(conn.conn, {
             keymap: {
               setLayerBinding: { layerId, keyPosition, binding: oldBinding },
             },
@@ -294,7 +171,7 @@ export default function Keyboard() {
     [conn, keymap, undoRedo, selectedLayerIndex, selectedKeyPosition]
   );
 
-  let selectedBinding = useMemo(() => {
+  const selectedBinding = useMemo(() => {
     if (keymap == null || selectedKeyPosition == null) {
       return null;
     }
@@ -309,7 +186,7 @@ export default function Keyboard() {
           return;
         }
 
-        let resp = await call_rpc(conn.conn, {
+        const resp = await call_rpc(conn.conn, {
           keymap: { moveLayer: { startIndex, destIndex } },
         });
 
@@ -381,7 +258,7 @@ export default function Keyboard() {
     }
 
     undoRedo?.(async () => {
-      let index = await doAdd();
+      const index = await doAdd();
       return () => doRemove(index);
     });
   }, [conn, undoRedo, keymap]);
@@ -444,8 +321,8 @@ export default function Keyboard() {
       throw new Error("No keymap loaded");
     }
 
-    let index = selectedLayerIndex;
-    let layerId = keymap.layers[index].id;
+    const index = selectedLayerIndex;
+    const layerId = keymap.layers[index].id;
     undoRedo?.(async () => {
       await doRemove(index);
       return () => doRestore(layerId, index);
@@ -553,7 +430,7 @@ export default function Keyboard() {
       )}
       {keymap && selectedBinding && (
         <div className="p-2 col-start-2 row-start-2 bg-base-200">
-          <Keys></Keys>
+          <KeysLayout></KeysLayout>
           <BehaviorBindingPicker
             binding={selectedBinding}
             behaviors={Object.values(behaviors)}

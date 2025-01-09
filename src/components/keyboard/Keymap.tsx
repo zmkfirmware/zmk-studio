@@ -48,9 +48,7 @@ export const Keymap = ({
     }
 
     return {
-      header:
-        behaviors[keymap.layers[selectedLayerIndex].bindings[i].behaviorId]
-          ?.displayName || "Unknown",
+      header: behaviors[keymap.layers[selectedLayerIndex].bindings[i].behaviorId]?.displayName || "Unknown",
       x: k.x / 100.0,
       y: k.y / 100.0,
       width: k.width / 100,
@@ -65,7 +63,7 @@ export const Keymap = ({
       ),
     };
   });
-
+  console.log(positions,layout);
   return (
     <PhysicalLayoutComp
       positions={positions}
