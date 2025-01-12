@@ -106,7 +106,7 @@ export const PhysicalLayout = ({
       />
     </div>
   ));
-  console.log( positions, oneU);
+  // console.log( positions, oneU);
   return (
     <div
       className="relative"

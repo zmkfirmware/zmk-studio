@@ -63,7 +63,7 @@ export const Keymap = ({
       ),
     };
   });
-  console.log(positions,layout);
+  // console.log(positions,layout);
   return (
     <PhysicalLayoutComp
       positions={positions}

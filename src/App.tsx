@@ -1,11 +1,11 @@
-import { AppHeader } from "./AppHeader";
+import { Header } from "./layout/Header.tsx";
 
 import { create_rpc_connection } from "@zmkfirmware/zmk-studio-ts-client";
 import { call_rpc } from "./rpc/logging";
 
 import type { Notification } from "@zmkfirmware/zmk-studio-ts-client/studio";
 import { ConnectionState, ConnectionContext } from "./rpc/ConnectionContext";
-import { Dispatch, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ConnectModal, TransportFactory } from "./components/ConnectModal.tsx";
 
 import type { RpcTransport } from "@zmkfirmware/zmk-studio-ts-client/transport/index";
@@ -21,14 +21,14 @@ import {
 } from "./tauri/serial";
 import Keyboard from "./components/keyboard/Keyboard";
 import { UndoRedoContext, useUndoRedo } from "./helpers/undoRedo.ts";
-import { usePub, useSub } from "./helpers/usePubSub.ts";
+import { useSub } from "./helpers/usePubSub.ts";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { LockStateContext } from "./rpc/LockStateContext";
 import { UnlockModal } from "./components/UnlockModal.tsx";
-import { valueAfter } from "./helpers/async.ts";
-import { AppFooter } from "./AppFooter";
+import { Footer } from "./layout/Footer.tsx";
 import { AboutModal } from "./components/AboutModal.tsx";
-import { LicenseNoticeModal } from "./misc/LicenseNoticeModal";
+import { LicenseNoticeModal } from "./components/LicenseNoticeModal.tsx";
+import { connect } from "./services/RPCService.ts";
 
 declare global {
   interface Window {
@@ -66,99 +66,7 @@ const TRANSPORTS: TransportFactory[] = [
     : []),
 ].filter((t) => t !== undefined);
 
-async function listen_for_notifications(
-  notification_stream: ReadableStream<Notification>,
-  signal: AbortSignal
-): Promise<void> {
-  let reader = notification_stream.getReader();
-  const onAbort = () => {
-    reader.cancel();
-    reader.releaseLock();
-  };
-  signal.addEventListener("abort", onAbort, { once: true });
-  do {
-    let pub = usePub();
 
-    try {
-      let { done, value } = await reader.read();
-      if (done) {
-        break;
-      }
-
-      if (!value) {
-        continue;
-      }
-
-      console.log("Notification", value);
-      pub("rpc_notification", value);
-
-      const subsystem = Object.entries(value).find(
-        ([_k, v]) => v !== undefined
-      );
-      if (!subsystem) {
-        continue;
-      }
-
-      const [subId, subData] = subsystem;
-      const event = Object.entries(subData).find(([_k, v]) => v !== undefined);
-
-      if (!event) {
-        continue;
-      }
-
-      const [eventName, eventData] = event;
-      const topic = ["rpc_notification", subId, eventName].join(".");
-
-      pub(topic, eventData);
-    } catch (e) {
-      signal.removeEventListener("abort", onAbort);
-      reader.releaseLock();
-      throw e;
-    }
-  } while (true);
-
-  signal.removeEventListener("abort", onAbort);
-  reader.releaseLock();
-  notification_stream.cancel();
-}
-
-async function connect(
-  transport: RpcTransport,
-  setConn: Dispatch<ConnectionState>,
-  setConnectedDeviceName: Dispatch<string | undefined>,
-  signal: AbortSignal
-) {
-  let conn = await create_rpc_connection(transport, { signal });
-
-  let details = await Promise.race([
-    call_rpc(conn, { core: { getDeviceInfo: true } })
-      .then((r) => r?.core?.getDeviceInfo)
-      .catch((e) => {
-        console.error("Failed first RPC call", e);
-        return undefined;
-      }),
-    valueAfter(undefined, 1000),
-  ]);
-
-  if (!details) {
-    // TODO: Show a proper toast/alert not using `window.alert`
-    window.alert("Failed to connect to the chosen device");
-    return;
-  }
-
-  listen_for_notifications(conn.notification_readable, signal)
-    .then(() => {
-      setConnectedDeviceName(undefined);
-      setConn({ conn: null });
-    })
-    .catch((_e) => {
-      setConnectedDeviceName(undefined);
-      setConn({ conn: null });
-    });
-
-  setConnectedDeviceName(details.name);
-  setConn({ conn });
-}
 
 function App() {
   const [conn, setConn] = useState<ConnectionState>({ conn: null });
@@ -184,7 +92,7 @@ function App() {
         return;
       }
 
-      let locked_resp = await call_rpc(conn.conn, {
+      const locked_resp = await call_rpc(conn.conn, {
         core: { getLockState: true },
       });
 
@@ -203,7 +111,7 @@ function App() {
         return;
       }
 
-      let resp = await call_rpc(conn.conn, { keymap: { saveChanges: true } });
+      const resp = await call_rpc(conn.conn, { keymap: { saveChanges: true } });
       if (!resp.keymap?.saveChanges || resp.keymap?.saveChanges.err) {
         console.error("Failed to save changes", resp.keymap?.saveChanges);
       }
@@ -218,7 +126,7 @@ function App() {
         return;
       }
 
-      let resp = await call_rpc(conn.conn, {
+      const resp = await call_rpc(conn.conn, {
         keymap: { discardChanges: true },
       });
       if (!resp.keymap?.discardChanges) {
@@ -238,7 +146,7 @@ function App() {
         return;
       }
 
-      let resp = await call_rpc(conn.conn, {
+      const resp = await call_rpc(conn.conn, {
         core: { resetSettings: true },
       });
       if (!resp.core?.resetSettings) {
@@ -291,7 +199,7 @@ function App() {
             onClose={() => setShowLicenseNotice(false)}
           />
           <div className="bg-base-100 text-base-content h-full max-h-[100vh] w-full max-w-[100vw] inline-grid grid-cols-[auto] grid-rows-[auto_1fr_auto] overflow-hidden">
-            <AppHeader
+            <Header
               connectedDeviceLabel={connectedDeviceName}
               canUndo={canUndo}
               canRedo={canRedo}
@@ -303,7 +211,7 @@ function App() {
               onResetSettings={resetSettings}
             />
             <Keyboard />
-            <AppFooter
+            <Footer
               onShowAbout={() => setShowAbout(true)}
               onShowLicenseNotice={() => setShowLicenseNotice(true)}
             />

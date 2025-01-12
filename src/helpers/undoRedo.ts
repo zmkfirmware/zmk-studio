@@ -14,7 +14,7 @@ export function useUndoRedo(): [
 ] {
   const [locked, setLocked] = useState<boolean>(false);
   const [undoStack, setUndoStack] = useState<Array<[DoCallback, UndoCallback]>>(
-    []
+    [],
   );
   const [redoStack, setRedoStack] = useState<Array<DoCallback>>([]);
 
@@ -29,7 +29,7 @@ export function useUndoRedo(): [
 
   const doIt = async (doCb: DoCallback, preserveRedo?: boolean) => {
     setLocked(true);
-    let undo = await doCb();
+    const undo = await doCb();
 
     setUndoStack([[doCb, undo], ...undoStack]);
     if (!preserveRedo) {

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 import { PhysicalLayout } from "./PhysicalLayout.tsx";
 import { HidUsageLabel } from "./HidUsageLabel.tsx";
-import { hid_usage_from_page_and_id } from "../../hid-usages.ts";
+import { hid_usage_from_page_and_id } from "../../helpers/hid-usages.ts";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {

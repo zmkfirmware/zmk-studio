@@ -12,6 +12,16 @@ export function KeysLayout() {
     setActiveTab(index);
   }
 
+    // console.log(
+    //   keyboards[activeTab].UsageIds.map((key) => {
+    //     return {
+    //       x: key.x ?? 0 / 100.0,
+    //       y: key.y ?? 0 / 100.0,
+    //       width: key.w ?? 1000 / 100.0,
+    //       height: key.h ?? 1000 / 100.0,
+    //     };
+    //   }),
+    // );
   return (
     <div className="p-2 col-start-2 row-start-2 bg-base-200">
       {/* Tab Navigation */}
@@ -36,10 +46,9 @@ export function KeysLayout() {
       {/* Tab Content */}
       <div className="p-4 border border-gray-200 rounded-b-md">
             <PhysicalLayout
-              oneU={15}
+              oneU={48}
               hoverZoom={false}
-              positions={keyboards[activeTab].UsageIds.map(
-                (key) => ({
+              positions={keyboards[activeTab].UsageIds.map((key) => ({
                   x: key.x ?? 0 / 100.0,
                   y: key.y ?? 0 / 100.0,
                   width: key.w ?? 1000 / 100.0,
