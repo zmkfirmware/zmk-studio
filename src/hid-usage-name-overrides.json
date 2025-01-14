@@ -64,11 +64,11 @@
     "176": { "short": "00" },
     "177": { "short": "000" },
     "224": { "short": "Ctrl", "med": "L Ctrl" },
-    "225": { "short": "Shft", "med": "L Shft", "long": "L Shift" },
+    "225": { "short": "⇧Shft", "med": "L Shft", "long": "L Shift" },
     "226": { "short": "Alt", "med": "L Alt", "long": "Left Alt" },
     "227": { "short": "GUI", "med": "L GUI", "long": "Left GUI" },
     "228": { "short": "Ctrl", "med": "R Ctrl" },
-    "229": { "short": "Shft", "med": "R Shft", "long": "R Shift" },
+    "229": { "short": "Shft⇧", "med": "R Shft", "long": "R Shift" },
     "230": { "short": "AltG", "med": "AltGr" },
     "231": { "short": "GUI", "med": "R GUI", "long": "Right GUI" }
   },
