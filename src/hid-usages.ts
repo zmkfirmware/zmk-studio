@@ -7,6 +7,7 @@ interface HidLabels {
   short?: string;
   med?: string;
   long?: string;
+  Name?: string; 
 }
 
 const overrides: Record<string, Record<string, HidLabels>> = HidOverrides;
@@ -30,7 +31,27 @@ export const hid_usage_page_and_id_from_usage = (
 
 export const hid_usage_page_get_ids = (
   usage_page: number
-): UsagePageInfo | undefined => UsagePages.find((p) => p.Id === usage_page);
+): UsagePageInfo | undefined => {
+
+  // Fetch the relevant usage page from the core keyboard/consumer usage tables
+  const usagePageInfo = UsagePages.find((p) => p.Id === usage_page);
+  
+  // Filter overrides to include only entries with a valid override key of Name
+  const filteredOverrides = Object.fromEntries(
+    Object.entries(overrides[usage_page])?.filter(
+      ([_, overrideData]) => overrideData.Name
+    )
+  );
+
+  // Mutate the usagePageInfo with the discovered "Name" overrides
+  for (const key in filteredOverrides) {
+    const usageId = usagePageInfo?.UsageIds.find((p) => p.Id === parseInt(key));
+    if (usageId) {
+      usageId.Name = filteredOverrides[key].Name as string;
+    }
+  }
+  return usagePageInfo;
+};
 
 export const hid_usage_get_label = (
   usage_page: number,
