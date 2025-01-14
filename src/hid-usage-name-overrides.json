@@ -12,7 +12,7 @@
     "39": { "short": "0", "Name":"Keyboard 9 and Right Parenthesis"},
     "40": { "short": "⏎Ret", "med": "Return", "Name":"Keyboard Return/Enter"},
     "41": { "short": "Esc", "long": "Escape" },
-    "42": { "short": "BkSp", "med": "BkSpc", "long": "Backspace" },
+    "42": { "short": "BkSp", "med": "BkSpc", "long": "Backspace", "Name": "Keyboard Backspace"},
     "44": { "short": "␣", "med": "Space" },
     "45": { "short": "-", "med": "Dash" },
     "46": { "short": "=", "med": "Equals" },
