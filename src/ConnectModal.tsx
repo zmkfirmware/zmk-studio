@@ -247,7 +247,7 @@ function noTransportsOptionsPrompt() {
           </li>
           <li>
             Download our{" "}
-            <ExternalLink href="https://github.com/zmkfirmware/zmk-studio/releases">
+            <ExternalLink href="/download">
               cross platform application
             </ExternalLink>
             .
