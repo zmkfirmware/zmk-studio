@@ -2,15 +2,7 @@ import { Modal } from "../components/Modal.tsx";
 import { About } from "../components/About.tsx";
 import { LicenseNotice } from "../components/LicenseNotice.tsx";
 
-export interface AppFooterProps {
-  onShowAbout: () => void;
-  onShowLicenseNotice: () => void;
-}
-
-export const Footer = ({
-  onShowAbout,
-  onShowLicenseNotice,
-}: AppFooterProps) => {
+export function Footer () {
   return (
     <div className="grid justify-center p-1 bg-base-200">
       <div>

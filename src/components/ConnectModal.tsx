@@ -8,6 +8,8 @@ import { Key, ListBox, ListBoxItem, Selection } from "react-aria-components";
 import { useModalRef } from "../misc/useModalRef.ts";
 import { ExternalLink } from "../misc/ExternalLink.tsx";
 import { GenericModal } from "./GenericModal.tsx";
+import { DeviceList } from "./DeviceList.tsx";
+import { SimpleDevicePicker } from "./SimpleDevicePicker.tsx";
 
 export type TransportFactory = {
   label: string;
@@ -38,7 +40,7 @@ function deviceList(
 
   async function LoadEm() {
     setRefreshing(true);
-    let entries: Array<[TransportFactory, AvailableDevice]> = [];
+    const entries: Array<[TransportFactory, AvailableDevice]> = [];
     for (const t of transports.filter((t) => t.pick_and_connect)) {
       const devices = await t.pick_and_connect?.list();
       if (!devices) {
@@ -124,103 +126,6 @@ function deviceList(
     </div>
   );
 }
-
-function simpleDevicePicker(
-  transports: TransportFactory[],
-  onTransportCreated: (t: RpcTransport) => void,
-) {
-  const [availableDevices, setAvailableDevices] = useState<
-    AvailableDevice[] | undefined
-  >(undefined);
-  const [selectedTransport, setSelectedTransport] = useState<
-    TransportFactory | undefined
-  >(undefined);
-
-  useEffect(() => {
-    if (!selectedTransport) {
-      setAvailableDevices(undefined);
-      return;
-    }
-
-    let ignore = false;
-
-    if (selectedTransport.connect) {
-      async function connectTransport() {
-        try {
-          const transport = await selectedTransport?.connect?.();
-
-          if (!ignore) {
-            if (transport) {
-              onTransportCreated(transport);
-            }
-            setSelectedTransport(undefined);
-          }
-        } catch (e) {
-          if (!ignore) {
-            console.error(e);
-            if (e instanceof Error && !(e instanceof UserCancelledError)) {
-              alert(e.message);
-            }
-            setSelectedTransport(undefined);
-          }
-        }
-      }
-
-      connectTransport();
-    } else {
-      async function loadAvailableDevices() {
-        const devices = await selectedTransport?.pick_and_connect?.list();
-
-        if (!ignore) {
-          setAvailableDevices(devices);
-        }
-      }
-
-      loadAvailableDevices();
-    }
-
-    return () => {
-      ignore = true;
-    };
-  }, [selectedTransport]);
-
-  let connections = transports.map((t) => (
-    <li key={t.label} className="list-none">
-      <button
-        className="bg-base-300 hover:bg-primary hover:text-primary-content rounded px-2 py-1"
-        type="button"
-        onClick={async () => setSelectedTransport(t)}
-      >
-        {t.label}
-      </button>
-    </li>
-  ));
-  return (
-    <div>
-      <p className="text-sm">Select a connection type.</p>
-      <ul className="flex gap-2 pt-2">{connections}</ul>
-      {selectedTransport && availableDevices && (
-        <ul>
-          {availableDevices.map((d) => (
-            <li
-              key={d.id}
-              className="m-1 p-1"
-              onClick={async () => {
-                onTransportCreated(
-                  await selectedTransport!.pick_and_connect!.connect(d),
-                );
-                setSelectedTransport(undefined);
-              }}
-            >
-              {d.label}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
-
 function noTransportsOptionsPrompt() {
   return (
     <div className="m-4 flex flex-col gap-2">
@@ -256,20 +161,6 @@ function noTransportsOptionsPrompt() {
   );
 }
 
-function connectOptions(
-  transports: TransportFactory[],
-  onTransportCreated: (t: RpcTransport) => void,
-  open?: boolean,
-) {
-  const useSimplePicker = useMemo(
-    () => transports.every((t) => !t.pick_and_connect),
-    [transports],
-  );
-
-  return useSimplePicker
-    ? simpleDevicePicker(transports, onTransportCreated)
-    : deviceList(open || false, transports, onTransportCreated);
-}
 
 export const ConnectModal = ({
   open,
@@ -279,6 +170,21 @@ export const ConnectModal = ({
   const dialog = useModalRef(open || false, false, false);
 
   const haveTransports = useMemo(() => transports.length > 0, [transports]);
+
+  function connectOptions(
+    transports: TransportFactory[],
+    onTransportCreated: (t: RpcTransport) => void,
+    open?: boolean,
+  ) {
+    const useSimplePicker = useMemo(
+      () => transports.every((t) => !t.pick_and_connect),
+      [transports],
+    );
+
+    return useSimplePicker
+      ? <SimpleDevicePicker transports={transports} onTransportCreated={onTransportCreated}></SimpleDevicePicker>
+      : <DeviceList open={open||false} transports={transports} onTransportCreated={onTransportCreated}></DeviceList>
+  }
 
   return (
     <GenericModal ref={dialog} className="max-w-xl">

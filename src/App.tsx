@@ -1,9 +1,5 @@
-import { Header } from "./layout/Header.tsx";
-
-import { create_rpc_connection } from "@zmkfirmware/zmk-studio-ts-client";
 import { call_rpc } from "./rpc/logging";
 
-import type { Notification } from "@zmkfirmware/zmk-studio-ts-client/studio";
 import { ConnectionState, ConnectionContext } from "./rpc/ConnectionContext";
 import { useCallback, useEffect, useState } from "react";
 import { ConnectModal, TransportFactory } from "./components/ConnectModal.tsx";
@@ -19,16 +15,15 @@ import {
   connect as tauri_serial_connect,
   list_devices as serial_list_devices,
 } from "./tauri/serial";
-import Keyboard from "./components/keyboard/Keyboard";
 import { UndoRedoContext, useUndoRedo } from "./helpers/undoRedo.ts";
 import { useSub } from "./helpers/usePubSub.ts";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { LockStateContext } from "./rpc/LockStateContext";
 import { UnlockModal } from "./components/UnlockModal.tsx";
-import { Footer } from "./layout/Footer.tsx";
-import { AboutModal } from "./components/AboutModal.tsx";
-import { LicenseNoticeModal } from "./components/LicenseNoticeModal.tsx";
 import { connect } from "./services/RPCService.ts";
+import { Header } from "./layout/Header.tsx";
+import Keyboard from "./components/keyboard/Keyboard.tsx";
+import { Footer } from "./layout/Footer.tsx";
 
 declare global {
   interface Window {
@@ -72,8 +67,6 @@ function App() {
   const [conn, setConn] = useState<ConnectionState>({ conn: null });
   const [connectedDeviceName, setConnectedDeviceName] = useState<string | undefined>(undefined);
   const [doIt, undo, redo, canUndo, canRedo, reset] = useUndoRedo();
-  const [showAbout, setShowAbout] = useState(false);
-  const [showLicenseNotice, setShowLicenseNotice] = useState(false);
   const [connectionAbort, setConnectionAbort] = useState(new AbortController());
   const [lockState, setLockState] = useState<LockState>( LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED );
 
@@ -193,11 +186,6 @@ function App() {
             transports={TRANSPORTS}
             onTransportCreated={onConnect}
           />
-          <AboutModal open={showAbout} onClose={() => setShowAbout(false)} />
-          <LicenseNoticeModal
-            open={showLicenseNotice}
-            onClose={() => setShowLicenseNotice(false)}
-          />
           <div className="bg-base-100 text-base-content h-full max-h-[100vh] w-full max-w-[100vw] inline-grid grid-cols-[auto] grid-rows-[auto_1fr_auto] overflow-hidden">
             <Header
               connectedDeviceLabel={connectedDeviceName}
@@ -211,10 +199,7 @@ function App() {
               onResetSettings={resetSettings}
             />
             <Keyboard />
-            <Footer
-              onShowAbout={() => setShowAbout(true)}
-              onShowLicenseNotice={() => setShowLicenseNotice(true)}
-            />
+            <Footer />
           </div>
         </UndoRedoContext.Provider>
       </LockStateContext.Provider>

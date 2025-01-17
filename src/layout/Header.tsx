@@ -5,7 +5,9 @@ import { useModalRef } from "../misc/useModalRef.ts";
 import { LockStateContext } from "../rpc/LockStateContext.ts";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { ConnectionContext } from "../rpc/ConnectionContext.ts";
-import { ChevronDown, Undo2, Redo2, Save, Trash2 } from "lucide-react";
+import { Undo2, Redo2, Save, Trash2 } from "lucide-react";
+import { Modal } from "../components/Modal.tsx";
+import { RestoreStock } from "../components/RestoreStock.tsx";
 
 export interface AppHeaderProps {
   connectedDeviceLabel?: string;
@@ -19,7 +21,7 @@ export interface AppHeaderProps {
   canRedo?: boolean;
 }
 
-export const Header = ( {
+export const Header = ({
   connectedDeviceLabel,
   canRedo,
   canUndo,
@@ -31,6 +33,7 @@ export const Header = ( {
   onResetSettings,
 }: AppHeaderProps) => {
   const [showSettingsReset, setShowSettingsReset] = useState(false);
+  const [connectedDeviceName, setConnectedDeviceName] = useState<string | undefined>(undefined);
 
   const lockState = useContext(LockStateContext);
   const connectionState = useContext(ConnectionContext);
@@ -54,13 +57,7 @@ export const Header = ( {
   useSub("rpc_notification.keymap.unsavedChangesStatusChanged", (unsaved) =>
     setUnsaved(unsaved),
   );
-  console.log(showSettingsRef, connectedDeviceLabel, unsaved);
-  // const handleClick = () => {
-  //   const elem = document.activeElement;
-  //   if (elem) {
-  //     elem?.blur();
-  //   }
-  // };
+
   return (
     <header>
       {/*<Navbar></Navbar>*/}
@@ -83,9 +80,20 @@ export const Header = ( {
               <li onClick={onDisconnect}>
                 <a>Disconnect</a>
               </li>
-              <li onClick={() => setShowSettingsReset(true)}>
-                <a>Restore Stock Settings</a>
-              </li>
+              <Modal
+                usedFor="restoreStockSettings"
+                customWidth="w-11/12 max-w-5xl"
+                onOk={() => onResetSettings?.()}
+                okButtonText="Restore Stock Settings"
+                modalButton={
+                  <li>
+                    <a>Restore Stock Settings</a>
+                  </li>
+                }
+                hideCloseButton={true}
+              >
+                <RestoreStock></RestoreStock>
+              </Modal>
             </ul>
           </div>
         </div>

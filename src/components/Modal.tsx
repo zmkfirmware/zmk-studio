@@ -1,19 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 export interface ModalProps {
   usedFor: string;
-  onClose?: () => void;
+  onClose?: () => void | Promise<void>;
+  onOk?: () => void | Promise<void>;
   type?: "btn";
   className?: string;
   customWidth?: string;
   modalButton: string | React.ReactNode;
   hideXButton?: boolean;
   hideCloseButton?: boolean;
+  okButtonText?: string;
   children: React.ReactNode;
 }
 
 export function Modal({
   onClose,
+  onOk,
   children,
   type,
   className = "",
@@ -22,15 +25,14 @@ export function Modal({
   hideXButton = false,
   modalButton,
   usedFor,
+  okButtonText = "Ok",
 }: ModalProps) {
-  function openModal() {
-    document.getElementById(`modal_${usedFor}`).showModal();
-    console.log(hideCloseButton, hideXButton);
-  }
-
   return (
     <>
-      <span className={`cursor-pointer ${type}`} onClick={() => openModal()}>
+      <span
+        className={`cursor-pointer ${type}`}
+        onClick={() => document.getElementById(`modal_${usedFor}`)?.showModal()}
+      >
         {modalButton}
       </span>
       <dialog
@@ -43,8 +45,14 @@ export function Modal({
           <div className="modal-action">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
-              <button className={`'btn ${hideCloseButton ? "hidden" : ""}'`}>
+              <button
+                className={`btn ${hideCloseButton ? "hidden" : ""}`}
+                onClick={onClose}
+              >
                 Close
+              </button>
+              <button onClick={onOk} className={`btn ${!onOk ? "hidden" : ""}`}>
+                {okButtonText}
               </button>
               <button
                 className={`btn btn-sm btn-circle btn-ghost absolute right-2 top-2 ${hideXButton ? "hidden" : ""}`}
