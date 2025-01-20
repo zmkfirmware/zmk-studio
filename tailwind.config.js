@@ -9,6 +9,9 @@ export default {
       fontFamily: {
         sans: ["Inter", "system-ui"],
       },
+      fontSize: {
+        micro: "6px", // size is intended for key header
+      },
       colors: {
         primary:
           "light-dark(oklch(49.12% 0.3096 285.75), oklch(65.69% 0.196 285.75))",
