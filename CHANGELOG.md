@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/zmkfirmware/zmk-studio/compare/v0.3.0...v0.3.1) (2025-01-20)
+
+
+### Bug Fixes
+
+* **ci:** Support token auth on release fetch ([#126](https://github.com/zmkfirmware/zmk-studio/issues/126)) ([0662e6d](https://github.com/zmkfirmware/zmk-studio/commit/0662e6d506715232b1cee872f7354435c0cdea16))
+
 ## [0.3.0](https://github.com/zmkfirmware/zmk-studio/compare/v0.2.4...v0.3.0) (2025-01-20)
 
 
