@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.3.0](https://github.com/zmkfirmware/zmk-studio/compare/v0.2.4...v0.3.0) (2025-01-20)
+
+
+### Features
+
+* Add Download Page ([#105](https://github.com/zmkfirmware/zmk-studio/issues/105)) ([2b88c5c](https://github.com/zmkfirmware/zmk-studio/commit/2b88c5c6248c42719b404a67c33fa25a133a057a))
+* Support MacOS Universal Installer ([c43357e](https://github.com/zmkfirmware/zmk-studio/commit/c43357e3784da10ca4129ac02a20b6159e0a1c3b))
+* Support MacOS Universal Installer ([#104](https://github.com/zmkfirmware/zmk-studio/issues/104)) ([c43357e](https://github.com/zmkfirmware/zmk-studio/commit/c43357e3784da10ca4129ac02a20b6159e0a1c3b))
+
+
+### Bug Fixes
+
+* app crash when reach last index of undo stack ([#111](https://github.com/zmkfirmware/zmk-studio/issues/111)) ([3370faa](https://github.com/zmkfirmware/zmk-studio/commit/3370faa3c9f6288dda613d35c42a8d30001edff6))
+
 ## [0.2.4](https://github.com/zmkfirmware/zmk-studio/compare/v0.2.3...v0.2.4) (2024-11-22)
 
 
