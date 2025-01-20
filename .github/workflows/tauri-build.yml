@@ -105,3 +105,10 @@ jobs:
             src-tauri/target/*/release/bundle/**/*.app
             src-tauri/target/release/bundle/**/*.msi
             src-tauri/target/release/bundle/**/*.exe
+  deploy-netlify:
+    if: github.event_name == 'release'
+    needs: publish-tauri
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Netlify
+        run: curl -X POST -d '{}' ${{ secrets.NETLIFY_DEPLOY_HOOK }}
