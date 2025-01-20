@@ -5,7 +5,7 @@ import defaultTheme from "tailwindcss/defaultTheme";
 import daisyui from "daisyui";
 
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: ["./index.html", "./download.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       fontFamily: {

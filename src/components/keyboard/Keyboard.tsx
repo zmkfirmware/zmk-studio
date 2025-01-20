@@ -172,7 +172,7 @@ export default function Keyboard() {
   );
 
   const selectedBinding = useMemo(() => {
-    if (keymap == null || selectedKeyPosition == null) {
+    if (keymap == null || selectedKeyPosition == null || !keymap.layers[selectedLayerIndex]) {
       return null;
     }
 
@@ -368,6 +368,16 @@ export default function Keyboard() {
     },
     [conn, undoRedo, keymap]
   );
+
+  useEffect(() => {
+    if (!keymap?.layers) return;
+
+    const layers = keymap.layers.length - 1;
+
+    if (selectedLayerIndex > layers) {
+      setSelectedLayerIndex(layers);
+    }
+  }, [keymap, selectedLayerIndex]);
 
   return (
     <div className="grid grid-cols-[auto_1fr] grid-rows-[1fr_minmax(10em,auto)] bg-base-300 max-w-full min-w-0 min-h-0">
