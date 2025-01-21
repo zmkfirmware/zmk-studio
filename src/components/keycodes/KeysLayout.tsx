@@ -1,80 +1,62 @@
-import Keys from "./Keys.tsx";
-import  { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { keyboards } from "../../data/keys";
-import { Key } from "../keyboard/Key.tsx";
-import { PhysicalLayout } from "../keyboard/PhysicalLayout.tsx";
+import Keycode from "./Keycode.tsx";
 
 export function KeysLayout() {
-  const [activeTab, setActiveTab] = useState(0);
+    const [activeTab, setActiveTab] = useState(0);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
-  function handleTabClick(index: number) {
-    console.log();
-    setActiveTab(index);
-  }
+    useEffect(() => {
+        if (containerRef.current) {
+            const maxX = Math.max(...keyboards[activeTab].UsageIds.map(key => key.x + (key.w || 50)));
+            const maxY = Math.max(...keyboards[activeTab].UsageIds.map(key => key.y + (key.h || 50)));
+            setDimensions({ width: maxX + 50, height: maxY + 50 });
+        }
+    }, [activeTab]);
 
-    // console.log(
-    //   keyboards[activeTab].UsageIds.map((key) => {
-    //     return {
-    //       x: key.x ?? 0 / 100.0,
-    //       y: key.y ?? 0 / 100.0,
-    //       width: key.w ?? 1000 / 100.0,
-    //       height: key.h ?? 1000 / 100.0,
-    //     };
-    //   }),
-    // );
-  return (
-    <div className="p-2 col-start-2 row-start-2 bg-base-200">
-      {/* Tab Navigation */}
-      <div className="border-b border-gray-200">
-        <nav className="-mb-px flex gap-6">
-          {keyboards.map(function (tab, index) {
-            return (
-              <button
-                key={index}
-                onClick={function () {
-                  handleTabClick(index);
-                }}
-                className={`shrink-0 border-b-2 p-3 text-sm font-medium ${activeTab === index ? "border-sky-600 text-sky-600" : "border-transparent text-gray-500 hover:text-gray-700"}`}
-              >
-                {tab.Name}
-              </button>
-            );
-          })}
-        </nav>
-      </div>
+    function handleTabClick(index: number) {
+        setActiveTab(index);
+    }
 
-      {/* Tab Content */}
-      <div className="p-4 border border-gray-200 rounded-b-md">
-            <PhysicalLayout
-              oneU={48}
-              hoverZoom={false}
-              positions={keyboards[activeTab].UsageIds.map((key) => ({
-                  x: key.x ?? 0 / 100.0,
-                  y: key.y ?? 0 / 100.0,
-                  width: key.w ?? 1000 / 100.0,
-                  height: key.h ?? 1000 / 100.0,
-                })
-              )}
-            />
-            {/*// <Key oneU={38} width={1.5} height={1.5} hoverZoom={false}>*/}
-            {/*//   <button*/}
-            {/*//     key={tab.Id}*/}
-            {/*//     onClick={function () {*/}
-            {/*//       console.log(tab);*/}
-            {/*//       // handleTabClick(index);*/}
-            {/*//     }}*/}
-            {/*//     className="box-content"*/}
-            {/*//   >*/}
-            {/*//     <div*/}
-            {/*//       className="size-auto text-wrap"*/}
-            {/*//       dangerouslySetInnerHTML={{ __html: tab.Label }}*/}
-            {/*//     />*/}
-            {/*//   </button>*/}
-            {/*// </Key>*/}
-          {/*);*/}
-        {/*})}*/}
-        {/*<Keys></Keys>*/}
-      </div>
-    </div>
-  );
+    return (
+        <div className="p-2 col-start-2 row-start-2 bg-base-200">
+            {/* Tab Navigation */}
+            <div className="">
+                <nav className="-mb-px flex gap-6">
+                    {keyboards.map((tab, index) => (
+                        <button
+                            key={index}
+                            onClick={() => handleTabClick(index)}
+                            className={`shrink-0 border-b-2 p-3 text-sm font-medium ${
+                                activeTab === index ? "border-sky-600 text-sky-600" : "border-transparent text-gray-500 hover:text-gray-700"
+                            }`}
+                        >
+                            {tab.Name}
+                        </button>
+                    ))}
+                </nav>
+            </div>
+
+            {/* Tab Content */}
+            <div
+                ref={containerRef}
+                className="p-4 relative overflow-hidden"
+                // style={{ width: `${dimensions.width}px`, height: `${dimensions.height}px`, position: 'relative' }}
+                style={{ height: `300px` }}
+            >
+                {keyboards[activeTab].UsageIds.map((key, index) => (
+                    <Keycode
+                        key={index}
+                        id={key.UsageId}
+                        label={key.Label}
+                        width={key.w /2|| 50}
+                        height={key.h/2 || 50}
+                        x={key.x / 100}
+                        y={key.y / 100}
+                    />
+                ))}
+            </div>
+        </div>
+    );
 }
