@@ -1,5 +1,7 @@
+import { CSSProperties } from "react";
+
 interface KeycodeProps {
-  id: number;
+  id?: number;
   label: string;
   width?: number;
   height?: number;
@@ -7,21 +9,28 @@ interface KeycodeProps {
   y: number;
 }
 
-export default function Keycode(props: KeycodeProps) {
-  const style = {
-    left: `${props.x * (props.width ?? 50)}px`,
-    top: `${props.y * (props.height ?? 50)}px`,
-    width: `${props.width ?? 50}px`,
-    height: `${props.height ?? 50}px`,
-    marginRight: "0.1rem",
+export default function Keycode({
+  label,
+  width = 50,
+  height = 50,
+  x,
+  y,
+}: KeycodeProps) {
+  const keySize = 50
+  const style: CSSProperties = {
+    position: "absolute",
+    top: `${y * keySize}px`,
+    left: `${x * keySize}px`,
+    width: `${width - 2}px`,
+    height: `${height - 2}px`,
     overflow: "hidden",
   };
 
-
-
-
   return (
-      <button className="btn btn-square btn-outline absolute" style={style}  dangerouslySetInnerHTML={{ __html: props.label }}>
-      </button>
+    <button
+      className="btn btn-square btn-outline absolute"
+      style={style}
+      dangerouslySetInnerHTML={{ __html: label }}
+    ></button>
   );
 }

@@ -1,5 +1,4 @@
-import React, {
-  SetStateAction,
+import {
   useCallback,
   useContext,
   useEffect,
@@ -7,17 +6,15 @@ import React, {
   useState,
 } from "react";
 
-// import { Request } from "@zmkfirmware/zmk-studio-ts-client";
 import { call_rpc } from "../../rpc/logging.ts";
 import {
-  // PhysicalLayout,
   Keymap,
   SetLayerBindingResponse,
   SetLayerPropsResponse,
   BehaviorBinding,
   Layer,
 } from "@zmkfirmware/zmk-studio-ts-client/keymap";
-// import type { GetBehaviorDetailsResponse } from "@zmkfirmware/zmk-studio-ts-client/behaviors";
+
 
 import { LayerPicker } from "./LayerPicker.tsx";
 import { PhysicalLayoutPicker } from "./PhysicalLayoutPicker.tsx";
@@ -27,13 +24,13 @@ import { ConnectionContext } from "../../rpc/ConnectionContext.ts";
 import { UndoRedoContext } from "../../helpers/undoRedo.ts";
 import { BehaviorBindingPicker } from "../../behaviors/BehaviorBindingPicker.tsx";
 import { produce } from "immer";
-// import { LockStateContext } from "../../rpc/LockStateContext.ts";
-// import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { LayoutZoom } from "./PhysicalLayout.tsx";
 import { useLocalStorageState } from "../../misc/useLocalStorageState.ts";
 import { KeysLayout } from "../keycodes/KeysLayout.tsx";
 import { deserializeLayoutZoom } from "../../helpers/helpers.ts";
 import { useBehaviors, useLayouts } from "../../helpers/useLayouts.ts";
+import { X } from "lucide-react";
+import { Zoom } from "../Zoom.tsx";
 
 export default function Keyboard() {
   const [
@@ -166,6 +163,10 @@ export default function Keyboard() {
               }),
             );
           } else {
+            console.error(
+              "Failed to set binding",
+              resp.keymap?.setLayerBinding,
+            );
           }
         };
       });
@@ -425,29 +426,24 @@ export default function Keyboard() {
             selectedKeyPosition={selectedKeyPosition}
             onKeyPositionClicked={setSelectedKeyPosition}
           />
-          <select
-            className="absolute top-2 right-2 h-8 rounded px-2"
+          <Zoom
             value={keymapScale}
             onChange={(e) => {
               const value = deserializeLayoutZoom(e.target.value);
               setKeymapScale(value);
             }}
-          >
-            <option value="auto">Auto</option>
-            <option value={0.25}>25%</option>
-            <option value={0.5}>50%</option>
-            <option value={0.75}>75%</option>
-            <option value={1}>100%</option>
-            <option value={1.25}>125%</option>
-            <option value={1.5}>150%</option>
-            <option value={2}>200%</option>
-          </select>
+          />
         </div>
       )}
       {keymap && selectedBinding && (
         <div className="p-2 col-start-2 row-start-2">
           <div className="card bg-base-100 shadow-xl">
             <div className="card-body">
+              <div className="card-actions justify-end">
+                <button className="btn btn-square btn-sm">
+                  <X />
+                </button>
+              </div>
               <BehaviorBindingPicker
                 binding={selectedBinding}
                 behaviors={Object.values(behaviors)}

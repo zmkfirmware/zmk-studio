@@ -1,19 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { keyboards } from "../../data/keys";
 import Keycode from "./Keycode.tsx";
 
 export function KeysLayout() {
     const [activeTab, setActiveTab] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
-    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-
-    useEffect(() => {
-        if (containerRef.current) {
-            const maxX = Math.max(...keyboards[activeTab].UsageIds.map(key => key.x + (key.w || 50)));
-            const maxY = Math.max(...keyboards[activeTab].UsageIds.map(key => key.y + (key.h || 50)));
-            setDimensions({ width: maxX + 50, height: maxY + 50 });
-        }
-    }, [activeTab]);
 
     function handleTabClick(index: number) {
         setActiveTab(index);
@@ -43,11 +34,11 @@ export function KeysLayout() {
                 ref={containerRef}
                 className="p-4 relative overflow-hidden"
                 // style={{ width: `${dimensions.width}px`, height: `${dimensions.height}px`, position: 'relative' }}
-                style={{ height: `300px` }}
+                style={{ height: `350px`, marginTop: `1rem` }}
             >
                 {keyboards[activeTab].UsageIds.map((key, index) => (
                     <Keycode
-                        key={index}
+                        key={keyboards[activeTab].Id+''+index}
                         id={key.UsageId}
                         label={key.Label}
                         width={key.w /2|| 50}
