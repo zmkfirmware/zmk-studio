@@ -19,6 +19,12 @@ export const BehaviorParametersPicker = ({
   onParam1Changed,
   onParam2Changed,
 }: BehaviorParametersPickerProps) => {
+
+  // console.log(
+  //     param1,
+  //     param2,
+  //     metadata,
+  //     layers);
   if (param1 === undefined) {
     return (
       <div>

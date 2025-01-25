@@ -32,7 +32,7 @@ export function KeysLayout() {
             {/* Tab Content */}
             <div
                 ref={containerRef}
-                className="p-4 relative overflow-hidden"
+                className="p-4 relative overflow-auto"
                 // style={{ width: `${dimensions.width}px`, height: `${dimensions.height}px`, position: 'relative' }}
                 style={{ height: `350px`, marginTop: `1rem` }}
             >

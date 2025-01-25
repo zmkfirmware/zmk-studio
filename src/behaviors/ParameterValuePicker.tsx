@@ -14,6 +14,7 @@ export const ParameterValuePicker = ({
   layers,
   onValueChanged,
 }: ParameterValuePickerProps) => {
+    // console.log(values);
   if (values.length == 0) {
     return <></>;
   } else if (values.every((v) => v.constant !== undefined)) {

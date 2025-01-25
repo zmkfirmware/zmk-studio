@@ -15,12 +15,6 @@ export function Footer () {
         >
           <About></About>
         </Modal>
-        {/*<a*/}
-        {/*  className="hover:text-primary hover:cursor-pointer"*/}
-        {/*  onClick={onShowAbout}*/}
-        {/*>*/}
-        {/*  About ZMK Studio*/}
-        {/*</a>*/} -{" "}
         <Modal
           usedFor="footerLicenseNotice"
           customWidth="w-11/12 max-w-5xl"
@@ -29,12 +23,6 @@ export function Footer () {
         >
           <LicenseNotice></LicenseNotice>
         </Modal>
-        {/*<a*/}
-        {/*  className="hover:text-primary hover:cursor-pointer"*/}
-        {/*  onClick={onShowLicenseNotice}*/}
-        {/*>*/}
-        {/*  License NOTICE*/}
-        {/*</a>*/}
       </div>
     </div>
   );

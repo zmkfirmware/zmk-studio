@@ -18,10 +18,7 @@ export function useUndoRedo(): [
   );
   const [redoStack, setRedoStack] = useState<Array<DoCallback>>([]);
 
-  const canUndo = useMemo(
-    () => !locked && undoStack.length > 0,
-    [locked, undoStack],
-  );
+  const canUndo = useMemo( () => !locked && undoStack.length > 0, [locked, undoStack], );
   const canRedo = useMemo(
     () => !locked && redoStack.length > 0,
     [locked, redoStack],
@@ -48,7 +45,7 @@ export function useUndoRedo(): [
     }
 
     setLocked(true);
-    let [doCb, undoCb] = undoStack[0];
+    const [doCb, undoCb] = undoStack[0];
     setUndoStack(undoStack.slice(1));
     setRedoStack([doCb, ...redoStack]);
 
@@ -66,7 +63,7 @@ export function useUndoRedo(): [
       throw new Error("redo invoked with no operations to redo");
     }
 
-    let doCb = redoStack[0];
+    const doCb = redoStack[0];
 
     setRedoStack(redoStack.slice(1));
 

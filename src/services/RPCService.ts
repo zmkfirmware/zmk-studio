@@ -3,7 +3,7 @@ import { usePub } from "../helpers/usePubSub.ts";
 import { Dispatch } from "react";
 import { ConnectionState } from "../rpc/ConnectionContext.ts";
 import { create_rpc_connection } from "@zmkfirmware/zmk-studio-ts-client";
-import { call_rpc } from "../rpc/logging.ts";
+import { callRemoteProcedureControl } from "../rpc/logging.ts";
 import { valueAfter } from "../helpers/async.ts";
 import { RpcTransport } from "@zmkfirmware/zmk-studio-ts-client/transport/index";
 
@@ -17,37 +17,29 @@ export async function listenForNotifications(
 		reader.releaseLock();
 	};
 	signal.addEventListener("abort", onAbort, { once: true });
-	do {
+	// do {
 		const pub = usePub();
 
 		try {
 			const { done, value } = await reader.read();
-			if (done) {
-				break;
-			}
+			if (done) return ;
 
-			if (!value) {
-				continue;
-			}
+			if (!value) return;
 
-			console.log("Notification", value);
+            console.log('Notification', value);
 			pub("rpc_notification", value);
 
 			const subsystem = Object.entries(value).find(
 				([_k, v]) => v !== undefined
 			);
-			if (!subsystem) {
-				continue;
-			}
+			if (!subsystem) return;
 
-			const [subId, subData] = subsystem;
+            const [subId, subData] = subsystem;
 			const event = Object.entries(subData).find(([_k, v]) => v !== undefined);
 
-			if (!event) {
-				continue;
-			}
+			if (!event) return;
 
-			const [eventName, eventData] = event;
+            const [eventName, eventData] = event;
 			const topic = ["rpc_notification", subId, eventName].join(".");
 
 			pub(topic, eventData);
@@ -56,7 +48,7 @@ export async function listenForNotifications(
 			reader.releaseLock();
 			throw e;
 		}
-	} while (true);
+	// } while (true);
 
 	signal.removeEventListener("abort", onAbort);
 	reader.releaseLock();
@@ -72,7 +64,7 @@ export async function connect(
 	const conn = await create_rpc_connection(transport, { signal });
 
 	const details = await Promise.race([
-		call_rpc(conn, { core: { getDeviceInfo: true } })
+		callRemoteProcedureControl(conn, { core: { getDeviceInfo: true } })
 			.then((r) => r?.core?.getDeviceInfo)
 			.catch((e) => {
 				console.error("Failed first RPC call", e);

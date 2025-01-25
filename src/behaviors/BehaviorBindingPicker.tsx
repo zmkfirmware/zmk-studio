@@ -97,7 +97,7 @@ export const BehaviorBindingPicker = ({
     setParam1(binding.param1);
     setParam2(binding.param2);
   }, [binding]);
-
+  // console.log(sortedBehaviors);
   return (
     <div className="flex flex-col gap-2">
       <div>

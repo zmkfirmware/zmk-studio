@@ -3,7 +3,7 @@ import React, { SetStateAction, useContext, useEffect, useState } from "react";
 import { ConnectionContext } from "../rpc/ConnectionContext.ts";
 import { LockStateContext } from "../rpc/LockStateContext.ts";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
-import { call_rpc } from "../rpc/logging.ts";
+import { callRemoteProcedureControl } from "../rpc/logging.ts";
 import { Request } from "@zmkfirmware/zmk-studio-ts-client";
 import type { GetBehaviorDetailsResponse } from "@zmkfirmware/zmk-studio-ts-client/behaviors";
 
@@ -36,7 +36,7 @@ export function useBehaviors(): BehaviorMap {
         requestId: 0,
       };
 
-      const behavior_list = await call_rpc(connection.conn, get_behaviors);
+      const behavior_list = await callRemoteProcedureControl(connection.conn, get_behaviors);
       if (!ignore) {
         const behavior_map: BehaviorMap = {};
         for (const behaviorId of behavior_list.behaviors?.listAllBehaviors
@@ -48,7 +48,7 @@ export function useBehaviors(): BehaviorMap {
             behaviors: { getBehaviorDetails: { behaviorId } },
             requestId: 0,
           };
-          const behavior_details = await call_rpc(connection.conn, details_req);
+          const behavior_details = await callRemoteProcedureControl(connection.conn, details_req);
           const dets: GetBehaviorDetailsResponse | undefined =
             behavior_details?.behaviors?.getBehaviorDetails;
 
@@ -106,7 +106,7 @@ export function useLayouts(): [
         return;
       }
 
-      const response = await call_rpc(connection.conn, {
+      const response = await callRemoteProcedureControl(connection.conn, {
         keymap: { getPhysicalLayouts: true },
       });
 
