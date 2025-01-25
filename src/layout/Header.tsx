@@ -3,39 +3,36 @@ import { useSub } from '../helpers/usePubSub.ts';
 import { useContext, useEffect, useState } from 'react';
 import { LockStateContext } from '../rpc/LockStateContext.ts';
 import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core';
-import { ConnectionContext } from '../rpc/ConnectionContext.ts';
 import { Undo2, Redo2, Save, Trash2 } from 'lucide-react';
 import { Modal } from '../components/Modal.tsx';
 import { RestoreStock } from '../components/RestoreStock.tsx';
 import { useUndoRedo } from "../helpers/undoRedo.ts";
 import { callRemoteProcedureControl } from "../rpc/logging.ts";
+import useConnectionStore from "../stores/ConnectionStore.ts";
+import useLockStore from "../stores/LockStateStore.ts";
+import undoRedoStore from "../stores/UndoRedoStore.ts";
 
 export interface AppHeaderProps {
     connectedDeviceLabel?: string;
-    onDiscard?: () => void | Promise<void>;
-    onResetSettings?: () => void | Promise<void>;
-    onDisconnect?: () => void | Promise<void>;
     canUndo?: boolean;
     canRedo?: boolean;
-    connection: any;
 }
 
 export const Header = ({
     connectedDeviceLabel,
-    onDiscard,
-    onDisconnect,
-    onResetSettings,
-    connection
 }: AppHeaderProps) => {
-    const [doIt, undo, redo, canUndo, canRedo, reset] = useUndoRedo();
+    const { connection, setConnection } = useConnectionStore.getState();
+    const { undo, redo, canUndo, canRedo, reset } = undoRedoStore();
     const [showSettingsReset, setShowSettingsReset] = useState(false);
-
-    const lockState = useContext(LockStateContext);
-    const connectionState = useContext(ConnectionContext);
+    const [connectionAbort, setConnectionAbort] = useState(
+      new AbortController(),
+    );
+    // const lockState = useContext(LockStateContext);
+    const { lockState } = useLockStore();
 
     useEffect(() => {
         if (
-            (!connectionState.conn ||
+            (!connection ||
                 lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED) &&
             showSettingsReset
         ) {
@@ -48,9 +45,9 @@ export const Header = ({
         (r) => r.keymap?.checkUnsavedChanges,
     );
     async function save(){
-        if (!connection.conn) return;
+        if (!connection) return;
 
-        const resp = await callRemoteProcedureControl(connection.conn, {
+        const resp = await callRemoteProcedureControl(connection, {
             keymap: { saveChanges: true },
         });
         if (!resp.keymap?.saveChanges || resp.keymap?.saveChanges.err) {
@@ -59,18 +56,40 @@ export const Header = ({
     }
 
     async function discard() {
-        if (!connection.conn) return;
+        if (!connection) return;
 
-        const resp = await callRemoteProcedureControl(connection.conn, {
+        const resp = await callRemoteProcedureControl(connection, {
             keymap: { discardChanges: true },
         });
         if (!resp.keymap?.discardChanges)
             console.error('Failed to discard changes', resp);
 
         reset();
-        setConn({ conn: connection.conn });
+        setConnection(connection);
     }
-    
+
+    async function resetSettings() {
+        if (!connection) return;
+
+        const resp = await callRemoteProcedureControl(connection, {
+            core: { resetSettings: true },
+        });
+        if (!resp.core?.resetSettings)
+            console.error('Failed to settings reset', resp);
+
+        reset();
+        setConnection(connection);
+    }
+
+    async function disconnect() {
+        if (!connection) return;
+        console.log(connection.request_writable);
+        await connection.request_writable.close().finally(() => {
+            connectionAbort.abort('User disconnected');
+            setConnectionAbort(new AbortController());
+        });
+    }
+
     useSub('rpc_notification.keymap.unsavedChangesStatusChanged', (unsaved) => {
         console.log(unsaved);
         setUnsaved(unsaved);
@@ -98,13 +117,13 @@ export const Header = ({
                             tabIndex={0}
                             className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
                         >
-                            <li onClick={onDisconnect}>
+                            <li onClick={disconnect}>
                                 <a>Disconnect</a>
                             </li>
                             <Modal
                                 usedFor="restoreStockSettings"
                                 customWidth="w-11/12 max-w-5xl"
-                                onOk={() => onResetSettings?.()}
+                                onOk={() => resetSettings?.()}
                                 okButtonText="Restore Stock Settings"
                                 modalButton={
                                     <li>
@@ -150,7 +169,7 @@ export const Header = ({
                     <button
                         className="btn btn-ghost btn-circle tooltip tooltip-bottom mx-1"
                         disabled={!unsaved}
-                        onClick={onDiscard}
+                        onClick={discard}
                         data-tip="Discard changes"
                     >
                         <Trash2 aria-label="Discard" />

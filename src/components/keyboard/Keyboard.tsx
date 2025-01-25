@@ -24,6 +24,8 @@ import { deserializeLayoutZoom } from '../../helpers/helpers.ts';
 import { useBehaviors, useLayouts } from '../../helpers/useLayouts.ts';
 import { X } from 'lucide-react';
 import { Zoom } from '../Zoom.tsx';
+import useConnectionStore from "../../stores/ConnectionStore.ts";
+import undoRedoStore from "../../stores/UndoRedoStore.ts";
 
 export default function Keyboard() {
     const [
@@ -51,21 +53,22 @@ export default function Keyboard() {
         number | undefined
     >(undefined);
     const behaviors = useBehaviors();
-    const conn = useContext(ConnectionContext);
-    const undoRedo = useContext(UndoRedoContext);
+    // const undoRedo = useContext(UndoRedoContext);
+    const { doIt } = undoRedoStore();
+    const { connection, setConnection } = useConnectionStore.getState();
 
     useEffect(() => {
         setSelectedLayerIndex(0);
         setSelectedKeyPosition(undefined);
-    }, [conn]);
+    }, [connection]);
 
     useEffect(() => {
         async function performSetRequest() {
-            if (!conn.conn || !layouts) {
+            if (!connection || !layouts) {
                 return;
             }
 
-            const resp = await callRemoteProcedureControl(conn.conn, {
+            const resp = await callRemoteProcedureControl(connection, {
                 keymap: {
                     setActivePhysicalLayout: selectedPhysicalLayoutIndex,
                 },
@@ -88,7 +91,7 @@ export default function Keyboard() {
     const doSelectPhysicalLayout = useCallback(
         (i: number) => {
             const oldLayout = selectedPhysicalLayoutIndex;
-            undoRedo?.(async () => {
+            doIt?.(async () => {
                 setSelectedPhysicalLayoutIndex(i);
 
                 return async () => {
@@ -96,7 +99,7 @@ export default function Keyboard() {
                 };
             });
         },
-        [undoRedo, selectedPhysicalLayoutIndex],
+        [doIt, selectedPhysicalLayoutIndex],
     );
 
     const doUpdateBinding = useCallback(
@@ -112,17 +115,17 @@ export default function Keyboard() {
             const layerId = keymap.layers[layer].id;
             const keyPosition = selectedKeyPosition;
             const oldBinding = keymap.layers[layer].bindings[keyPosition];
-            undoRedo?.(async () => {
-                if (!conn.conn) {
+            doIt?.(async () => {
+                if (!connection) {
                     throw new Error('Not connected');
                 }
 
-                const resp = await callRemoteProcedureControl(conn.conn, {
+                const resp = await callRemoteProcedureControl(connection, {
                     keymap: {
                         setLayerBinding: { layerId, keyPosition, binding },
                     },
                 });
-
+                console.log(resp);
                 if (
                     resp.keymap?.setLayerBinding ===
                     SetLayerBindingResponse.SET_LAYER_BINDING_RESP_OK
@@ -140,11 +143,11 @@ export default function Keyboard() {
                 }
 
                 return async () => {
-                    if (!conn.conn) {
+                    if (!connection) {
                         return;
                     }
 
-                    const resp = await callRemoteProcedureControl(conn.conn, {
+                    const resp = await callRemoteProcedureControl(connection, {
                         keymap: {
                             setLayerBinding: {
                                 layerId,
@@ -172,7 +175,7 @@ export default function Keyboard() {
                 };
             });
         },
-        [conn, keymap, undoRedo, selectedLayerIndex, selectedKeyPosition],
+        [connection, keymap, doIt, selectedLayerIndex, selectedKeyPosition],
     );
 
     const selectedBinding = useMemo(() => {
@@ -190,11 +193,11 @@ export default function Keyboard() {
     const moveLayer = useCallback(
         (start: number, end: number) => {
             const doMove = async (startIndex: number, destIndex: number) => {
-                if (!conn.conn) {
+                if (!connection) {
                     return;
                 }
 
-                const resp = await callRemoteProcedureControl(conn.conn, {
+                const resp = await callRemoteProcedureControl(connection, {
                     keymap: { moveLayer: { startIndex, destIndex } },
                 });
 
@@ -206,21 +209,21 @@ export default function Keyboard() {
                 }
             };
 
-            undoRedo?.(async () => {
+            doIt?.(async () => {
                 await doMove(start, end);
                 return () => doMove(end, start);
             });
         },
-        [undoRedo],
+        [doIt],
     );
 
     const addLayer = useCallback(() => {
         async function doAdd(): Promise<number> {
-            if (!conn.conn || !keymap) {
+            if (!connection || !keymap) {
                 throw new Error('Not connected');
             }
 
-            const resp = await callRemoteProcedureControl(conn.conn, {
+            const resp = await callRemoteProcedureControl(connection, {
                 keymap: { addLayer: {} },
             });
 
@@ -245,9 +248,9 @@ export default function Keyboard() {
         }
 
         async function doRemove(layerIndex: number) {
-            if (!conn.conn) throw new Error('Not connected');
+            if (!connection) throw new Error('Not connected');
 
-            const resp = await callRemoteProcedureControl(conn.conn, {
+            const resp = await callRemoteProcedureControl(connection, {
                 keymap: { removeLayer: { layerIndex } },
             });
 
@@ -267,19 +270,19 @@ export default function Keyboard() {
             }
         }
 
-        undoRedo?.(async () => {
+        doIt?.(async () => {
             const index = await doAdd();
             return () => doRemove(index);
         });
-    }, [conn, undoRedo, keymap]);
+    }, [connection, doIt, keymap]);
 
     const removeLayer = useCallback(() => {
         async function doRemove(layerIndex: number): Promise<void> {
-            if (!conn.conn || !keymap) {
+            if (!connection || !keymap) {
                 throw new Error('Not connected');
             }
 
-            const resp = await callRemoteProcedureControl(conn.conn, {
+            const resp = await callRemoteProcedureControl(connection, {
                 keymap: { removeLayer: { layerIndex } },
             });
 
@@ -302,9 +305,9 @@ export default function Keyboard() {
         }
 
         async function doRestore(layerId: number, atIndex: number) {
-            if (!conn.conn) throw new Error('Not connected');
+            if (!connection) throw new Error('Not connected');
 
-            const resp = await callRemoteProcedureControl(conn.conn, {
+            const resp = await callRemoteProcedureControl(connection, {
                 keymap: { restoreLayer: { layerId, atIndex } },
             });
 
@@ -335,20 +338,20 @@ export default function Keyboard() {
 
         const index = selectedLayerIndex;
         const layerId = keymap.layers[index].id;
-        undoRedo?.(async () => {
+        doIt?.(async () => {
             await doRemove(index);
             return () => doRestore(layerId, index);
         });
-    }, [conn, undoRedo, selectedLayerIndex]);
+    }, [connection, doIt, selectedLayerIndex]);
 
     const changeLayerName = useCallback(
         (id: number, oldName: string, newName: string) => {
             async function changeName(layerId: number, name: string) {
-                if (!conn.conn) {
+                if (!connection) {
                     throw new Error('Not connected');
                 }
 
-                const resp = await callRemoteProcedureControl(conn.conn, {
+                const resp = await callRemoteProcedureControl(connection, {
                     keymap: { setLayerProps: { layerId, name } },
                 });
 
@@ -372,14 +375,14 @@ export default function Keyboard() {
                 }
             }
 
-            undoRedo?.(async () => {
+            doIt?.(async () => {
                 await changeName(id, newName);
                 return async () => {
                     await changeName(id, oldName);
                 };
             });
         },
-        [conn, undoRedo, keymap],
+        [connection, doIt, keymap],
     );
 
     useEffect(() => {

@@ -1,56 +1,58 @@
-import React, { SetStateAction, useContext, useEffect, useState } from "react";
-import { ConnectionContext } from "./ConnectionContext";
+import React, { SetStateAction, useEffect, useState } from 'react';
 
-import { callRemoteProcedureControl } from "./logging";
+import { callRemoteProcedureControl } from './logging';
 
-import { Request, RequestResponse } from "@zmkfirmware/zmk-studio-ts-client";
-import { LockStateContext } from "./LockStateContext";
-import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
+import { Request, RequestResponse } from '@zmkfirmware/zmk-studio-ts-client';
+import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core';
+import useConnectionStore from '../stores/ConnectionStore.ts';
+import useLockStore from '../stores/LockStateStore.ts';
 
 export function useConnectedDeviceData<T>(
-  req: Omit<Request, "requestId">,
-  response_mapper: (resp: RequestResponse) => T | undefined,
-  requireUnlock?: boolean
+    req: Omit<Request, 'requestId'>,
+    response_mapper: (resp: RequestResponse) => T | undefined,
+    requireUnlock?: boolean,
 ): [T | undefined, React.Dispatch<SetStateAction<T | undefined>>] {
-  const connection = useContext(ConnectionContext);
-  const lockState = useContext(LockStateContext);
-  const [data, setData] = useState<T | undefined>(undefined);
+    const { connection } = useConnectionStore.getState();
+    const { lockState } = useLockStore();
+    const [data, setData] = useState<T | undefined>(undefined);
 
-  useEffect(
-    () => {
-      if (
-        !connection.conn ||
-        (requireUnlock &&
-          lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED)
-      ) {
-        setData(undefined);
-        return;
-      }
+    useEffect(
+        () => {
+            if (
+                !connection ||
+                (requireUnlock &&
+                    lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED)
+            ) {
+                setData(undefined);
+                return;
+            }
 
-      async function startRequest() {
-        setData(undefined);
-        if (!connection.conn) {
-          return;
-        }
+            async function startRequest() {
+                setData(undefined);
+                if (!connection) {
+                    return;
+                }
 
-        const response = response_mapper(await callRemoteProcedureControl(connection.conn, req));
+                const response = response_mapper(
+                    await callRemoteProcedureControl(connection, req),
+                );
 
-        if (!ignore) {
-          setData(response);
-        }
-      }
+                if (!ignore) {
+                    setData(response);
+                }
+            }
 
-      let ignore = false;
-      startRequest();
+            let ignore = false;
+            startRequest();
 
-      return () => {
-        ignore = true;
-      };
-    },
-    requireUnlock
-      ? [connection, requireUnlock, lockState]
-      : [connection, requireUnlock]
-  );
+            return () => {
+                ignore = true;
+            };
+        },
+        requireUnlock
+            ? [connection, requireUnlock, lockState]
+            : [connection, requireUnlock],
+    );
 
-  return [data, setData];
+    return [data, setData];
 }

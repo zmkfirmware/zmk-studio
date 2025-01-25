@@ -2,6 +2,7 @@ import React from "react";
 
 export interface ModalProps {
   usedFor: string;
+  opened?: boolean;
   onClose?: () => void | Promise<void>;
   onOk?: () => void | Promise<void>;
   type?: "btn";
@@ -26,10 +27,12 @@ export function Modal({
   modalButton,
   usedFor,
   okButtonText = "Ok",
-}: ModalProps) {
+  opened = false,
+}: ModalProps)  {
+
   return (
     <>
-      <span
+      <span hidden={opened}
         className={`cursor-pointer ${type}`}
         onClick={() => document.getElementById(`modal_${usedFor}`)?.showModal()}
       >
