@@ -243,7 +243,7 @@ export default function Keyboard() {
             const resp = await callRemoteProcedureControl(connection, {
                 keymap: { addLayer: {} },
             });
-
+            console.log(resp)
             if (resp.keymap?.addLayer?.ok) {
                 const newSelection = keymap.layers.length;
                 setKeymap(
