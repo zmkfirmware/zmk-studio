@@ -1,7 +1,7 @@
 {
   "name": "zmk-studio",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.3.1",
   "type": "module",
   "scripts": {
     "generate-data": "node scripts/generate-release-data.js",
