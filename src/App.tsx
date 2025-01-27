@@ -17,7 +17,7 @@ import useLockStore from './stores/LockStateStore.ts';
 import undoRedoStore from './stores/UndoRedoStore.ts';
 
 function App() {
-    const { connection, setConnection } = useConnectionStore.getState();
+    const { connection, setConnection } = useConnectionStore();
     const [connectedDeviceName, setConnectedDeviceName] = useState<
         string | undefined
     >(undefined);
@@ -57,7 +57,7 @@ function App() {
     }, [connection, setLockState]);
 
     const onConnect = (t: RpcTransport) => {
-        connect(t, setConnectedDeviceName, connectionAbort.signal);
+        connect(t, setConnectedDeviceName, setConnection, connectionAbort.signal);
     };
 
     return (

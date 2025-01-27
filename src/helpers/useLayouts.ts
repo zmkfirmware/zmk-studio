@@ -10,7 +10,7 @@ import useLockStore from "../stores/LockStateStore.ts";
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
 export function useBehaviors(): BehaviorMap {
-    const { connection } = useConnectionStore.getState();
+    const { connection } = useConnectionStore();
     const { lockState } = useLockStore();
     const [behaviors, setBehaviors] = useState<BehaviorMap>({});
 
@@ -87,7 +87,7 @@ export function useLayouts(): [
 ] {
     // const lockState = useContext(LockStateContext);
     const { lockState } = useLockStore();
-    const { connection } = useConnectionStore.getState();
+    const { connection } = useConnectionStore();
 
     const [layouts, setLayouts] = useState<PhysicalLayout[] | undefined>(
         undefined,

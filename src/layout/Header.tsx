@@ -1,16 +1,14 @@
 import { useConnectedDeviceData } from '../rpc/useConnectedDeviceData.ts';
 import { useSub } from '../helpers/usePubSub.ts';
-import { useContext, useEffect, useState } from 'react';
-import { LockStateContext } from '../rpc/LockStateContext.ts';
+import { useEffect, useState } from 'react';
 import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core';
 import { Undo2, Redo2, Save, Trash2 } from 'lucide-react';
 import { Modal } from '../components/Modal.tsx';
 import { RestoreStock } from '../components/RestoreStock.tsx';
-import { useUndoRedo } from "../helpers/undoRedo.ts";
-import { callRemoteProcedureControl } from "../rpc/logging.ts";
-import useConnectionStore from "../stores/ConnectionStore.ts";
-import useLockStore from "../stores/LockStateStore.ts";
-import undoRedoStore from "../stores/UndoRedoStore.ts";
+import { callRemoteProcedureControl } from '../rpc/logging.ts';
+import useConnectionStore from '../stores/ConnectionStore.ts';
+import useLockStore from '../stores/LockStateStore.ts';
+import undoRedoStore from '../stores/UndoRedoStore.ts';
 
 export interface AppHeaderProps {
     connectedDeviceLabel?: string;
@@ -18,14 +16,12 @@ export interface AppHeaderProps {
     canRedo?: boolean;
 }
 
-export const Header = ({
-    connectedDeviceLabel,
-}: AppHeaderProps) => {
-    const { connection, setConnection } = useConnectionStore.getState();
+export const Header = ({ connectedDeviceLabel }: AppHeaderProps) => {
+    const { connection, setConnection } = useConnectionStore();
     const { undo, redo, canUndo, canRedo, reset } = undoRedoStore();
     const [showSettingsReset, setShowSettingsReset] = useState(false);
     const [connectionAbort, setConnectionAbort] = useState(
-      new AbortController(),
+        new AbortController(),
     );
     // const lockState = useContext(LockStateContext);
     const { lockState } = useLockStore();
@@ -44,7 +40,8 @@ export const Header = ({
         { keymap: { checkUnsavedChanges: true } },
         (request) => request.keymap?.checkUnsavedChanges,
     );
-    async function save(){
+
+    async function save() {
         if (!connection) return;
         console.log('save', connection);
 
@@ -67,7 +64,7 @@ export const Header = ({
             console.error('Failed to discard changes', resp);
 
         reset();
-        useConnectionStore.setState( { connection: connection });
+        setConnection(connection);
     }
 
     async function resetSettings() {
@@ -81,7 +78,7 @@ export const Header = ({
             console.error('Failed to settings reset', resp);
 
         reset();
-        useConnectionStore.setState( { connection: connection });
+        setConnection(connection);
         // setConnection(connection);
     }
 

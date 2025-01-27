@@ -22,7 +22,7 @@ export interface UnlockModalProps {}
 
 export const UnlockModal = ({}: UnlockModalProps) => {
     const { lockState } = useLockStore()
-    const { connection } = useConnectionStore.getState();
+    const { connection } = useConnectionStore();
     const open = useMemo(
         () =>
             !!connection &&

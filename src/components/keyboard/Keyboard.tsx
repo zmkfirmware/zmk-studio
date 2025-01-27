@@ -3,7 +3,6 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { callRemoteProcedureControl } from '../../rpc/logging.ts';
 import {
     Keymap,
-    SetLayerBindingResponse,
     SetLayerPropsResponse,
     BehaviorBinding,
     Layer,
@@ -13,8 +12,7 @@ import { LayerPicker } from './LayerPicker.tsx';
 import { PhysicalLayoutPicker } from './PhysicalLayoutPicker.tsx';
 import { Keymap as KeymapComp } from './Keymap.tsx';
 import { useConnectedDeviceData } from '../../rpc/useConnectedDeviceData.ts';
-import { ConnectionContext } from '../../rpc/ConnectionContext.ts';
-import { UndoRedoContext } from '../../helpers/undoRedo.ts';
+
 import { BehaviorBindingPicker } from '../../behaviors/BehaviorBindingPicker.tsx';
 import { produce } from 'immer';
 import { LayoutZoom } from './PhysicalLayout.tsx';
@@ -56,7 +54,7 @@ export default function Keyboard() {
     const behaviors = useBehaviors();
     // const undoRedo = useContext(UndoRedoContext);
     const { doIt } = undoRedoStore();
-    const { connection, setConnection } = useConnectionStore.getState();
+    const { connection } = useConnectionStore();
 
     useEffect(() => {
         setSelectedLayerIndex(0);
@@ -126,20 +124,19 @@ export default function Keyboard() {
                 binding,
             );
             doIt?.(async () => {
-                if (!connection) {
-                    throw new Error('Not connected');
-                }
-                console.log(
-                    connection,
-                    selectedLayerIndex,
-                    selectedKeyPosition,
-                    layer,
-                    layerId,
-                    keyPosition,
-                    oldBinding,
-                    binding,
-                );
-                return
+                if (!connection) throw new Error('Not connected');
+
+                // console.log(
+                //     connection,
+                //     selectedLayerIndex,
+                //     selectedKeyPosition,
+                //     layer,
+                //     layerId,
+                //     keyPosition,
+                //     oldBinding,
+                //     binding,
+                // );
+                // return
                 const resp = await callRemoteProcedureControl(connection, {
                     keymap: {
                         setLayerBinding: { layerId, keyPosition, binding },
@@ -358,10 +355,10 @@ export default function Keyboard() {
 
         const index = selectedLayerIndex;
         const layerId = keymap.layers[index].id;
-        doIt?.(async () => {
-            await doRemove(index);
-            return () => doRestore(layerId, index);
-        });
+        doIt?.( async () => {
+            await doRemove( index );
+            return () => doRestore( layerId, index );
+        } );
     }, [connection, doIt, selectedLayerIndex]);
 
     const changeLayerName = useCallback(

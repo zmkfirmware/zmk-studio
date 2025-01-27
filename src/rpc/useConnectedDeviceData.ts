@@ -12,7 +12,7 @@ export function useConnectedDeviceData<T>(
     response_mapper: (resp: RequestResponse) => T | undefined,
     requireUnlock?: boolean,
 ): [T | undefined, React.Dispatch<SetStateAction<T | undefined>>] {
-    const { connection } = useConnectionStore.getState();
+    const { connection } = useConnectionStore();
     const { lockState } = useLockStore();
     const [data, setData] = useState<T | undefined>(undefined);
 

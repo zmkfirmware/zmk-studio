@@ -61,10 +61,11 @@ export async function listenForNotifications(
 export async function connect(
     transport: RpcTransport,
     setConnectedDeviceName: Dispatch<string | undefined>,
+    setConnection: any,
     signal: AbortSignal,
 ) {
     const conn = await create_rpc_connection(transport, { signal });
-    const { setConnection } = useConnectionStore.getState();
+    // const { setConnection } = useConnectionStore();
 
     const details = await Promise.race([
         callRemoteProcedureControl(conn, { core: { getDeviceInfo: true } })
@@ -83,7 +84,6 @@ export async function connect(
         window.alert('Failed to connect to the chosen device');
         return;
     }
-    console.log(conn);
 
     listenForNotifications(conn.notification_readable, signal)
         .then(() => {
@@ -96,7 +96,6 @@ export async function connect(
         });
 
     setConnectedDeviceName(details.name);
-    console.log(conn);
     setConnection(conn);
 }
 
