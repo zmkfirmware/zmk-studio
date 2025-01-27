@@ -10,7 +10,7 @@ import { useSub } from './helpers/usePubSub.ts';
 import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core';
 import { LockStateContext } from './rpc/LockStateContext';
 import { UnlockModal } from './components/UnlockModal.tsx';
-import { connect } from './services/RPCService.ts';
+import { connect, useConnect } from './services/RPCService.ts';
 import { Header } from './layout/Header.tsx';
 import Keyboard from './components/keyboard/Keyboard.tsx';
 import { Footer } from './layout/Footer.tsx';
@@ -31,6 +31,7 @@ function App() {
     );
     const { setLockState } = useLockStore();
 
+    // const {connect} = useConnect();
     useSub('rpc_notification.core.lockStateChanged', (ls) => {
         console.log(ls);
         setLockState(ls);
@@ -58,11 +59,9 @@ function App() {
         updateLockState();
     }, [connection, setLockState]);
 
-    function onConnect(t: RpcTransport) {
-        const ac = new AbortController();
-        setConnectionAbort(ac);
-        connect(t, setConnectedDeviceName, ac.signal);
-    }
+    const onConnect = (t: RpcTransport) => {
+        connect(t, setConnectedDeviceName, connectionAbort.signal);
+    };
 
     return (
         <>

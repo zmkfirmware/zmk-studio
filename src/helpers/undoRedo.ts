@@ -13,16 +13,11 @@ export function useUndoRedo(): [
   () => void,
 ] {
   const [locked, setLocked] = useState<boolean>(false);
-  const [undoStack, setUndoStack] = useState<Array<[DoCallback, UndoCallback]>>(
-    [],
-  );
+  const [undoStack, setUndoStack] = useState<Array<[DoCallback, UndoCallback]>>( [] );
   const [redoStack, setRedoStack] = useState<Array<DoCallback>>([]);
 
-  const canUndo = useMemo( () => !locked && undoStack.length > 0, [locked, undoStack], );
-  const canRedo = useMemo(
-    () => !locked && redoStack.length > 0,
-    [locked, redoStack],
-  );
+  const canUndo = useMemo( () => !locked && undoStack.length > 0, [locked, undoStack] );
+  const canRedo = useMemo( () => !locked && redoStack.length > 0, [locked, redoStack] );
 
   const doIt = async (doCb: DoCallback, preserveRedo?: boolean) => {
     setLocked(true);

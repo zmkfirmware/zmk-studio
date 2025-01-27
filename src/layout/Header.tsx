@@ -65,7 +65,7 @@ export const Header = ({
             console.error('Failed to discard changes', resp);
 
         reset();
-        setConnection(connection);
+        useConnectionStore.setState( { connection: connection });
     }
 
     async function resetSettings() {
@@ -78,7 +78,8 @@ export const Header = ({
             console.error('Failed to settings reset', resp);
 
         reset();
-        setConnection(connection);
+        useConnectionStore.setState( { connection: connection });
+        // setConnection(connection);
     }
 
     async function disconnect() {
