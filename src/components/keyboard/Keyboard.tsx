@@ -24,8 +24,8 @@ import { deserializeLayoutZoom } from '../../helpers/helpers.ts';
 import { useBehaviors, useLayouts } from '../../helpers/useLayouts.ts';
 import { X } from 'lucide-react';
 import { Zoom } from '../Zoom.tsx';
-import useConnectionStore from "../../stores/ConnectionStore.ts";
-import undoRedoStore from "../../stores/UndoRedoStore.ts";
+import useConnectionStore from '../../stores/ConnectionStore.ts';
+import undoRedoStore from '../../stores/UndoRedoStore.ts';
 
 export default function Keyboard() {
     const [
@@ -34,6 +34,7 @@ export default function Keyboard() {
         selectedPhysicalLayoutIndex,
         setSelectedPhysicalLayoutIndex,
     ] = useLayouts();
+
     const [keymap, setKeymap] = useConnectedDeviceData<Keymap>(
         { keymap: { getKeymap: true } },
         (keymap) => {
@@ -67,7 +68,7 @@ export default function Keyboard() {
             if (!connection || !layouts) {
                 return;
             }
-
+            console.log(connection, selectedPhysicalLayoutIndex);
             const resp = await callRemoteProcedureControl(connection, {
                 keymap: {
                     setActivePhysicalLayout: selectedPhysicalLayoutIndex,
@@ -110,72 +111,91 @@ export default function Keyboard() {
                 );
                 return;
             }
-
             const layer = selectedLayerIndex;
             const layerId = keymap.layers[layer].id;
             const keyPosition = selectedKeyPosition;
             const oldBinding = keymap.layers[layer].bindings[keyPosition];
+            console.log(
+                connection,
+                selectedLayerIndex,
+                selectedKeyPosition,
+                layer,
+                layerId,
+                keyPosition,
+                oldBinding,
+                binding,
+            );
             doIt?.(async () => {
                 if (!connection) {
                     throw new Error('Not connected');
                 }
-
+                console.log(
+                    connection,
+                    selectedLayerIndex,
+                    selectedKeyPosition,
+                    layer,
+                    layerId,
+                    keyPosition,
+                    oldBinding,
+                    binding,
+                );
+                return
                 const resp = await callRemoteProcedureControl(connection, {
                     keymap: {
                         setLayerBinding: { layerId, keyPosition, binding },
                     },
                 });
                 console.log(resp);
-                if (
-                    resp.keymap?.setLayerBinding ===
-                    SetLayerBindingResponse.SET_LAYER_BINDING_RESP_OK
-                ) {
-                    setKeymap(
-                        produce((draft: any) => {
-                            draft.layers[layer].bindings[keyPosition] = binding;
-                        }),
-                    );
-                } else {
-                    console.error(
-                        'Failed to set binding',
-                        resp.keymap?.setLayerBinding,
-                    );
-                }
-
-                return async () => {
-                    if (!connection) {
-                        return;
-                    }
-
-                    const resp = await callRemoteProcedureControl(connection, {
-                        keymap: {
-                            setLayerBinding: {
-                                layerId,
-                                keyPosition,
-                                binding: oldBinding,
-                            },
-                        },
-                    });
-                    if (
-                        resp.keymap?.setLayerBinding ===
-                        SetLayerBindingResponse.SET_LAYER_BINDING_RESP_OK
-                    ) {
-                        setKeymap(
-                            produce((draft: any) => {
-                                draft.layers[layer].bindings[keyPosition] =
-                                    oldBinding;
-                            }),
-                        );
-                    } else {
-                        console.error(
-                            'Failed to set binding',
-                            resp.keymap?.setLayerBinding,
-                        );
-                    }
-                };
+                // if (
+                //     resp.keymap?.setLayerBinding ===
+                //     SetLayerBindingResponse.SET_LAYER_BINDING_RESP_OK
+                // ) {
+                //     setKeymap(
+                //         produce((draft: any) => {
+                //             draft.layers[layer].bindings[keyPosition] = binding;
+                //         }),
+                //     );
+                // } else {
+                //     console.error(
+                //         'Failed to set binding',
+                //         resp.keymap?.setLayerBinding,
+                //     );
+                // }
+                //
+                // return async () => {
+                //     if (!connection) {
+                //         return;
+                //     }
+                //
+                //     const resp = await callRemoteProcedureControl(connection, {
+                //         keymap: {
+                //             setLayerBinding: {
+                //                 layerId,
+                //                 keyPosition,
+                //                 binding: oldBinding,
+                //             },
+                //         },
+                //     });
+                //     if (
+                //         resp.keymap?.setLayerBinding ===
+                //         SetLayerBindingResponse.SET_LAYER_BINDING_RESP_OK
+                //     ) {
+                //         setKeymap(
+                //             produce((draft: any) => {
+                //                 draft.layers[layer].bindings[keyPosition] =
+                //                     oldBinding;
+                //             }),
+                //         );
+                //     } else {
+                //         console.error(
+                //             'Failed to set binding',
+                //             resp.keymap?.setLayerBinding,
+                //         );
+                //     }
+                // };
             });
         },
-        [connection, keymap, doIt, selectedLayerIndex, selectedKeyPosition],
+        [connection, keymap,doIt, selectedLayerIndex, selectedKeyPosition],
     );
 
     const selectedBinding = useMemo(() => {

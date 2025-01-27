@@ -42,10 +42,11 @@ export const Header = ({
 
     const [unsaved, setUnsaved] = useConnectedDeviceData<boolean>(
         { keymap: { checkUnsavedChanges: true } },
-        (r) => r.keymap?.checkUnsavedChanges,
+        (request) => request.keymap?.checkUnsavedChanges,
     );
     async function save(){
         if (!connection) return;
+        console.log('save', connection);
 
         const resp = await callRemoteProcedureControl(connection, {
             keymap: { saveChanges: true },
@@ -57,6 +58,7 @@ export const Header = ({
 
     async function discard() {
         if (!connection) return;
+        console.log('discard', connection);
 
         const resp = await callRemoteProcedureControl(connection, {
             keymap: { discardChanges: true },
@@ -70,6 +72,7 @@ export const Header = ({
 
     async function resetSettings() {
         if (!connection) return;
+        console.log('resetSettings', connection);
 
         const resp = await callRemoteProcedureControl(connection, {
             core: { resetSettings: true },
@@ -84,7 +87,7 @@ export const Header = ({
 
     async function disconnect() {
         if (!connection) return;
-        console.log(connection.request_writable);
+        console.log('disconnecting', connection.request_writable);
         await connection.request_writable.close().finally(() => {
             connectionAbort.abort('User disconnected');
             setConnectionAbort(new AbortController());

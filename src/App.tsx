@@ -1,16 +1,13 @@
 import { callRemoteProcedureControl } from './rpc/logging';
 
-import { ConnectionState, ConnectionContext } from './rpc/ConnectionContext';
-import { useCallback, useEffect, useState } from 'react';
-import { ConnectModal, TransportFactory } from './components/ConnectModal.tsx';
+import {  useEffect, useState } from 'react';
+import { ConnectModal } from './components/ConnectModal.tsx';
 
 import type { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index';
-import { UndoRedoContext, useUndoRedo } from './helpers/undoRedo.ts';
 import { useSub } from './helpers/usePubSub.ts';
 import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core';
-import { LockStateContext } from './rpc/LockStateContext';
 import { UnlockModal } from './components/UnlockModal.tsx';
-import { connect, useConnect } from './services/RPCService.ts';
+import { connect } from './services/RPCService.ts';
 import { Header } from './layout/Header.tsx';
 import Keyboard from './components/keyboard/Keyboard.tsx';
 import { Footer } from './layout/Footer.tsx';

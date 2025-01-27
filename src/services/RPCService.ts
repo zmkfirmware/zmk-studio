@@ -83,6 +83,7 @@ export async function connect(
         window.alert('Failed to connect to the chosen device');
         return;
     }
+    console.log(conn);
 
     listenForNotifications(conn.notification_readable, signal)
         .then(() => {
