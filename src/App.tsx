@@ -39,14 +39,14 @@ function App() {
             reset();
             setLockState(LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED);
         }
-
+        console.log()
         async function updateLockState() {
             if (!connection) return;
 
             const locked_resp = await callRemoteProcedureControl(connection, {
                 core: { getLockState: true },
             });
-
+            console.log(locked_resp, locked_resp.core?.getLockState)
             setLockState(
                 locked_resp.core?.getLockState ||
                     LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED,

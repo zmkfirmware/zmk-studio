@@ -34,7 +34,7 @@ export function useBehaviors(): BehaviorMap {
                 behaviors: { listAllBehaviors: true },
                 requestId: 0,
             };
-
+            console.log(connection,lockState)
             const behavior_list = await callRemoteProcedureControl(
                 connection,
                 get_behaviors,
@@ -111,6 +111,7 @@ export function useLayouts(): [
                 return;
             }
 
+            console.log(connection,lockState)
             const response = await callRemoteProcedureControl(connection, {
                 keymap: { getPhysicalLayouts: true },
             });

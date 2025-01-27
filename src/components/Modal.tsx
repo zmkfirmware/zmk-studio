@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react"
 
 export interface ModalProps {
   usedFor: string;
@@ -30,6 +30,11 @@ export function Modal({
   opened = false,
 }: ModalProps)  {
 
+  useEffect( () => {
+    return () => {
+      document.getElementById(`modal_${usedFor}`)?.close()
+    }
+  }, [] )
   return (
     <>
       <span hidden={opened}

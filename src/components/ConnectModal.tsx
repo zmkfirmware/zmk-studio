@@ -60,7 +60,7 @@ function deviceList(
     useEffect(() => {
         setSelectedDev(new Set());
         setDevices([]);
-
+        console.log(open)
         LoadEm();
     }, [transports, open, setDevices]);
 

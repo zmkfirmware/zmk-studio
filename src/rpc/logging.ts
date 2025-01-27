@@ -4,14 +4,15 @@ export async function callRemoteProcedureControl(
     conn: RpcConnection,
     req: Omit<Request, 'requestId'>,
 ): Promise<RequestResponse> {
-    console.log('RPC Request', req);
+    // console.trace('RPC Request', req);
+    console.log(conn, req)
     return call_rpc(conn, req)
         .then((r) => {
-            console.log('RPC Response', r);
+            // console.trace('RPC Response', r);
             return r;
         })
         .catch((e) => {
-            console.log('RPC Error', e);
+            // console.log('RPC Error', e);
             return e;
         });
 }

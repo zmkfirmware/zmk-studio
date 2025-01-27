@@ -113,16 +113,16 @@ export default function Keyboard() {
             const layerId = keymap.layers[layer].id;
             const keyPosition = selectedKeyPosition;
             const oldBinding = keymap.layers[layer].bindings[keyPosition];
-            console.log(
-                connection,
-                selectedLayerIndex,
-                selectedKeyPosition,
-                layer,
-                layerId,
-                keyPosition,
-                oldBinding,
-                binding,
-            );
+            // console.log(
+            //     connection,
+            //     selectedLayerIndex,
+            //     selectedKeyPosition,
+            //     layer,
+            //     layerId,
+            //     keyPosition,
+            //     oldBinding,
+            //     binding,
+            // );
             doIt?.(async () => {
                 if (!connection) throw new Error('Not connected');
 
