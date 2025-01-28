@@ -1,130 +1,116 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
-import { callRemoteProcedureControl } from '../../rpc/logging.ts';
+import { callRemoteProcedureControl } from '../../rpc/logging.ts'
 import {
     Keymap,
     SetLayerPropsResponse,
     BehaviorBinding,
     Layer,
-} from '@zmkfirmware/zmk-studio-ts-client/keymap';
+} from '@zmkfirmware/zmk-studio-ts-client/keymap'
 
-import { LayerPicker } from './LayerPicker.tsx';
-import { PhysicalLayoutPicker } from './PhysicalLayoutPicker.tsx';
-import { Keymap as KeymapComp } from './Keymap.tsx';
-import { useConnectedDeviceData } from '../../rpc/useConnectedDeviceData.ts';
+import { LayerPicker } from './LayerPicker.tsx'
+import { PhysicalLayoutPicker } from './PhysicalLayoutPicker.tsx'
+import { Keymap as KeymapComp } from './Keymap.tsx'
+import { useConnectedDeviceData } from '../../rpc/useConnectedDeviceData.ts'
 
-import { BehaviorBindingPicker } from '../../behaviors/BehaviorBindingPicker.tsx';
-import { produce } from 'immer';
-import { LayoutZoom } from './PhysicalLayout.tsx';
-import { useLocalStorageState } from '../../misc/useLocalStorageState.ts';
-import { KeysLayout } from '../keycodes/KeysLayout.tsx';
-import { deserializeLayoutZoom } from '../../helpers/helpers.ts';
-import { useBehaviors, useLayouts } from '../../helpers/useLayouts.ts';
-import { X } from 'lucide-react';
-import { Zoom } from '../Zoom.tsx';
-import useConnectionStore from '../../stores/ConnectionStore.ts';
-import undoRedoStore from '../../stores/UndoRedoStore.ts';
+import { BehaviorBindingPicker } from '../../behaviors/BehaviorBindingPicker.tsx'
+import { produce } from 'immer'
+import { LayoutZoom } from './PhysicalLayout.tsx'
+import { useLocalStorageState } from '../../misc/useLocalStorageState.ts'
+import { KeysLayout } from '../keycodes/KeysLayout.tsx'
+import { deserializeLayoutZoom } from '../../helpers/helpers.ts'
+import { useBehaviors, useLayouts } from '../../helpers/useLayouts.ts'
+import { X } from 'lucide-react'
+import { Zoom } from '../Zoom.tsx'
+import useConnectionStore from '../../stores/ConnectionStore.ts'
+import undoRedoStore from '../../stores/UndoRedoStore.ts'
 
 export default function Keyboard() {
-    const [
-        layouts,
-        _setLayouts,
-        selectedPhysicalLayoutIndex,
-        setSelectedPhysicalLayoutIndex,
-    ] = useLayouts();
+    const [ layouts, _setLayouts, selectedPhysicalLayoutIndex, setSelectedPhysicalLayoutIndex, ] = useLayouts()
 
     const [keymap, setKeymap] = useConnectedDeviceData<Keymap>(
         { keymap: { getKeymap: true } },
         (keymap) => {
-            console.log('Got the keymap!');
-            return keymap?.keymap?.getKeymap;
+            console.log('Got the keymap!')
+            return keymap?.keymap?.getKeymap
         },
         true,
-    );
+    )
 
     const [keymapScale, setKeymapScale] = useLocalStorageState<LayoutZoom>(
         'keymapScale',
         'auto',
         { deserialize: deserializeLayoutZoom },
-    );
-    const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0);
+    )
+    const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0)
     const [selectedKeyPosition, setSelectedKeyPosition] = useState<
         number | undefined
-    >(undefined);
-    const behaviors = useBehaviors();
+    >(undefined)
+    const behaviors = useBehaviors()
     // const undoRedo = useContext(UndoRedoContext);
-    const { doIt } = undoRedoStore();
-    const { connection } = useConnectionStore();
+    const { doIt } = undoRedoStore()
+    const { connection } = useConnectionStore()
 
     useEffect(() => {
-        setSelectedLayerIndex(0);
-        setSelectedKeyPosition(undefined);
-    }, [connection]);
+        setSelectedLayerIndex(0)
+        setSelectedKeyPosition(undefined)
+    }, [connection])
 
     useEffect(() => {
         async function performSetRequest() {
             if (!connection || !layouts) {
-                return;
+                return
             }
-            console.log(connection, selectedPhysicalLayoutIndex);
+            console.log(connection, selectedPhysicalLayoutIndex)
             const resp = await callRemoteProcedureControl(connection, {
                 keymap: {
                     setActivePhysicalLayout: selectedPhysicalLayoutIndex,
                 },
-            });
+            })
 
-            const new_keymap = resp?.keymap?.setActivePhysicalLayout?.ok;
+            const new_keymap = resp?.keymap?.setActivePhysicalLayout?.ok
             if (new_keymap) {
-                setKeymap(new_keymap);
+                setKeymap(new_keymap)
             } else {
                 console.error(
                     'Failed to set the active physical layout err:',
                     resp?.keymap?.setActivePhysicalLayout?.err,
-                );
+                )
             }
         }
 
-        performSetRequest();
-    }, [selectedPhysicalLayoutIndex]);
+        performSetRequest()
+    }, [selectedPhysicalLayoutIndex])
 
     const doSelectPhysicalLayout = useCallback(
         (i: number) => {
-            const oldLayout = selectedPhysicalLayoutIndex;
+            const oldLayout = selectedPhysicalLayoutIndex
             doIt?.(async () => {
-                setSelectedPhysicalLayoutIndex(i);
+                setSelectedPhysicalLayoutIndex(i)
 
                 return async () => {
-                    setSelectedPhysicalLayoutIndex(oldLayout);
-                };
-            });
+                    setSelectedPhysicalLayoutIndex(oldLayout)
+                }
+            })
         },
         [doIt, selectedPhysicalLayoutIndex],
-    );
+    )
 
     const doUpdateBinding = useCallback(
         (binding: BehaviorBinding) => {
             if (!keymap || selectedKeyPosition === undefined) {
                 console.error(
                     "Can't update binding without a selected key position and loaded keymap",
-                );
-                return;
+                )
+                return
             }
-            const layer = selectedLayerIndex;
-            const layerId = keymap.layers[layer].id;
-            const keyPosition = selectedKeyPosition;
-            const oldBinding = keymap.layers[layer].bindings[keyPosition];
-            // console.log(
-            //     connection,
-            //     selectedLayerIndex,
-            //     selectedKeyPosition,
-            //     layer,
-            //     layerId,
-            //     keyPosition,
-            //     oldBinding,
-            //     binding,
-            // );
+            const layer = selectedLayerIndex
+            const layerId = keymap.layers[layer].id
+            const keyPosition = selectedKeyPosition
+            const oldBinding = keymap.layers[layer].bindings[keyPosition]
+
             doIt?.(async () => {
-                if (!connection) throw new Error('Not connected');
+                if (!connection) throw new Error('Not connected')
 
                 // console.log(
                 //     connection,
@@ -141,8 +127,8 @@ export default function Keyboard() {
                     keymap: {
                         setLayerBinding: { layerId, keyPosition, binding },
                     },
-                });
-                console.log(resp);
+                })
+                console.log(resp)
                 // if (
                 //     resp.keymap?.setLayerBinding ===
                 //     SetLayerBindingResponse.SET_LAYER_BINDING_RESP_OK
@@ -190,10 +176,10 @@ export default function Keyboard() {
                 //         );
                 //     }
                 // };
-            });
+            })
         },
-        [connection, keymap,doIt, selectedLayerIndex, selectedKeyPosition],
-    );
+        [connection, keymap, doIt, selectedLayerIndex, selectedKeyPosition],
+    )
 
     const selectedBinding = useMemo(() => {
         if (
@@ -201,134 +187,134 @@ export default function Keyboard() {
             selectedKeyPosition == null ||
             !keymap.layers[selectedLayerIndex]
         ) {
-            return null;
+            return null
         }
 
-        return keymap.layers[selectedLayerIndex].bindings[selectedKeyPosition];
-    }, [keymap, selectedLayerIndex, selectedKeyPosition]);
+        return keymap.layers[selectedLayerIndex].bindings[selectedKeyPosition]
+    }, [keymap, selectedLayerIndex, selectedKeyPosition])
 
     const moveLayer = useCallback(
         (start: number, end: number) => {
             const doMove = async (startIndex: number, destIndex: number) => {
                 if (!connection) {
-                    return;
+                    return
                 }
 
                 const resp = await callRemoteProcedureControl(connection, {
                     keymap: { moveLayer: { startIndex, destIndex } },
-                });
+                })
 
                 if (resp.keymap?.moveLayer?.ok) {
-                    setKeymap(resp.keymap?.moveLayer?.ok);
-                    setSelectedLayerIndex(destIndex);
+                    setKeymap(resp.keymap?.moveLayer?.ok)
+                    setSelectedLayerIndex(destIndex)
                 } else {
-                    console.error('Error moving', resp);
+                    console.error('Error moving', resp)
                 }
-            };
+            }
 
             doIt?.(async () => {
-                await doMove(start, end);
-                return () => doMove(end, start);
-            });
+                await doMove(start, end)
+                return () => doMove(end, start)
+            })
         },
         [doIt],
-    );
+    )
 
     const addLayer = useCallback(() => {
         async function doAdd(): Promise<number> {
             if (!connection || !keymap) {
-                throw new Error('Not connected');
+                throw new Error('Not connected')
             }
 
             const resp = await callRemoteProcedureControl(connection, {
                 keymap: { addLayer: {} },
-            });
+            })
             console.log(resp)
             if (resp.keymap?.addLayer?.ok) {
-                const newSelection = keymap.layers.length;
+                const newSelection = keymap.layers.length
                 setKeymap(
                     produce((draft: any) => {
-                        draft.layers.push(resp.keymap!.addLayer!.ok!.layer);
-                        draft.availableLayers--;
+                        draft.layers.push(resp.keymap!.addLayer!.ok!.layer)
+                        draft.availableLayers--
                     }),
-                );
+                )
 
-                setSelectedLayerIndex(newSelection);
+                setSelectedLayerIndex(newSelection)
 
-                return resp.keymap.addLayer.ok.index;
+                return resp.keymap.addLayer.ok.index
             } else {
-                console.error('Add error', resp.keymap?.addLayer?.err);
+                console.error('Add error', resp.keymap?.addLayer?.err)
                 throw new Error(
                     'Failed to add layer:' + resp.keymap?.addLayer?.err,
-                );
+                )
             }
         }
 
         async function doRemove(layerIndex: number) {
-            if (!connection) throw new Error('Not connected');
+            if (!connection) throw new Error('Not connected')
 
             const resp = await callRemoteProcedureControl(connection, {
                 keymap: { removeLayer: { layerIndex } },
-            });
+            })
 
-            console.log(resp);
+            console.log(resp)
             if (resp.keymap?.removeLayer?.ok) {
                 setKeymap(
                     produce((draft: any) => {
-                        draft.layers.splice(layerIndex, 1);
-                        draft.availableLayers++;
+                        draft.layers.splice(layerIndex, 1)
+                        draft.availableLayers++
                     }),
-                );
+                )
             } else {
-                console.error('Remove error', resp.keymap?.removeLayer?.err);
+                console.error('Remove error', resp.keymap?.removeLayer?.err)
                 throw new Error(
                     'Failed to remove layer:' + resp.keymap?.removeLayer?.err,
-                );
+                )
             }
         }
 
         doIt?.(async () => {
-            const index = await doAdd();
-            return () => doRemove(index);
-        });
-    }, [connection, doIt, keymap]);
+            const index = await doAdd()
+            return () => doRemove(index)
+        })
+    }, [connection, doIt, keymap])
 
     const removeLayer = useCallback(() => {
         async function doRemove(layerIndex: number): Promise<void> {
             if (!connection || !keymap) {
-                throw new Error('Not connected');
+                throw new Error('Not connected')
             }
 
             const resp = await callRemoteProcedureControl(connection, {
                 keymap: { removeLayer: { layerIndex } },
-            });
+            })
 
             if (resp.keymap?.removeLayer?.ok) {
                 if (layerIndex == keymap.layers.length - 1) {
-                    setSelectedLayerIndex(layerIndex - 1);
+                    setSelectedLayerIndex(layerIndex - 1)
                 }
                 setKeymap(
                     produce((draft: any) => {
-                        draft.layers.splice(layerIndex, 1);
-                        draft.availableLayers++;
+                        draft.layers.splice(layerIndex, 1)
+                        draft.availableLayers++
                     }),
-                );
+                )
             } else {
-                console.error('Remove error', resp.keymap?.removeLayer?.err);
+                console.error('Remove error', resp.keymap?.removeLayer?.err)
                 throw new Error(
                     'Failed to remove layer:' + resp.keymap?.removeLayer?.err,
-                );
+                )
             }
         }
 
         async function doRestore(layerId: number, atIndex: number) {
-            if (!connection) throw new Error('Not connected');
+            if (!connection) throw new Error('Not connected')
 
             const resp = await callRemoteProcedureControl(connection, {
                 keymap: { restoreLayer: { layerId, atIndex } },
-            });
+            })
 
-            console.log(resp);
+            console.log(resp)
             if (resp.keymap?.restoreLayer?.ok) {
                 setKeymap(
                     produce((draft: any) => {
@@ -336,41 +322,41 @@ export default function Keyboard() {
                             atIndex,
                             0,
                             resp!.keymap!.restoreLayer!.ok,
-                        );
-                        draft.availableLayers--;
+                        )
+                        draft.availableLayers--
                     }),
-                );
-                setSelectedLayerIndex(atIndex);
+                )
+                setSelectedLayerIndex(atIndex)
             } else {
-                console.error('Remove error', resp.keymap?.restoreLayer?.err);
+                console.error('Remove error', resp.keymap?.restoreLayer?.err)
                 throw new Error(
                     'Failed to restore layer:' + resp.keymap?.restoreLayer?.err,
-                );
+                )
             }
         }
 
         if (!keymap) {
-            throw new Error('No keymap loaded');
+            throw new Error('No keymap loaded')
         }
 
-        const index = selectedLayerIndex;
-        const layerId = keymap.layers[index].id;
-        doIt?.( async () => {
-            await doRemove( index );
-            return () => doRestore( layerId, index );
-        } );
-    }, [connection, doIt, selectedLayerIndex]);
+        const index = selectedLayerIndex
+        const layerId = keymap.layers[index].id
+        doIt?.(async () => {
+            await doRemove(index)
+            return () => doRestore(layerId, index)
+        })
+    }, [connection, doIt, selectedLayerIndex])
 
     const changeLayerName = useCallback(
         (id: number, oldName: string, newName: string) => {
             async function changeName(layerId: number, name: string) {
                 if (!connection) {
-                    throw new Error('Not connected');
+                    throw new Error('Not connected')
                 }
 
                 const resp = await callRemoteProcedureControl(connection, {
                     keymap: { setLayerProps: { layerId, name } },
-                });
+                })
 
                 if (
                     resp.keymap?.setLayerProps ==
@@ -380,37 +366,37 @@ export default function Keyboard() {
                         produce((draft: any) => {
                             const layer_index = draft.layers.findIndex(
                                 (l: Layer) => l.id == layerId,
-                            );
-                            draft.layers[layer_index].name = name;
+                            )
+                            draft.layers[layer_index].name = name
                         }),
-                    );
+                    )
                 } else {
                     throw new Error(
                         'Failed to change layer name:' +
                             resp.keymap?.setLayerProps,
-                    );
+                    )
                 }
             }
 
             doIt?.(async () => {
-                await changeName(id, newName);
+                await changeName(id, newName)
                 return async () => {
-                    await changeName(id, oldName);
-                };
-            });
+                    await changeName(id, oldName)
+                }
+            })
         },
         [connection, doIt, keymap],
-    );
+    )
 
     useEffect(() => {
-        if (!keymap?.layers) return;
+        if (!keymap?.layers) return
 
-        const layers = keymap.layers.length - 1;
+        const layers = keymap.layers.length - 1
 
         if (selectedLayerIndex > layers) {
-            setSelectedLayerIndex(layers);
+            setSelectedLayerIndex(layers)
         }
-    }, [keymap, selectedLayerIndex]);
+    }, [keymap, selectedLayerIndex])
 
     return (
         <div className="grid grid-cols-[auto_1fr] grid-rows-[1fr_minmax(10em,auto)] bg-base-300 max-w-full min-w-0 min-h-0">
@@ -457,8 +443,8 @@ export default function Keyboard() {
                     <Zoom
                         value={keymapScale}
                         onChange={(e) => {
-                            const value = deserializeLayoutZoom(e.target.value);
-                            setKeymapScale(value);
+                            const value = deserializeLayoutZoom(e.target.value)
+                            setKeymapScale(value)
                         }}
                     />
                 </div>
@@ -489,5 +475,5 @@ export default function Keyboard() {
                 </div>
             )}
         </div>
-    );
+    )
 }

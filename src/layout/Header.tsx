@@ -3,7 +3,7 @@ import { useSub } from '../helpers/usePubSub.ts';
 import { useEffect, useState } from 'react';
 import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core';
 import { Undo2, Redo2, Save, Trash2 } from 'lucide-react';
-import { Modal } from '../components/Modal.tsx';
+import { Modal } from '../components/UI/Modal.tsx';
 import { RestoreStock } from '../components/RestoreStock.tsx';
 import { callRemoteProcedureControl } from '../rpc/logging.ts';
 import useConnectionStore from '../stores/ConnectionStore.ts';

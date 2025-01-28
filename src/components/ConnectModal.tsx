@@ -1,29 +1,29 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import type { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index';
-import type { AvailableDevice } from '../tauri';
-import { Bluetooth, RefreshCw } from 'lucide-react';
-import { Key, ListBox, ListBoxItem, Selection } from 'react-aria-components';
-import { useModalRef } from '../misc/useModalRef.ts';
-import { ExternalLink } from '../misc/ExternalLink.tsx';
-import { GenericModal } from './GenericModal.tsx';
-import { DeviceList } from './DeviceList.tsx';
-import { SimpleDevicePicker } from './SimpleDevicePicker.tsx';
+import type { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index'
+import type { AvailableDevice } from '../tauri'
+import { Bluetooth, RefreshCw } from 'lucide-react'
+import { Key, ListBox, ListBoxItem, Selection } from 'react-aria-components'
+import { useModalRef } from '../misc/useModalRef.ts'
+import { ExternalLink } from '../misc/ExternalLink.tsx'
+import { GenericModal } from './GenericModal.tsx'
+import { DeviceList } from './DeviceList.tsx'
+import { SimpleDevicePicker } from './SimpleDevicePicker.tsx'
+import { TRANSPORTS } from '../helpers/transports.ts'
 
 export type TransportFactory = {
-    label: string;
-    isWireless?: boolean;
-    connect?: () => Promise<RpcTransport>;
+    label: string
+    isWireless?: boolean
+    connect?: () => Promise<RpcTransport>
     pick_and_connect?: {
-        list: () => Promise<Array<AvailableDevice>>;
-        connect: (dev: AvailableDevice) => Promise<RpcTransport>;
-    };
-};
+        list: () => Promise<Array<AvailableDevice>>
+        connect: (dev: AvailableDevice) => Promise<RpcTransport>
+    }
+}
 
 export interface ConnectModalProps {
-    open?: boolean;
-    transports: TransportFactory[];
-    onTransportCreated: (t: RpcTransport) => void;
+    open?: boolean
+    onTransportCreated: (t: RpcTransport) => void
 }
 
 function deviceList(
@@ -33,59 +33,59 @@ function deviceList(
 ) {
     const [devices, setDevices] = useState<
         Array<[TransportFactory, AvailableDevice]>
-    >([]);
-    const [selectedDev, setSelectedDev] = useState(new Set<Key>());
-    const [refreshing, setRefreshing] = useState(false);
+    >([])
+    const [selectedDev, setSelectedDev] = useState(new Set<Key>())
+    const [refreshing, setRefreshing] = useState(false)
 
     async function LoadEm() {
-        setRefreshing(true);
-        const entries: Array<[TransportFactory, AvailableDevice]> = [];
+        setRefreshing(true)
+        const entries: Array<[TransportFactory, AvailableDevice]> = []
         for (const t of transports.filter((t) => t.pick_and_connect)) {
-            const devices = await t.pick_and_connect?.list();
+            const devices = await t.pick_and_connect?.list()
             if (!devices) {
-                continue;
+                continue
             }
 
             entries.push(
                 ...devices.map<[TransportFactory, AvailableDevice]>((d) => {
-                    return [t, d];
+                    return [t, d]
                 }),
-            );
+            )
         }
 
-        setDevices(entries);
-        setRefreshing(false);
+        setDevices(entries)
+        setRefreshing(false)
     }
 
     useEffect(() => {
-        setSelectedDev(new Set());
-        setDevices([]);
+        setSelectedDev(new Set())
+        setDevices([])
         console.log(open)
-        LoadEm();
-    }, [transports, open, setDevices]);
+        LoadEm()
+    }, [transports, open, setDevices])
 
     const onRefresh = useCallback(() => {
-        setSelectedDev(new Set());
-        setDevices([]);
+        setSelectedDev(new Set())
+        setDevices([])
 
-        LoadEm();
-    }, [setDevices]);
+        LoadEm()
+    }, [setDevices])
 
     const onSelect = useCallback(
         async (keys: Selection) => {
             if (keys === 'all') {
-                return;
+                return
             }
-            const dev = devices.find(([_t, d]) => keys.has(d.id));
+            const dev = devices.find(([_t, d]) => keys.has(d.id))
             if (dev) {
                 dev[0]
                     .pick_and_connect!.connect(dev[1])
                     .then(onTransportCreated)
-                    .catch((e) => alert(e));
+                    .catch((e) => alert(e))
             }
         },
         [devices, onTransportCreated],
-    );
+    )
 
     return (
         <div>
@@ -123,7 +123,7 @@ function deviceList(
                 )}
             </ListBox>
         </div>
-    );
+    )
 }
 
 function noTransportsOptionsPrompt() {
@@ -158,17 +158,16 @@ function noTransportsOptionsPrompt() {
                 </ul>
             </div>
         </div>
-    );
+    )
 }
 
 export const ConnectModal = ({
     open,
-    transports,
     onTransportCreated,
 }: ConnectModalProps) => {
-    const dialog = useModalRef(open || false, false, false);
-
-    const haveTransports = useMemo(() => transports.length > 0, [transports]);
+    const dialog = useModalRef(open || false, false, false)
+    const transports = TRANSPORTS
+    const haveTransports = useMemo(() => transports.length > 0, [transports])
 
     function connectOptions(
         transports: TransportFactory[],
@@ -178,7 +177,7 @@ export const ConnectModal = ({
         const useSimplePicker = useMemo(
             () => transports.every((t) => !t.pick_and_connect),
             [transports],
-        );
+        )
 
         return useSimplePicker ? (
             <SimpleDevicePicker
@@ -191,7 +190,7 @@ export const ConnectModal = ({
                 transports={transports}
                 onTransportCreated={onTransportCreated}
             ></DeviceList>
-        );
+        )
     }
 
     return (
@@ -201,5 +200,5 @@ export const ConnectModal = ({
                 ? connectOptions(transports, onTransportCreated, open)
                 : noTransportsOptionsPrompt()}
         </GenericModal>
-    );
-};
+    )
+}

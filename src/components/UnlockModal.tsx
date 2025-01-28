@@ -24,9 +24,7 @@ export const UnlockModal = ({}: UnlockModalProps) => {
     const { lockState } = useLockStore()
     const { connection } = useConnectionStore();
     const open = useMemo(
-        () =>
-            !!connection &&
-            lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED,
+        () => !!connection && lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED,
         [connection, lockState],
     );
     const dialog = useModalRef(open, false, false);

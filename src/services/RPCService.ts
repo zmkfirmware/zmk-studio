@@ -1,13 +1,12 @@
 import type { Notification } from '@zmkfirmware/zmk-studio-ts-client/studio';
 import { usePub } from '../helpers/usePubSub.ts';
-import { Dispatch, useEffect, useState } from "react";
+import { Dispatch } from "react";
 import { create_rpc_connection } from '@zmkfirmware/zmk-studio-ts-client';
 import { callRemoteProcedureControl } from '../rpc/logging.ts';
 import { valueAfter } from '../helpers/async.ts';
 import { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index';
 import useConnectionStore from '../stores/ConnectionStore.ts';
-import { createRoot } from "react-dom/client";
-import Alert from '../components/Alert.tsx';
+
 export async function listenForNotifications(
     notification_stream: ReadableStream<Notification>,
     signal: AbortSignal,
@@ -61,11 +60,9 @@ export async function listenForNotifications(
 export async function connect(
     transport: RpcTransport,
     setConnectedDeviceName: Dispatch<string | undefined>,
-    setConnection: any,
     signal: AbortSignal,
 ) {
     const conn = await create_rpc_connection(transport, { signal });
-    // const { setConnection } = useConnectionStore();
 
     const details = await Promise.race([
         callRemoteProcedureControl(conn, { core: { getDeviceInfo: true } })
@@ -78,69 +75,19 @@ export async function connect(
     ]);
 
     if (!details) {
-        //create a render for an alert ui render here with Alert component
-
-        // TODO: Show a proper toast/alert not using `window.alert`
-        window.alert('Failed to connect to the chosen device');
-        return;
+        return 'Failed to connect to the chosen device';
     }
 
     listenForNotifications(conn.notification_readable, signal)
         .then(() => {
             setConnectedDeviceName(undefined);
-            setConnection(null);
+            return null;
         })
         .catch(() => {
             setConnectedDeviceName(undefined);
-            setConnection(null);
+            return null;
         });
 
     setConnectedDeviceName(details.name);
-    setConnection(conn);
+    return conn;
 }
-
-// export function useConnect(transport, setConnectedDeviceName, signal) {
-//     const { connection, setConnection } = useConnectionStore();
-//
-//     useEffect(() => {
-//         async function connect (){
-//             const conn = await create_rpc_connection(transport, { signal });
-//             const details = await Promise.race([
-//                 callRemoteProcedureControl(conn, { core: { getDeviceInfo: true } })
-//                     .then((r) => r?.core?.getDeviceInfo)
-//                     .catch((e) => {
-//                         console.error('Failed first RPC call', e);
-//                         return undefined;
-//                     }),
-//                 valueAfter(undefined, 1000),
-//             ]);
-//
-//             if (!details) {
-//                 // TODO: Show a proper toast/alert not using `window.alert`
-//                 // const alertContainer = document.createElement("div");
-//                 // document.body.appendChild(alertContainer);
-//                 // const alert  = createRoot(alertContainer)
-//                 // alert.render(<Alert message={message} duration={5} container={alertContainer} />);
-//                 window.alert('Failed to connect to the chosen device');
-//                 return;
-//             }
-//
-//             listenForNotifications(conn.notification_readable, signal)
-//                 .then(() => {
-//                     setConnectedDeviceName(undefined);
-//                     setConnection(null);
-//                 })
-//                 .catch(() => {
-//                     setConnectedDeviceName(undefined);
-//                     setConnection(null);
-//                 });
-//
-//             setConnection(conn);
-//             setConnectedDeviceName(details.name);
-//             // setConnectionState(conn);
-//         };
-//
-//     }, [transport, setConnectedDeviceName, signal]);
-//
-//     return connection;
-// }

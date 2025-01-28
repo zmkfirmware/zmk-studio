@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import type { AvailableDevice } from '../tauri';
-import { UserCancelledError } from '@zmkfirmware/zmk-studio-ts-client/transport/errors';
-import { TransportFactory } from './ConnectModal.tsx';
-import { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index';
+import { useEffect, useState } from 'react'
+import type { AvailableDevice } from '../tauri'
+import { UserCancelledError } from '@zmkfirmware/zmk-studio-ts-client/transport/errors'
+import { TransportFactory } from './ConnectModal.tsx'
+import { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index'
 
 interface SimpleDevicePickerProps {
-    transports: TransportFactory[];
-    onTransportCreated: (t: RpcTransport) => void;
+    transports: TransportFactory[]
+    onTransportCreated: (t: RpcTransport) => void
 }
 
 export function SimpleDevicePicker({
@@ -16,62 +16,62 @@ export function SimpleDevicePicker({
     {
         const [availableDevices, setAvailableDevices] = useState<
             AvailableDevice[] | undefined
-        >(undefined);
+        >(undefined)
         const [selectedTransport, setSelectedTransport] = useState<
             TransportFactory | undefined
-        >(undefined);
+        >(undefined)
 
         useEffect(() => {
             if (!selectedTransport) {
-                setAvailableDevices(undefined);
-                return;
+                setAvailableDevices(undefined)
+                return
             }
 
-            let ignore = false;
+            let ignore = false
 
             if (selectedTransport.connect) {
                 async function connectTransport() {
                     try {
-                        const transport = await selectedTransport?.connect?.();
+                        const transport = await selectedTransport?.connect?.()
 
                         if (!ignore) {
                             if (transport) {
-                                onTransportCreated(transport);
+                                onTransportCreated(transport)
                             }
-                            setSelectedTransport(undefined);
+                            setSelectedTransport(undefined)
                         }
                     } catch (e) {
                         if (!ignore) {
-                            console.error(e);
+                            console.error(e)
                             if (
                                 e instanceof Error &&
                                 !(e instanceof UserCancelledError)
                             ) {
-                                alert(e.message);
+                                alert(e.message)
                             }
-                            setSelectedTransport(undefined);
+                            setSelectedTransport(undefined)
                         }
                     }
                 }
 
-                connectTransport();
+                connectTransport()
             } else {
                 async function loadAvailableDevices() {
                     const devices =
-                        await selectedTransport?.pick_and_connect?.list();
+                        await selectedTransport?.pick_and_connect?.list()
 
                     if (!ignore) {
-                        setAvailableDevices(devices);
+                        setAvailableDevices(devices)
                     }
                 }
 
-                loadAvailableDevices();
+                loadAvailableDevices()
             }
 
             return () => {
-                ignore = true;
-            };
-        }, [selectedTransport]);
+                ignore = true
+            }
+        }, [selectedTransport])
 
         const connections = transports.map((t) => (
             <li key={t.label} className="list-none">
@@ -83,7 +83,7 @@ export function SimpleDevicePicker({
                     {t.label}
                 </button>
             </li>
-        ));
+        ))
         return (
             <div>
                 <p className="text-sm">Select a connection type.</p>
@@ -99,8 +99,8 @@ export function SimpleDevicePicker({
                                         await selectedTransport!.pick_and_connect!.connect(
                                             d,
                                         ),
-                                    );
-                                    setSelectedTransport(undefined);
+                                    )
+                                    setSelectedTransport(undefined)
                                 }}
                             >
                                 {d.label}
@@ -109,6 +109,6 @@ export function SimpleDevicePicker({
                     </ul>
                 )}
             </div>
-        );
+        )
     }
 }

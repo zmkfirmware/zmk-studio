@@ -1,4 +1,4 @@
-import { Modal } from "../components/Modal.tsx";
+import { Modal } from "../components/UI/Modal.tsx";
 import { About } from "../components/About.tsx";
 import { LicenseNotice } from "../components/LicenseNotice.tsx";
 

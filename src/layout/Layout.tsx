@@ -16,28 +16,10 @@ interface LayoutProps {
 
 export function Layout({
   connectedDeviceLabel,
-  canRedo,
-  canUndo,
-  onRedo,
-  onUndo,
-  onSave,
-  onDiscard,
-  onDisconnect,
-  onResetSettings,
 }: LayoutProps) {
   return (
     <>
-      <Header
-        connectedDeviceLabel={connectedDeviceLabel}
-        canUndo={canUndo}
-        canRedo={canRedo}
-        onUndo={onUndo}
-        onRedo={onRedo}
-        onSave={onSave}
-        onDiscard={onDiscard}
-        onDisconnect={onDisconnect}
-        onResetSettings={onResetSettings}
-      ></Header>
+      <Header connectedDeviceLabel={connectedDeviceLabel}></Header>
       <Keyboard />
       <Footer />
     </>

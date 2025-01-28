@@ -1,80 +1,99 @@
-import { callRemoteProcedureControl } from './rpc/logging';
-
-import {  useEffect, useState } from 'react';
-import { ConnectModal } from './components/ConnectModal.tsx';
-
-import type { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index';
-import { useSub } from './helpers/usePubSub.ts';
-import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core';
-import { UnlockModal } from './components/UnlockModal.tsx';
-import { connect } from './services/RPCService.ts';
-import { Header } from './layout/Header.tsx';
-import Keyboard from './components/keyboard/Keyboard.tsx';
-import { Footer } from './layout/Footer.tsx';
-import { TRANSPORTS } from './helpers/transports.ts';
-import useConnectionStore from './stores/ConnectionStore.ts';
-import useLockStore from './stores/LockStateStore.ts';
-import undoRedoStore from './stores/UndoRedoStore.ts';
+import { callRemoteProcedureControl } from './rpc/logging'
+import { useEffect, useState } from 'react'
+import { ConnectModal } from './components/ConnectModal.tsx'
+import type { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index'
+import { useSub } from './helpers/usePubSub.ts'
+import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core'
+import { UnlockModal } from './components/UnlockModal.tsx'
+import { connect } from './services/RPCService.ts'
+import { Header } from './layout/Header.tsx'
+import Keyboard from './components/keyboard/Keyboard.tsx'
+import { Footer } from './layout/Footer.tsx'
+import useConnectionStore from './stores/ConnectionStore.ts'
+import useLockStore from './stores/LockStateStore.ts'
+import undoRedoStore from './stores/UndoRedoStore.ts'
+import { createRoot } from 'react-dom/client'
+import Alert from './components/UI/Alert.tsx'
 
 function App() {
-    const { connection, setConnection } = useConnectionStore();
+    const { connection, setConnection } = useConnectionStore()
     const [connectedDeviceName, setConnectedDeviceName] = useState<
         string | undefined
-    >(undefined);
-    // const [doIt, undo, redo, canUndo, canRedo, reset] = useUndoRedo();
-    const { reset } = undoRedoStore();
-    const [connectionAbort, setConnectionAbort] = useState(
-        new AbortController(),
-    );
-    const { setLockState } = useLockStore();
+    >(undefined)
+    const { reset } = undoRedoStore()
+    const [connectionAbort] = useState(new AbortController())
+    const { setLockState } = useLockStore()
 
     // const {connect} = useConnect();
     useSub('rpc_notification.core.lockStateChanged', (ls) => {
-        console.log(ls);
-        setLockState(ls);
-    });
+        console.log(ls)
+        setLockState(ls)
+    })
 
     useEffect(() => {
         if (!connection) {
-            reset();
-            setLockState(LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED);
+            console.log(connection)
+            reset()
+            setLockState(LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED)
         }
-        console.log()
+        console.log(connection)
+
         async function updateLockState() {
-            if (!connection) return;
+            if (!connection) return
 
             const locked_resp = await callRemoteProcedureControl(connection, {
                 core: { getLockState: true },
-            });
+            })
             console.log(locked_resp, locked_resp.core?.getLockState)
             setLockState(
                 locked_resp.core?.getLockState ||
                     LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED,
-            );
+            )
         }
 
-        updateLockState();
-    }, [connection, setLockState]);
+        updateLockState()
+    }, [connection, setLockState])
 
-    const onConnect = (t: RpcTransport) => {
-        connect(t, setConnectedDeviceName, setConnection, connectionAbort.signal);
-    };
+    const onConnect = async (t: RpcTransport) => {
+        const connection = await connect(
+            t,
+            setConnectedDeviceName,
+            connectionAbort.signal,
+        )
+        if (typeof connection === 'string') {
+            renderAlert(connection)
+            return
+        }
+        setConnection(connection)
+    }
 
-    return (
-        <>
-            <UnlockModal />
-            <ConnectModal
-                open={!connection}
-                transports={TRANSPORTS}
-                onTransportCreated={onConnect}
-            />
-            <div className="bg-base-100 text-base-content h-full max-h-[100vh] w-full max-w-[100vw] inline-grid grid-cols-[auto] grid-rows-[auto_1fr_auto] overflow-hidden">
-                <Header connectedDeviceLabel={connectedDeviceName} />
-                <Keyboard />
-                <Footer />
-            </div>
-        </>
-    );
+    function renderAlert(message: string) {
+        const alertContainer = document.createElement('div')
+        document.body.appendChild(alertContainer)
+
+        // Create a React root and render the Alert component
+        const alertRoot = createRoot(alertContainer)
+        alertRoot.render(
+            <Alert message={message} duration={5} container={alertContainer} />,
+        )
+    }
+
+    if (connection) {
+        return (
+            <>
+                <UnlockModal />
+                <div className="bg-base-100 text-base-content h-full max-h-[100vh] w-full max-w-[100vw] inline-grid grid-cols-[auto] grid-rows-[auto_1fr_auto] overflow-hidden">
+                    <Header connectedDeviceLabel={connectedDeviceName} />
+                    <Keyboard />
+                    <Footer />
+                </div>
+            </>
+        )
+    } else {
+        return (
+            <ConnectModal open={!connection} onTransportCreated={onConnect} />
+        )
+    }
 }
 
-export default App;
+export default App
