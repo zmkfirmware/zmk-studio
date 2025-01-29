@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import type { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index'
-import type { AvailableDevice } from '../tauri'
+import type { AvailableDevice } from '../../tauri'
 import { Bluetooth, RefreshCw } from 'lucide-react'
 import { Key, ListBox, ListBoxItem, Selection } from 'react-aria-components'
-import { useModalRef } from '../misc/useModalRef.ts'
-import { ExternalLink } from '../misc/ExternalLink.tsx'
-import { GenericModal } from './GenericModal.tsx'
-import { DeviceList } from './DeviceList.tsx'
-import { SimpleDevicePicker } from './SimpleDevicePicker.tsx'
-import { TRANSPORTS } from '../helpers/transports.ts'
+import { useModalRef } from '../../misc/useModalRef.ts'
+import { ExternalLink } from '../../misc/ExternalLink.tsx'
+import { GenericModal } from '../GenericModal.tsx'
+import { DeviceList } from '../DeviceList.tsx'
+import { SimpleDevicePicker } from '../SimpleDevicePicker.tsx'
+import { TRANSPORTS } from '../../helpers/transports.ts'
 
 export type TransportFactory = {
     label: string
@@ -126,46 +126,11 @@ function deviceList(
     )
 }
 
-function noTransportsOptionsPrompt() {
-    return (
-        <div className="m-4 flex flex-col gap-2">
-            <p>
-                Your browser is not supported. ZMK Studio uses either{' '}
-                <ExternalLink href="https://caniuse.com/web-serial">
-                    Web Serial
-                </ExternalLink>{' '}
-                or{' '}
-                <ExternalLink href="https://caniuse.com/web-bluetooth">
-                    Web Bluetooth
-                </ExternalLink>{' '}
-                (Linux only) to connect to ZMK devices.
-            </p>
-
-            <div>
-                <p>To use ZMK Studio, either:</p>
-                <ul className="list-disc list-inside">
-                    <li>
-                        Use a browser that supports the above web technologies,
-                        e.g. Chrome/Edge, or
-                    </li>
-                    <li>
-                        Download our{' '}
-                        <ExternalLink href="/download">
-                            cross platform application
-                        </ExternalLink>
-                        .
-                    </li>
-                </ul>
-            </div>
-        </div>
-    )
-}
 
 export const ConnectModal = ({
     open,
     onTransportCreated,
 }: ConnectModalProps) => {
-    const dialog = useModalRef(open || false, false, false)
     const transports = TRANSPORTS
     const haveTransports = useMemo(() => transports.length > 0, [transports])
 
@@ -193,12 +158,47 @@ export const ConnectModal = ({
         )
     }
 
+    function noTransportsOptionsPrompt() {
+        return (
+            <div className="m-4 flex flex-col gap-2">
+                <p>
+                    Your browser is not supported. ZMK Studio uses either{' '}
+                    <ExternalLink href="https://caniuse.com/web-serial">
+                        Web Serial
+                    </ExternalLink>{' '}
+                    or{' '}
+                    <ExternalLink href="https://caniuse.com/web-bluetooth">
+                        Web Bluetooth
+                    </ExternalLink>{' '}
+                    (Linux only) to connect to ZMK devices.
+                </p>
+
+                <div>
+                    <p>To use ZMK Studio, either:</p>
+                    <ul className="list-disc list-inside">
+                        <li>
+                            Use a browser that supports the above web technologies,
+                            e.g. Chrome/Edge, or
+                        </li>
+                        <li>
+                            Download our{' '}
+                            <ExternalLink href="/download">
+                                cross platform application
+                            </ExternalLink>
+                            .
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        )
+    }
+
     return (
-        <GenericModal ref={dialog} className="max-w-xl">
-            <h1 className="text-xl">Welcome to ZMK Studio</h1>
+        <>
+            <h1 className="text-xl text-center">Welcome to ZMK Studio</h1>
             {haveTransports
                 ? connectOptions(transports, onTransportCreated, open)
                 : noTransportsOptionsPrompt()}
-        </GenericModal>
+        </>
     )
 }

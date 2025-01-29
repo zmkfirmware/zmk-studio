@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { AvailableDevice } from '../tauri'
 import { UserCancelledError } from '@zmkfirmware/zmk-studio-ts-client/transport/errors'
-import { TransportFactory } from './ConnectModal.tsx'
+import { TransportFactory } from './Modals/ConnectModal.tsx'
 import { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index'
 
 interface SimpleDevicePickerProps {
@@ -14,12 +14,38 @@ export function SimpleDevicePicker({
     onTransportCreated,
 }: SimpleDevicePickerProps) {
     {
-        const [availableDevices, setAvailableDevices] = useState<
-            AvailableDevice[] | undefined
-        >(undefined)
-        const [selectedTransport, setSelectedTransport] = useState<
-            TransportFactory | undefined
-        >(undefined)
+        const [availableDevices, setAvailableDevices] = useState<AvailableDevice[] | undefined>(undefined)
+        const [selectedTransport, setSelectedTransport] = useState<TransportFactory | undefined>(undefined)
+        const [ignore, setIgnore] = useState<boolean>(false)
+
+        async function connectTransport() {
+            try {
+                const transport = await selectedTransport?.connect?.()
+
+                if (!ignore) {
+                    if (transport) {
+                        onTransportCreated(transport)
+                    }
+                    setSelectedTransport(undefined)
+                }
+            } catch (e) {
+                if (!ignore) {
+                    console.error(e)
+                    if ( e instanceof Error && !(e instanceof UserCancelledError) ) {
+                        alert(e.message)
+                    }
+                    setSelectedTransport(undefined)
+                }
+            }
+        }
+        async function loadAvailableDevices() {
+            const devices =
+                await selectedTransport?.pick_and_connect?.list()
+
+            if (!ignore) {
+                setAvailableDevices(devices)
+            }
+        }
 
         useEffect(() => {
             if (!selectedTransport) {
@@ -27,51 +53,16 @@ export function SimpleDevicePicker({
                 return
             }
 
-            let ignore = false
-
             if (selectedTransport.connect) {
-                async function connectTransport() {
-                    try {
-                        const transport = await selectedTransport?.connect?.()
-
-                        if (!ignore) {
-                            if (transport) {
-                                onTransportCreated(transport)
-                            }
-                            setSelectedTransport(undefined)
-                        }
-                    } catch (e) {
-                        if (!ignore) {
-                            console.error(e)
-                            if (
-                                e instanceof Error &&
-                                !(e instanceof UserCancelledError)
-                            ) {
-                                alert(e.message)
-                            }
-                            setSelectedTransport(undefined)
-                        }
-                    }
-                }
-
                 connectTransport()
             } else {
-                async function loadAvailableDevices() {
-                    const devices =
-                        await selectedTransport?.pick_and_connect?.list()
-
-                    if (!ignore) {
-                        setAvailableDevices(devices)
-                    }
-                }
-
                 loadAvailableDevices()
             }
 
             return () => {
-                ignore = true
+                setIgnore(true)
             }
-        }, [selectedTransport])
+        }, [selectedTransport,connectTransport,loadAvailableDevices])
 
         const connections = transports.map((t) => (
             <li key={t.label} className="list-none">
@@ -105,6 +96,7 @@ export function SimpleDevicePicker({
                             >
                                 {d.label}
                             </li>
+
                         ))}
                     </ul>
                 )}

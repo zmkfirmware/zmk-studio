@@ -1,6 +1,6 @@
-import sponsors from '../data/sponsors.ts'
-import SponsorSize from '../enums/SponsorSize.ts'
-import { ExternalLink } from '../misc/ExternalLink.tsx'
+import sponsors from '../../data/sponsors.ts'
+import SponsorSize from '../../enums/SponsorSize.ts'
+import { ExternalLink } from '../../misc/ExternalLink.tsx'
 import React from 'react'
 
 export function About() {

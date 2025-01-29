@@ -1,4 +1,4 @@
-import NOTICE from "../../NOTICE?raw";
+import NOTICE from "../../../NOTICE?raw";
 export function LicenseNotice() {
   return <>
     <div>

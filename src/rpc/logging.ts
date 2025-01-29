@@ -5,7 +5,7 @@ export async function callRemoteProcedureControl(
     req: Omit<Request, 'requestId'>,
 ): Promise<RequestResponse> {
     // console.trace('RPC Request', req);
-    console.log(conn, req)
+    // console.log(conn, req)
     return call_rpc(conn, req)
         .then((r) => {
             // console.trace('RPC Response', r);

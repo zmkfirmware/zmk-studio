@@ -1,6 +1,6 @@
 import { callRemoteProcedureControl } from './rpc/logging'
 import { useEffect, useState } from 'react'
-import { ConnectModal } from './components/ConnectModal.tsx'
+import { ConnectModal } from './components/Modals/ConnectModal.tsx'
 import type { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index'
 import { useSub } from './helpers/usePubSub.ts'
 import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core'
@@ -14,6 +14,8 @@ import useLockStore from './stores/LockStateStore.ts'
 import undoRedoStore from './stores/UndoRedoStore.ts'
 import { createRoot } from 'react-dom/client'
 import Alert from './components/UI/Alert.tsx'
+import { ConnectModalOld } from './components/ConnectModalOld.tsx'
+import { Modal } from "./components/UI/Modal.tsx"
 
 function App() {
     const { connection, setConnection } = useConnectionStore()
@@ -91,7 +93,14 @@ function App() {
         )
     } else {
         return (
-            <ConnectModal open={!connection} onTransportCreated={onConnect} />
+            <>
+                <Modal usedFor="connectModal" modalButton={""} opened hideCloseButton hideXButton>
+                    <ConnectModal
+                        open={!connection}
+                        onTransportCreated={onConnect}
+                    />
+                </Modal>
+            </>
         )
     }
 }

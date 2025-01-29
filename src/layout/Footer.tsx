@@ -1,6 +1,6 @@
 import { Modal } from "../components/UI/Modal.tsx";
-import { About } from "../components/About.tsx";
-import { LicenseNotice } from "../components/LicenseNotice.tsx";
+import { About } from "../components/Modals/About.tsx";
+import { LicenseNotice } from "../components/Modals/LicenseNotice.tsx";
 
 export function Footer () {
   return (
@@ -9,7 +9,7 @@ export function Footer () {
         <span>&copy; 2024 - The ZMK Contributors</span> -{" "}
         <Modal
           usedFor="footerAbout"
-          customWidth="w-11/12 max-w-5xl"
+          customModalBoxClass="w-11/12 max-w-5xl"
           modalButton={<a> About ZMK Studio</a>}
           hideCloseButton={true}
         >
@@ -17,7 +17,7 @@ export function Footer () {
         </Modal>
         <Modal
           usedFor="footerLicenseNotice"
-          customWidth="w-11/12 max-w-5xl"
+          customModalBoxClass="w-11/12 max-w-5xl"
           hideCloseButton={true}
           modalButton={<a>License NOTICE</a>}
         >

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import type { AvailableDevice } from '../tauri'
 import { Key, ListBox, ListBoxItem, Selection } from 'react-aria-components'
 import { Bluetooth, RefreshCw } from 'lucide-react'
-import { TransportFactory } from './ConnectModal.tsx'
+import { TransportFactory } from './Modals/ConnectModal.tsx'
 import { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index'
 
 interface DeviceListProps {

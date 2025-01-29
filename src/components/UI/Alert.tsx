@@ -27,7 +27,7 @@ export default function Alert({ message, duration, container }: AlertProps) {
     if (!visible) return null;
 
     return (
-        <div className="toast toast-top toast-end">
+        <div className="toast toast-top toast-end z-[99999]">
             <div className="alert alert-error">
                 <span className="text-white">{message}</span>
             </div>

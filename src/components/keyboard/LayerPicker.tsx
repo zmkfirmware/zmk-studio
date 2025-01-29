@@ -1,5 +1,5 @@
-import { Pencil, Minus, Plus } from 'lucide-react';
-import { useCallback, useMemo, useState } from 'react';
+import { Pencil, Minus, Plus } from 'lucide-react'
+import { useCallback, useMemo, useState } from 'react'
 import {
     DropIndicator,
     Label,
@@ -7,38 +7,40 @@ import {
     ListBoxItem,
     Selection,
     useDragAndDrop,
-} from 'react-aria-components';
-import { useModalRef } from '../../misc/useModalRef.ts';
-import { GenericModal } from '../GenericModal.tsx';
+} from 'react-aria-components'
+import { useModalRef } from '../../misc/useModalRef.ts'
+import { GenericModal } from '../GenericModal.tsx'
+import { Modal } from '../UI/Modal.tsx'
+import EditLabel from "../EditLabel.tsx"
 
 interface Layer {
-    id: number;
-    name?: string;
+    id: number
+    name?: string
 }
 
-export type LayerClickCallback = (index: number) => void;
-export type LayerMovedCallback = (index: number, destination: number) => void;
+export type LayerClickCallback = (index: number) => void
+export type LayerMovedCallback = (index: number, destination: number) => void
 
 interface LayerPickerProps {
-    layers: Array<Layer>;
-    selectedLayerIndex: number;
-    canAdd?: boolean;
-    canRemove?: boolean;
+    layers: Array<Layer>
+    selectedLayerIndex: number
+    canAdd?: boolean
+    canRemove?: boolean
 
-    onLayerClicked?: LayerClickCallback;
-    onLayerMoved?: LayerMovedCallback;
-    onAddClicked?: () => void | Promise<void>;
-    onRemoveClicked?: () => void | Promise<void>;
+    onLayerClicked?: LayerClickCallback
+    onLayerMoved?: LayerMovedCallback
+    onAddClicked?: () => void | Promise<void>
+    onRemoveClicked?: () => void | Promise<void>
     onLayerNameChanged?: (
         id: number,
         oldName: string,
         newName: string,
-    ) => void | Promise<void>;
+    ) => void | Promise<void>
 }
 
 interface EditLabelData {
-    id: number;
-    name: string;
+    id: number
+    name: string
 }
 
 const EditLabelModal = ({
@@ -47,22 +49,22 @@ const EditLabelModal = ({
     editLabelData,
     handleSaveNewLabel,
 }: {
-    open: boolean;
-    onClose: () => void;
-    editLabelData: EditLabelData;
+    open: boolean
+    onClose: () => void
+    editLabelData: EditLabelData
     handleSaveNewLabel: (
         id: number,
         oldName: string,
         newName: string | null,
-    ) => void;
+    ) => void
 }) => {
-    const ref = useModalRef(open);
-    const [newLabelName, setNewLabelName] = useState(editLabelData.name);
+    const ref = useModalRef(open)
+    const [newLabelName, setNewLabelName] = useState(editLabelData.name)
 
     const handleSave = () => {
-        handleSaveNewLabel(editLabelData.id, editLabelData.name, newLabelName);
-        onClose();
-    };
+        handleSaveNewLabel(editLabelData.id, editLabelData.name, newLabelName)
+        onClose()
+    }
 
     return (
         <GenericModal
@@ -79,8 +81,8 @@ const EditLabelModal = ({
                 onChange={(e) => setNewLabelName(e.target.value)}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                        e.preventDefault();
-                        handleSave();
+                        e.preventDefault()
+                        handleSave()
                     }
                 }}
             />
@@ -92,15 +94,15 @@ const EditLabelModal = ({
                     className="py-1.5 px-2 ml-4 rounded-md bg-gray-100 text-black hover:bg-gray-300"
                     type="button"
                     onClick={() => {
-                        handleSave();
+                        handleSave()
                     }}
                 >
                     Save
                 </button>
             </div>
         </GenericModal>
-    );
-};
+    )
+}
 
 export const LayerPicker = ({
     layers,
@@ -114,9 +116,7 @@ export const LayerPicker = ({
     onLayerNameChanged,
     ...props
 }: LayerPickerProps) => {
-    const [editLabelData, setEditLabelData] = useState<EditLabelData | null>(
-        null,
-    );
+    const [editLabelData, setEditLabelData] = useState<EditLabelData | null>( null )
 
     const layer_items = useMemo(() => {
         return layers.map((l, i) => ({
@@ -124,19 +124,19 @@ export const LayerPicker = ({
             id: l.id,
             index: i,
             selected: i === selectedLayerIndex,
-        }));
-    }, [layers, selectedLayerIndex]);
+        }))
+    }, [layers, selectedLayerIndex])
 
     const selectionChanged = useCallback(
         (s: Selection) => {
             if (s === 'all') {
-                return;
+                return
             }
 
-            onLayerClicked?.(layer_items.findIndex((l) => s.has(l.id)));
+            onLayerClicked?.(layer_items.findIndex((l) => s.has(l.id)))
         },
         [onLayerClicked, layer_items],
-    );
+    )
 
     const { dragAndDropHooks } = useDragAndDrop({
         renderDropIndicator(target) {
@@ -147,27 +147,25 @@ export const LayerPicker = ({
                         'data-[drop-target]:outline outline-1 outline-accent'
                     }
                 />
-            );
+            )
         },
         getItems: (keys) =>
             [...keys].map((key) => ({ 'text/plain': key.toLocaleString() })),
         onReorder(e) {
-            const startIndex = layer_items.findIndex((l) => e.keys.has(l.id));
-            const endIndex = layer_items.findIndex(
-                (l) => l.id === e.target.key,
-            );
-            onLayerMoved?.(startIndex, endIndex);
+            const startIndex = layer_items.findIndex((l) => e.keys.has(l.id))
+            const endIndex = layer_items.findIndex((l) => l.id === e.target.key)
+            onLayerMoved?.(startIndex, endIndex)
         },
-    });
+    })
 
     const handleSaveNewLabel = useCallback(
         (id: number, oldName: string, newName: string | null) => {
             if (newName !== null) {
-                onLayerNameChanged?.(id, oldName, newName);
+                onLayerNameChanged?.(id, oldName, newName)
             }
         },
         [onLayerNameChanged],
-    );
+    )
 
     return (
         <div className="flex flex-col min-w-40">
@@ -195,12 +193,22 @@ export const LayerPicker = ({
                 )}
             </div>
             {editLabelData !== null && (
-                <EditLabelModal
-                    open={editLabelData !== null}
-                    onClose={() => setEditLabelData(null)}
-                    editLabelData={editLabelData}
-                    handleSaveNewLabel={handleSaveNewLabel}
-                />
+                <>
+                    {/*<Modal*/}
+                    {/*    opened={editLabelData !== null}*/}
+                    {/*    usedFor="editLabel"*/}
+                    {/*    onClose={() => setEditLabelData(null)}*/}
+                    {/*    onOk={handleSaveNewLabel}*/}
+                    {/*>*/}
+                    {/*    <EditLabel editLabelData={editLabelData}></EditLabel>*/}
+                    {/*</Modal>*/}
+                    <EditLabelModal
+                        open={editLabelData !== null}
+                        onClose={() => setEditLabelData(null)}
+                        editLabelData={editLabelData}
+                        handleSaveNewLabel={handleSaveNewLabel}
+                    />
+                </>
             )}
             <ListBox
                 aria-label="Keymap Layer"
@@ -236,5 +244,5 @@ export const LayerPicker = ({
                 )}
             </ListBox>
         </div>
-    );
-};
+    )
+}

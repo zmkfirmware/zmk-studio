@@ -1,11 +1,10 @@
 import type { Notification } from '@zmkfirmware/zmk-studio-ts-client/studio';
 import { usePub } from '../helpers/usePubSub.ts';
 import { Dispatch } from "react";
-import { create_rpc_connection } from '@zmkfirmware/zmk-studio-ts-client';
+import { create_rpc_connection as createRpcConnection } from '@zmkfirmware/zmk-studio-ts-client';
 import { callRemoteProcedureControl } from '../rpc/logging.ts';
 import { valueAfter } from '../helpers/async.ts';
 import { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index';
-import useConnectionStore from '../stores/ConnectionStore.ts';
 
 export async function listenForNotifications(
     notification_stream: ReadableStream<Notification>,
@@ -62,7 +61,7 @@ export async function connect(
     setConnectedDeviceName: Dispatch<string | undefined>,
     signal: AbortSignal,
 ) {
-    const conn = await create_rpc_connection(transport, { signal });
+    const conn = await createRpcConnection(transport, { signal });
 
     const details = await Promise.race([
         callRemoteProcedureControl(conn, { core: { getDeviceInfo: true } })

@@ -7,8 +7,8 @@ export interface ModalProps {
     onOk?: () => void | Promise<void>
     type?: 'btn'
     className?: string
-    customWidth?: string
-    modalButton: string | React.ReactNode
+    customModalBoxClass?: string
+    modalButton?: string | React.ReactNode
     hideXButton?: boolean
     hideCloseButton?: boolean
     okButtonText?: string
@@ -21,7 +21,7 @@ export function Modal({
     children,
     type,
     className = '',
-    customWidth,
+    customModalBoxClass ='',
     hideCloseButton = false,
     hideXButton = false,
     modalButton,
@@ -30,14 +30,21 @@ export function Modal({
     opened = false,
 }: ModalProps) {
     useEffect(() => {
+        if (opened) {
+            document.getElementById(`modal_${usedFor}`)?.showModal()
+        }
         return () => {
             document.getElementById(`modal_${usedFor}`)?.close()
         }
     }, [])
+
+    function closeModal() {
+        document.getElementById(`modal_${usedFor}`)?.close()
+    }
     return (
         <>
             <span
-                hidden={opened}
+                hidden={opened || !modalButton}
                 className={`cursor-pointer ${type}`}
                 onClick={() =>
                     document.getElementById(`modal_${usedFor}`)?.showModal()
@@ -50,7 +57,7 @@ export function Modal({
                 className={`modal ${className}`}
                 onClose={onClose}
             >
-                <div className={`modal-box ${customWidth}`}>
+                <div className={`modal-box ${customModalBoxClass}`}>
                     {children}
                     <div className="modal-action">
                         <form method="dialog">

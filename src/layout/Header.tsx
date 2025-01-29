@@ -123,7 +123,7 @@ export const Header = ({ connectedDeviceLabel }: AppHeaderProps) => {
                             </li>
                             <Modal
                                 usedFor="restoreStockSettings"
-                                customWidth="w-11/12 max-w-5xl"
+                                customModalBoxClass="w-11/12 max-w-5xl"
                                 onOk={() => resetSettings?.()}
                                 okButtonText="Restore Stock Settings"
                                 modalButton={

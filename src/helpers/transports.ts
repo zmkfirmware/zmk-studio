@@ -1,4 +1,4 @@
-import { TransportFactory } from "../components/ConnectModal.tsx";
+import { TransportFactory } from "../components/Modals/ConnectModal.tsx";
 import { connect as serial_connect } from "@zmkfirmware/zmk-studio-ts-client/transport/serial";
 import { connect as gatt_connect } from "@zmkfirmware/zmk-studio-ts-client/transport/gatt";
 import { connect as tauri_ble_connect, list_devices as ble_list_devices } from "../tauri/ble.ts";
