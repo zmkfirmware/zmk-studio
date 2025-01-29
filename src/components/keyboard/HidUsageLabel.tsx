@@ -19,7 +19,6 @@ export const HidUsageLabel = ({ hid_usage, header }: HidUsageLabelProps) => {
     page &= 0xff
 
     let labels = hid_usage_get_labels(page, id)
-    console.log(header)
     return (
         <>
             {/*<span className="p-0 b-0 m-0 text-xs w-full h-full text-nowrap justify-self-start row-start-1 row-end-2 col-start-1 col-end-4 group-hover:inline-block group-hover:truncate @md:underline">*/}

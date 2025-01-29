@@ -6,6 +6,7 @@ import {
     SetLayerPropsResponse,
     BehaviorBinding,
     Layer,
+    SetLayerBindingResponse,
 } from '@zmkfirmware/zmk-studio-ts-client/keymap'
 
 import { LayerPicker } from './LayerPicker.tsx'
@@ -50,7 +51,7 @@ export default function Keyboard() {
     // const undoRedo = useContext(UndoRedoContext);
     const { doIt } = undoRedoStore()
     const { connection } = useConnectionStore()
-
+    const [selectedKey, setSelectedKey] = useState<boolean>(false)
     useEffect(() => {
         setSelectedLayerIndex(0)
         setSelectedKeyPosition(undefined)
@@ -129,53 +130,53 @@ export default function Keyboard() {
                     },
                 })
                 console.log(resp)
-                // if (
-                //     resp.keymap?.setLayerBinding ===
-                //     SetLayerBindingResponse.SET_LAYER_BINDING_RESP_OK
-                // ) {
-                //     setKeymap(
-                //         produce((draft: any) => {
-                //             draft.layers[layer].bindings[keyPosition] = binding;
-                //         }),
-                //     );
-                // } else {
-                //     console.error(
-                //         'Failed to set binding',
-                //         resp.keymap?.setLayerBinding,
-                //     );
-                // }
-                //
-                // return async () => {
-                //     if (!connection) {
-                //         return;
-                //     }
-                //
-                //     const resp = await callRemoteProcedureControl(connection, {
-                //         keymap: {
-                //             setLayerBinding: {
-                //                 layerId,
-                //                 keyPosition,
-                //                 binding: oldBinding,
-                //             },
-                //         },
-                //     });
-                //     if (
-                //         resp.keymap?.setLayerBinding ===
-                //         SetLayerBindingResponse.SET_LAYER_BINDING_RESP_OK
-                //     ) {
-                //         setKeymap(
-                //             produce((draft: any) => {
-                //                 draft.layers[layer].bindings[keyPosition] =
-                //                     oldBinding;
-                //             }),
-                //         );
-                //     } else {
-                //         console.error(
-                //             'Failed to set binding',
-                //             resp.keymap?.setLayerBinding,
-                //         );
-                //     }
-                // };
+                if (
+                    resp.keymap?.setLayerBinding ===
+                    SetLayerBindingResponse.SET_LAYER_BINDING_RESP_OK
+                ) {
+                    setKeymap(
+                        produce((draft: any) => {
+                            draft.layers[layer].bindings[keyPosition] = binding;
+                        }),
+                    );
+                } else {
+                    console.error(
+                        'Failed to set binding',
+                        resp.keymap?.setLayerBinding,
+                    );
+                }
+
+                return async () => {
+                    if (!connection) {
+                        return;
+                    }
+
+                    const resp = await callRemoteProcedureControl(connection, {
+                        keymap: {
+                            setLayerBinding: {
+                                layerId,
+                                keyPosition,
+                                binding: oldBinding,
+                            },
+                        },
+                    });
+                    if (
+                        resp.keymap?.setLayerBinding ===
+                        SetLayerBindingResponse.SET_LAYER_BINDING_RESP_OK
+                    ) {
+                        setKeymap(
+                            produce((draft: any) => {
+                                draft.layers[layer].bindings[keyPosition] =
+                                    oldBinding;
+                            }),
+                        );
+                    } else {
+                        console.error(
+                            'Failed to set binding',
+                            resp.keymap?.setLayerBinding,
+                        );
+                    }
+                };
             })
         },
         [connection, keymap, doIt, selectedLayerIndex, selectedKeyPosition],
@@ -189,7 +190,7 @@ export default function Keyboard() {
         ) {
             return null
         }
-
+        setSelectedKey(true)
         return keymap.layers[selectedLayerIndex].bindings[selectedKeyPosition]
     }, [keymap, selectedLayerIndex, selectedKeyPosition])
 
@@ -396,7 +397,8 @@ export default function Keyboard() {
         if (selectedLayerIndex > layers) {
             setSelectedLayerIndex(layers)
         }
-    }, [keymap, selectedLayerIndex])
+
+    }, [keymap, selectedLayerIndex, setSelectedKey])
 
     return (
         <div className="grid grid-cols-[auto_1fr] grid-rows-[1fr_minmax(10em,auto)] bg-base-300 max-w-full min-w-0 min-h-0">
@@ -449,10 +451,10 @@ export default function Keyboard() {
                     />
                 </div>
             )}
-            {keymap && selectedBinding && (
+            {keymap && selectedKey && (
                 <div className="p-2 col-start-2 row-start-2">
                     <div className="card bg-base-100 shadow-xl">
-                        <div className="card-body">
+                        <div className="card-body p-4">
                             <div className="card-actions w-full justify-between">
                                 <BehaviorBindingPicker
                                     binding={selectedBinding}
@@ -465,7 +467,10 @@ export default function Keyboard() {
                                     )}
                                     onBindingChanged={doUpdateBinding}
                                 />
-                                <button className="btn btn-square btn-sm">
+                                <button className="btn btn-square btn-sm" onClick={()=> {
+                                    setSelectedKey(false)
+                                    setSelectedKeyPosition(undefined)
+                                }}>
                                     <X />
                                 </button>
                             </div>

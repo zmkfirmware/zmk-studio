@@ -1,30 +1,37 @@
-import { useConnectedDeviceData } from '../rpc/useConnectedDeviceData.ts';
-import { useSub } from '../helpers/usePubSub.ts';
-import { useEffect, useState } from 'react';
-import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core';
-import { Undo2, Redo2, Save, Trash2 } from 'lucide-react';
-import { Modal } from '../components/UI/Modal.tsx';
-import { RestoreStock } from '../components/RestoreStock.tsx';
-import { callRemoteProcedureControl } from '../rpc/logging.ts';
-import useConnectionStore from '../stores/ConnectionStore.ts';
-import useLockStore from '../stores/LockStateStore.ts';
-import undoRedoStore from '../stores/UndoRedoStore.ts';
+import { useConnectedDeviceData } from '../rpc/useConnectedDeviceData.ts'
+import { useSub } from '../helpers/usePubSub.ts'
+import { useEffect, useState } from 'react'
+import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core'
+import {
+    Undo2,
+    Redo2,
+    Save,
+    Trash2,
+    Settings as SettingsIcon,
+} from 'lucide-react'
+import { Modal } from '../components/UI/Modal.tsx'
+import { RestoreStock } from '../components/RestoreStock.tsx'
+import { callRemoteProcedureControl } from '../rpc/logging.ts'
+import useConnectionStore from '../stores/ConnectionStore.ts'
+import useLockStore from '../stores/LockStateStore.ts'
+import undoRedoStore from '../stores/UndoRedoStore.ts'
+import { Settings } from '../components/Modals/Settings.tsx'
 
 export interface AppHeaderProps {
-    connectedDeviceLabel?: string;
-    canUndo?: boolean;
-    canRedo?: boolean;
+    connectedDeviceLabel?: string
+    canUndo?: boolean
+    canRedo?: boolean
 }
 
 export const Header = ({ connectedDeviceLabel }: AppHeaderProps) => {
-    const { connection, setConnection } = useConnectionStore();
-    const { undo, redo, canUndo, canRedo, reset } = undoRedoStore();
-    const [showSettingsReset, setShowSettingsReset] = useState(false);
+    const { connection, setConnection } = useConnectionStore()
+    const { undo, redo, canUndo, canRedo, reset } = undoRedoStore()
+    const [showSettingsReset, setShowSettingsReset] = useState(false)
     const [connectionAbort, setConnectionAbort] = useState(
         new AbortController(),
-    );
+    )
     // const lockState = useContext(LockStateContext);
-    const { lockState } = useLockStore();
+    const { lockState } = useLockStore()
 
     useEffect(() => {
         if (
@@ -32,69 +39,69 @@ export const Header = ({ connectedDeviceLabel }: AppHeaderProps) => {
                 lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED) &&
             showSettingsReset
         ) {
-            setShowSettingsReset(false);
+            setShowSettingsReset(false)
         }
-    }, [lockState, showSettingsReset]);
+    }, [lockState, showSettingsReset])
 
     const [unsaved, setUnsaved] = useConnectedDeviceData<boolean>(
         { keymap: { checkUnsavedChanges: true } },
         (request) => request.keymap?.checkUnsavedChanges,
-    );
+    )
 
     async function save() {
-        if (!connection) return;
-        console.log('save', connection);
+        if (!connection) return
+        console.log('save', connection)
 
         const resp = await callRemoteProcedureControl(connection, {
             keymap: { saveChanges: true },
-        });
+        })
         if (!resp.keymap?.saveChanges || resp.keymap?.saveChanges.err) {
-            console.error('Failed to save changes', resp.keymap?.saveChanges);
+            console.error('Failed to save changes', resp.keymap?.saveChanges)
         }
     }
 
     async function discard() {
-        if (!connection) return;
-        console.log('discard', connection);
+        if (!connection) return
+        console.log('discard', connection)
 
         const resp = await callRemoteProcedureControl(connection, {
             keymap: { discardChanges: true },
-        });
+        })
         if (!resp.keymap?.discardChanges)
-            console.error('Failed to discard changes', resp);
+            console.error('Failed to discard changes', resp)
 
-        reset();
-        setConnection(connection);
+        reset()
+        setConnection(connection)
     }
 
     async function resetSettings() {
-        if (!connection) return;
-        console.log('resetSettings', connection);
+        if (!connection) return
+        console.log('resetSettings', connection)
 
         const resp = await callRemoteProcedureControl(connection, {
             core: { resetSettings: true },
-        });
+        })
         if (!resp.core?.resetSettings)
-            console.error('Failed to settings reset', resp);
+            console.error('Failed to settings reset', resp)
 
-        reset();
-        setConnection(connection);
+        reset()
+        setConnection(connection)
         // setConnection(connection);
     }
 
     async function disconnect() {
-        if (!connection) return;
-        console.log('disconnecting', connection.request_writable);
+        if (!connection) return
+        console.log('disconnecting', connection.request_writable)
         await connection.request_writable.close().finally(() => {
-            connectionAbort.abort('User disconnected');
-            setConnectionAbort(new AbortController());
-        });
+            connectionAbort.abort('User disconnected')
+            setConnectionAbort(new AbortController())
+        })
     }
 
     useSub('rpc_notification.keymap.unsavedChangesStatusChanged', (unsaved) => {
-        console.log(unsaved);
-        setUnsaved(unsaved);
-    });
+        console.log(unsaved)
+        setUnsaved(unsaved)
+    })
 
     return (
         <header>
@@ -139,6 +146,16 @@ export const Header = ({ connectedDeviceLabel }: AppHeaderProps) => {
                     </div>
                 </div>
                 <div className="navbar-end">
+                    <Modal
+                        usedFor="settings"
+                        modalButton={
+                            <button className="btn btn-ghost btn-circle tooltip tooltip-bottom mx-1">
+                                <SettingsIcon />
+                            </button>
+                        }
+                    >
+                        <Settings></Settings>
+                    </Modal>
                     <button
                         className="btn btn-ghost btn-circle tooltip tooltip-bottom mx-1"
                         hidden={!!undo}
@@ -178,5 +195,5 @@ export const Header = ({ connectedDeviceLabel }: AppHeaderProps) => {
                 </div>
             </div>
         </header>
-    );
-};
+    )
+}
