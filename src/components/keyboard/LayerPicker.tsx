@@ -1,5 +1,5 @@
 import { Pencil, Minus, Plus } from 'lucide-react'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from "react"
 import {
     DropIndicator,
     Label,
@@ -10,8 +10,11 @@ import {
 } from 'react-aria-components'
 import { useModalRef } from '../../misc/useModalRef.ts'
 import { GenericModal } from '../GenericModal.tsx'
-import { Modal } from '../UI/Modal.tsx'
-import EditLabel from "../EditLabel.tsx"
+import { callRemoteProcedureControl } from "../../rpc/logging.ts"
+import undoRedoStore from "../../stores/UndoRedoStore.ts"
+import useConnectionStore from "../../stores/ConnectionStore.ts"
+import { produce } from "immer"
+import { SetLayerPropsResponse } from "@zmkfirmware/zmk-studio-ts-client/keymap"
 
 interface Layer {
     id: number
@@ -28,14 +31,10 @@ interface LayerPickerProps {
     canRemove?: boolean
 
     onLayerClicked?: LayerClickCallback
-    onLayerMoved?: LayerMovedCallback
-    onAddClicked?: () => void | Promise<void>
-    onRemoveClicked?: () => void | Promise<void>
-    onLayerNameChanged?: (
-        id: number,
-        oldName: string,
-        newName: string,
-    ) => void | Promise<void>
+    setKeymap: any
+    setSelectedLayerIndex: any
+    keymap: any
+    setSelectedKey: any
 }
 
 interface EditLabelData {
@@ -110,13 +109,15 @@ export const LayerPicker = ({
     canAdd,
     canRemove,
     onLayerClicked,
-    onLayerMoved,
-    onAddClicked,
-    onRemoveClicked,
-    onLayerNameChanged,
+    setSelectedKey,
+    setKeymap,
+    keymap,
+    setSelectedLayerIndex,
     ...props
 }: LayerPickerProps) => {
     const [editLabelData, setEditLabelData] = useState<EditLabelData | null>( null )
+    const { doIt } = undoRedoStore()
+    const { connection } = useConnectionStore()
 
     const layer_items = useMemo(() => {
         return layers.map((l, i) => ({
@@ -127,19 +128,16 @@ export const LayerPicker = ({
         }))
     }, [layers, selectedLayerIndex])
 
-    const selectionChanged = useCallback(
-        (s: Selection) => {
+    const selectionChanged = useCallback( (s: Selection) => {
             if (s === 'all') {
                 return
             }
-
             onLayerClicked?.(layer_items.findIndex((l) => s.has(l.id)))
         },
         [onLayerClicked, layer_items],
     )
 
-    const { dragAndDropHooks } = useDragAndDrop({
-        renderDropIndicator(target) {
+    const { dragAndDropHooks } = useDragAndDrop({ renderDropIndicator(target) {
             return (
                 <DropIndicator
                     target={target}
@@ -154,39 +152,247 @@ export const LayerPicker = ({
         onReorder(e) {
             const startIndex = layer_items.findIndex((l) => e.keys.has(l.id))
             const endIndex = layer_items.findIndex((l) => l.id === e.target.key)
-            onLayerMoved?.(startIndex, endIndex)
+            moveLayer?.(startIndex, endIndex)
         },
     })
+
+
+
+    const moveLayer = useCallback(
+        (start: number, end: number) => {
+            const doMove = async (startIndex: number, destIndex: number) => {
+                if (!connection) {
+                    return
+                }
+
+                const resp = await callRemoteProcedureControl(connection, {
+                    keymap: { moveLayer: { startIndex, destIndex } },
+                })
+
+                if (resp.keymap?.moveLayer?.ok) {
+                    setKeymap(resp.keymap?.moveLayer?.ok)
+                    setSelectedLayerIndex(destIndex)
+                } else {
+                    console.error('Error moving', resp)
+                }
+            }
+
+            doIt?.(async () => {
+                await doMove(start, end)
+                return () => doMove(end, start)
+            })
+        },
+        [doIt],
+    )
+    const addLayer = useCallback(() => {
+        async function doAdd(): Promise<number> {
+            if (!connection || !keymap) {
+                throw new Error('Not connected')
+            }
+
+            const resp = await callRemoteProcedureControl(connection, {
+                keymap: { addLayer: {} },
+            })
+            console.log(resp)
+            if (resp.keymap?.addLayer?.ok) {
+                const newSelection = keymap.layers.length
+                setKeymap(
+                    produce((draft: any) => {
+                        draft.layers.push(resp.keymap!.addLayer!.ok!.layer)
+                        draft.availableLayers--
+                    }),
+                )
+
+                setSelectedLayerIndex(newSelection)
+
+                return resp.keymap.addLayer.ok.index
+            } else {
+                console.error('Add error', resp.keymap?.addLayer?.err)
+                throw new Error(
+                    'Failed to add layer:' + resp.keymap?.addLayer?.err,
+                )
+            }
+        }
+
+        async function doRemove(layerIndex: number) {
+            if (!connection) throw new Error('Not connected')
+
+            const resp = await callRemoteProcedureControl(connection, {
+                keymap: { removeLayer: { layerIndex } },
+            })
+
+            console.log(resp)
+            if (resp.keymap?.removeLayer?.ok) {
+                setKeymap(
+                    produce((draft: any) => {
+                        draft.layers.splice(layerIndex, 1)
+                        draft.availableLayers++
+                    }),
+                )
+            } else {
+                console.error('Remove error', resp.keymap?.removeLayer?.err)
+                throw new Error(
+                    'Failed to remove layer:' + resp.keymap?.removeLayer?.err,
+                )
+            }
+        }
+
+        doIt?.(async () => {
+            const index = await doAdd()
+            return () => doRemove(index)
+        })
+    }, [connection, doIt, keymap])
+
+
+    const removeLayer = useCallback(() => {
+        async function doRemove(layerIndex: number): Promise<void> {
+            if (!connection || !keymap) {
+                throw new Error('Not connected')
+            }
+
+            const resp = await callRemoteProcedureControl(connection, {
+                keymap: { removeLayer: { layerIndex } },
+            })
+
+            if (resp.keymap?.removeLayer?.ok) {
+                if (layerIndex == keymap.layers.length - 1) {
+                    setSelectedLayerIndex(layerIndex - 1)
+                }
+                setKeymap(
+                    produce((draft: any) => {
+                        draft.layers.splice(layerIndex, 1)
+                        draft.availableLayers++
+                    }),
+                )
+            } else {
+                console.error('Remove error', resp.keymap?.removeLayer?.err)
+                throw new Error(
+                    'Failed to remove layer:' + resp.keymap?.removeLayer?.err,
+                )
+            }
+        }
+
+        async function doRestore(layerId: number, atIndex: number) {
+            if (!connection) throw new Error('Not connected')
+
+            const resp = await callRemoteProcedureControl(connection, {
+                keymap: { restoreLayer: { layerId, atIndex } },
+            })
+
+            console.log(resp)
+            if (resp.keymap?.restoreLayer?.ok) {
+                setKeymap(
+                    produce((draft: any) => {
+                        draft.layers.splice(
+                            atIndex,
+                            0,
+                            resp!.keymap!.restoreLayer!.ok,
+                        )
+                        draft.availableLayers--
+                    }),
+                )
+                setSelectedLayerIndex(atIndex)
+            } else {
+                console.error('Remove error', resp.keymap?.restoreLayer?.err)
+                throw new Error(
+                    'Failed to restore layer:' + resp.keymap?.restoreLayer?.err,
+                )
+            }
+        }
+
+        if (!keymap) {
+            throw new Error('No keymap loaded')
+        }
+
+        const index = selectedLayerIndex
+        const layerId = keymap.layers[index].id
+        doIt?.(async () => {
+            await doRemove(index)
+            return () => doRestore(layerId, index)
+        })
+    }, [connection, doIt, selectedLayerIndex])
+
+
+    const changeLayerName = useCallback(
+        (id: number, oldName: string, newName: string) => {
+            async function changeName(layerId: number, name: string) {
+                if (!connection) {
+                    throw new Error('Not connected')
+                }
+
+                const resp = await callRemoteProcedureControl(connection, {
+                    keymap: { setLayerProps: { layerId, name } },
+                })
+
+                if (
+                    resp.keymap?.setLayerProps ==
+                    SetLayerPropsResponse.SET_LAYER_PROPS_RESP_OK
+                ) {
+                    setKeymap(
+                        produce((draft: any) => {
+                            const layer_index = draft.layers.findIndex(
+                                (l: Layer) => l.id == layerId,
+                            )
+                            draft.layers[layer_index].name = name
+                        }),
+                    )
+                } else {
+                    throw new Error(
+                        'Failed to change layer name:' +
+                        resp.keymap?.setLayerProps,
+                    )
+                }
+            }
+
+            doIt?.(async () => {
+                await changeName(id, newName)
+                return async () => {
+                    await changeName(id, oldName)
+                }
+            })
+        },
+        [connection, doIt, keymap],
+    )
 
     const handleSaveNewLabel = useCallback(
         (id: number, oldName: string, newName: string | null) => {
             if (newName !== null) {
-                onLayerNameChanged?.(id, oldName, newName)
+                changeLayerName?.(id, oldName, newName)
             }
         },
-        [onLayerNameChanged],
+        [changeLayerName],
     )
+    useEffect(() => {
+        if (!keymap?.layers) return
+
+        const layers = keymap.layers.length - 1
+
+        if (selectedLayerIndex > layers) {
+            setSelectedLayerIndex(layers)
+        }
+
+    }, [keymap, selectedLayerIndex, setSelectedKey])
 
     return (
         <div className="flex flex-col min-w-40">
             <div className="grid grid-cols-[1fr_auto_auto] items-center">
                 <Label className="after:content-[':'] text-sm">Layers</Label>
-                {onRemoveClicked && (
+                {removeLayer && (
                     <button
                         type="button"
                         className="hover:text-primary-content hover:bg-primary rounded-sm"
                         disabled={!canRemove}
-                        onClick={onRemoveClicked}
+                        onClick={removeLayer}
                     >
                         <Minus className="size-4" />
                     </button>
                 )}
-                {onAddClicked && (
+                {addLayer && (
                     <button
                         type="button"
                         disabled={!canAdd}
                         className="hover:text-primary-content ml-1 hover:bg-primary rounded-sm disabled:text-gray-500 disabled:hover:bg-base-300 disabled:cursor-not-allowed"
-                        onClick={onAddClicked}
+                        onClick={addLayer}
                     >
                         <Plus className="size-4" />
                     </button>

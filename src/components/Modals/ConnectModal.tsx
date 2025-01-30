@@ -139,8 +139,7 @@ export const ConnectModal = ({
         onTransportCreated: (t: RpcTransport) => void,
         open?: boolean,
     ) {
-        const useSimplePicker = useMemo(
-            () => transports.every((t) => !t.pick_and_connect),
+        const useSimplePicker = useMemo( () => transports.every((t) => !t.pick_and_connect),
             [transports],
         )
 

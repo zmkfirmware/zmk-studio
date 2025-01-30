@@ -31,12 +31,13 @@ const useConnectionStore = create<ConnectionState>()(
     devtools(
         connectionMiddleware((set) => ({
             connection: null,
-            setConnection: (connection) => useConnectionStore.setState({ connection: connection }),
+            setConnection: (connection) => set({ connection: connection }),
             resetConnection: () => set({ connection: null }),
             showConnectionModal: false,
-            setShowConnectionModal: (visible) => set({ showConnectionModal: visible }),
-        }))
-    )
-);
+            setShowConnectionModal: (visible) =>
+                set({ showConnectionModal: visible }),
+        })),
+    ),
+)
 
 export default useConnectionStore;

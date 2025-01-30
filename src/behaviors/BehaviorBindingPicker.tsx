@@ -76,14 +76,7 @@ export const BehaviorBindingPicker = ({
             return
         }
 
-        if (
-            validateBinding(
-                metadata,
-                layers.map(({ id }) => id),
-                param1,
-                param2,
-            )
-        ) {
+        if ( validateBinding( metadata, layers.map(({ id }) => id), param1, param2) ) {
             onBindingChanged({
                 behaviorId,
                 param1: param1 || 0,
@@ -97,7 +90,7 @@ export const BehaviorBindingPicker = ({
         setParam1(binding.param1)
         setParam2(binding.param2)
     }, [binding])
-    // console.log(sortedBehaviors);
+    console.log(binding);
     return (
         <div className="flex flex-col gap-2">
             <div>

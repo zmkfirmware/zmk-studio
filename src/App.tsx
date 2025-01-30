@@ -14,7 +14,6 @@ import useLockStore from './stores/LockStateStore.ts'
 import undoRedoStore from './stores/UndoRedoStore.ts'
 import { createRoot } from 'react-dom/client'
 import Alert from './components/UI/Alert.tsx'
-import { ConnectModalOld } from './components/ConnectModalOld.tsx'
 import { Modal } from "./components/UI/Modal.tsx"
 
 function App() {
@@ -25,8 +24,7 @@ function App() {
     const { reset } = undoRedoStore()
     const [connectionAbort] = useState(new AbortController())
     const { setLockState } = useLockStore()
-
-    // const {connect} = useConnect();
+    // console.log("app", connection)
     useSub('rpc_notification.core.lockStateChanged', (ls) => {
         console.log(ls)
         setLockState(ls)
@@ -34,11 +32,11 @@ function App() {
 
     useEffect(() => {
         if (!connection) {
-            console.log(connection)
+            // console.log(connection)
             reset()
             setLockState(LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED)
         }
-        console.log(connection)
+        // console.log(connection)
 
         async function updateLockState() {
             if (!connection) return
@@ -46,7 +44,7 @@ function App() {
             const locked_resp = await callRemoteProcedureControl(connection, {
                 core: { getLockState: true },
             })
-            console.log(locked_resp, locked_resp.core?.getLockState)
+            // console.log(locked_resp, locked_resp.core?.getLockState)
             setLockState(
                 locked_resp.core?.getLockState ||
                     LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED,
@@ -59,14 +57,14 @@ function App() {
     const onConnect = async (t: RpcTransport) => {
         const connection = await connect(
             t,
+            setConnection,
             setConnectedDeviceName,
             connectionAbort.signal,
         )
         if (typeof connection === 'string') {
             renderAlert(connection)
-            return
         }
-        setConnection(connection)
+        // setConnection(connection)
     }
 
     function renderAlert(message: string) {
@@ -94,7 +92,7 @@ function App() {
     } else {
         return (
             <>
-                <Modal usedFor="connectModal" modalButton={""} opened hideCloseButton hideXButton>
+                <Modal usedFor="connectModal" modalButton={""} opened={!connection} hideCloseButton hideXButton>
                     <ConnectModal
                         open={!connection}
                         onTransportCreated={onConnect}

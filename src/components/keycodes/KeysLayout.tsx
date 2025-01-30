@@ -5,7 +5,9 @@ import Keycode from "./Keycode.tsx";
 export function KeysLayout() {
     const [activeTab, setActiveTab] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
-
+    // const [behaviorId, setBehaviorId] = useState(binding.behaviorId)
+    // const [param1, setParam1] = useState<number | undefined>(binding.param1)
+    // const [param2, setParam2] = useState<number | undefined>(binding.param2)
     function handleTabClick(index: number) {
         setActiveTab(index);
     }
@@ -38,13 +40,14 @@ export function KeysLayout() {
             >
                 {keyboards[activeTab].UsageIds.map((key, index) => (
                     <Keycode
-                        key={keyboards[activeTab].Id+''+index}
+                        key={keyboards[activeTab].Id+'-'+index}
                         id={key.UsageId}
                         label={key.Label}
                         width={key.w /2|| 50}
                         height={key.h/2 || 50}
                         x={key.x / 100}
                         y={key.y / 100}
+                        keyCode={key}
                     />
                 ))}
             </div>
