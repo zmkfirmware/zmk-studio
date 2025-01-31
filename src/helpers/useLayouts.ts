@@ -85,7 +85,6 @@ export function useLayouts(): [
     number,
     React.Dispatch<SetStateAction<number>>,
 ] {
-    // const lockState = useContext(LockStateContext);
     const { lockState } = useLockStore();
     const { connection } = useConnectionStore();
 
