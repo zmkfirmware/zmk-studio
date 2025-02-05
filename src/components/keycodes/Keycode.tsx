@@ -27,7 +27,7 @@ export default function Keycode({
         height: `${height - 2}px`,
         overflow: 'hidden',
     }
-    console.log(keyCode)
+    // console.log(keyCode)
     return (
         <button
             className="btn btn-square btn-outline absolute"

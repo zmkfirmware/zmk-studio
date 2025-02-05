@@ -16,6 +16,7 @@ import useConnectionStore from '../stores/ConnectionStore.ts'
 import useLockStore from '../stores/LockStateStore.ts'
 import undoRedoStore from '../stores/UndoRedoStore.ts'
 import { Settings } from '../components/Modals/Settings.tsx'
+import useUndoRedoStore from "../stores/UndoRedoStore.ts"
 
 export interface AppHeaderProps {
     connectedDeviceLabel?: string
@@ -32,7 +33,7 @@ export const Header = ({ connectedDeviceLabel }: AppHeaderProps) => {
     )
     // const lockState = useContext(LockStateContext);
     const { lockState } = useLockStore()
-
+    console.log(useUndoRedoStore())
     useEffect(() => {
         if (
             (!connection ||
@@ -86,7 +87,6 @@ export const Header = ({ connectedDeviceLabel }: AppHeaderProps) => {
 
         reset()
         setConnection(connection)
-        // setConnection(connection);
     }
 
     async function disconnect() {
