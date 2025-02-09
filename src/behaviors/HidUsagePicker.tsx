@@ -37,7 +37,7 @@ type UsageSectionProps = HidUsagePage
 
 const UsageSection = ({ id, min, max }: UsageSectionProps) => {
     const info = useMemo(() => hid_usage_page_get_ids(id), [id])
-    console.log( id, min, max)
+    // console.log( id, min, max)
     const usages = useMemo(() => {
         let usages = info?.UsageIds || []
         if (max || min) {

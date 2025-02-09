@@ -63,7 +63,7 @@ export default function Keyboard() {
             if (!connection || !layouts) {
                 return
             }
-            console.log(connection, selectedPhysicalLayoutIndex)
+            // console.log(connection, selectedPhysicalLayoutIndex)
             const resp = await callRemoteProcedureControl(connection, {
                 keymap: {
                     setActivePhysicalLayout: selectedPhysicalLayoutIndex,
@@ -118,7 +118,7 @@ export default function Keyboard() {
                         setLayerBinding: { layerId, keyPosition, binding },
                     },
                 })
-                console.log(resp)
+                // console.log(resp)
                 if (
                     resp.keymap?.setLayerBinding ===
                     SetLayerBindingResponse.SET_LAYER_BINDING_RESP_OK

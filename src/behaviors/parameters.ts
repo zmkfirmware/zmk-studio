@@ -9,7 +9,7 @@ export function validateValue(
     if (value === undefined) {
         return values === undefined || values?.length === 0 || !!values[0].nil
     }
-    console.log(values,value,layerIds)
+    // console.log(values,value,layerIds)
     const matchingValue = values?.find((v) => {
         if (v.constant !== undefined) {
             return v.constant == value
