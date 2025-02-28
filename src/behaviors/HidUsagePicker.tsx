@@ -17,8 +17,9 @@ import {
   hid_usage_from_page_and_id,
   hid_usage_get_labels,
   hid_usage_page_get_ids,
+  UsageId,
 } from "../hid-usages";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 export interface HidUsagePage {
@@ -32,6 +33,15 @@ export interface HidUsagePickerProps {
   value?: number;
   usagePages: HidUsagePage[];
   onValueChanged: (value?: number) => void;
+}
+
+export interface UsageSectionGridProps {
+  id: number;
+  min?: number;
+  max?: number;
+  onMouseOver?: (mouseOverData: {
+    id: number, i: UsageId
+  }) => void;
 }
 
 type UsageSectionProps = HidUsagePage;
@@ -69,7 +79,7 @@ const UsageSection = ({ id, min, max }: UsageSectionProps) => {
   );
 };
 
-const UsageSectionGrid = ({ id, min, max }: UsageSectionProps) => {
+const UsageSectionGrid = ({ id, min, max, onMouseOver }: UsageSectionGridProps) => {
   const info = useMemo(() => hid_usage_page_get_ids(id), [id]);
 
   let usages = useMemo(() => {
@@ -96,9 +106,11 @@ const UsageSectionGrid = ({ id, min, max }: UsageSectionProps) => {
           >
             {({isSelected}) => {
               const labels = hid_usage_get_labels(id, i.Id, { removePrefix: true })
-              console.log(labels)
               return (
-              <div className={`p-2 flex justify-center items-center relative w-full h-full ${isSelected ? 'bg-primary text-white' : ''}`}>
+              <div className={`p-2 flex justify-center items-center relative w-full h-full ${isSelected ? 'bg-primary text-white' : ''}`}
+                onMouseEnter={() => onMouseOver ? onMouseOver({id, i}) : {}}
+                onMouseLeave={() => onMouseOver ? onMouseOver(null) : {}}
+              >
                 <p className="break-words select-none">
                   {labels.short || labels.med || labels.long || i.Name}
                 </p>
@@ -195,6 +207,8 @@ export const HidUsagePicker = ({
     [value]
   );
 
+  const [tooltipData, setTooltipData] = useState(null);
+
   console.log("A", value ? mask_mods(value) : null)
 
   return (
@@ -247,8 +261,11 @@ export const HidUsagePicker = ({
         onSelectionChange={({currentKey}: any) => selectionChanged(currentKey)}
         aria-labelledby="hid-usage-picker"
       >
-        {({ id, min, max }) => <UsageSectionGrid id={id} min={min} max={max} />}
+        {({ id, min, max }) => <UsageSectionGrid id={id} min={min} max={max} onMouseOver={setTooltipData} />}
       </ListBox>
+      <p className="text-sm p-2 text-center h-6">
+        {tooltipData ? tooltipData.i.Name : ""}
+      </p>
     </div>
   );
 };
