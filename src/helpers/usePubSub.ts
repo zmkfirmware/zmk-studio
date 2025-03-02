@@ -1,5 +1,5 @@
 import Emittery from 'emittery'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from "react";
 
 const emitter = new Emittery()
 
@@ -12,7 +12,7 @@ export const useSub = (
     callback: (data: any) => void | Promise<void>,
 ) => {
     const unsub = () => {
-        // console.log('unsub', emitter, name, callback)
+        console.log('unsub', name)
         emitter.off(name, callback)
     }
 
@@ -24,3 +24,22 @@ export const useSub = (
 
     return unsub
 }
+
+export const useEmitter = () => {
+    // Memoized publish function to emit events
+    const publish = useCallback((event: PropertyKey, data: any) => {
+        emitter.emit(event, data);
+    }, []);
+
+    // Memoized subscribe function that returns an unsubscribe function
+    const subscribe = useCallback(
+      (event: PropertyKey, callback: (data: any) => void | Promise<void>) => {
+          console.log('unsub', event,callback)
+          emitter.on(event, callback);
+          return () => emitter.off(event, callback);
+      },
+      []
+    );
+
+    return { publish, subscribe };
+};

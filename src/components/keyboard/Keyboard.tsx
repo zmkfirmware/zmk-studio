@@ -195,7 +195,7 @@ export default function Keyboard() {
     }, [keymap, selectedLayerIndex, setSelectedKey])
 
     return (
-        <div className="grid grid-cols-[auto_1fr] grid-rows-[1fr_minmax(10em,auto)] bg-base-300 max-w-full min-w-0 min-h-0">
+        <div className="grid grid-cols-[auto_1fr] grid-rows-[1fr_minmax(10em,auto)] bg-base-300 max-w-full min-w-0 min-h-0 h-full">
             {/*<div className="p-2 flex flex-col gap-2 bg-base-200 row-span-2">*/}
             {/*    {layouts && (*/}
             {/*        <div className="col-start-3 row-start-1 row-end-2">*/}

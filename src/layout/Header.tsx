@@ -1,5 +1,5 @@
 import { useConnectedDeviceData } from '../rpc/useConnectedDeviceData.ts'
-import { useSub } from '../helpers/usePubSub.ts'
+import { useEmitter, useSub } from "../helpers/usePubSub.ts";
 import { useEffect, useState } from 'react'
 import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core'
 import {
@@ -33,7 +33,17 @@ export const Header = ({ connectedDeviceLabel }: AppHeaderProps) => {
     )
     // const lockState = useContext(LockStateContext);
     const { lockState } = useLockStore()
-    console.log(useUndoRedoStore())
+    const { subscribe } = useEmitter();
+
+    useEffect(() => {
+        const unsubscribe = subscribe('rpc_notification.keymap.unsavedChangesStatusChanged', (data) => {
+            console.log('unsavedChangesStatusChanged:', data);
+            setUnsaved(data)
+        });
+        return unsubscribe;
+    }, [subscribe]);
+
+    // console.log(useUndoRedoStore())
     useEffect(() => {
         if (
             (!connection ||
@@ -77,7 +87,7 @@ export const Header = ({ connectedDeviceLabel }: AppHeaderProps) => {
 
     async function resetSettings() {
         if (!connection) return
-        console.log('resetSettings', connection)
+        // console.log('resetSettings', connection)
 
         const resp = await callRemoteProcedureControl(connection, {
             core: { resetSettings: true },
@@ -91,18 +101,18 @@ export const Header = ({ connectedDeviceLabel }: AppHeaderProps) => {
 
     async function disconnect() {
         if (!connection) return
-        console.log('disconnecting', connection.request_writable)
+        // console.log('disconnecting', connection.request_writable)
         await connection.request_writable.close().finally(() => {
             connectionAbort.abort('User disconnected')
             setConnectionAbort(new AbortController())
         })
     }
 
-    useSub('rpc_notification.keymap.unsavedChangesStatusChanged', (unsaved) => {
-        console.log(unsaved)
-        setUnsaved(unsaved)
-    })
-
+    // useSub('rpc_notification.keymap.unsavedChangesStatusChanged', (unsaved) => {
+    //     setUnsaved(unsaved)
+    // })
+    console.log('unsaved', unsaved)
+    // console.log(unsaved);
     return (
         <header>
             <div className="navbar bg-base-100">
@@ -159,15 +169,15 @@ export const Header = ({ connectedDeviceLabel }: AppHeaderProps) => {
                     <button
                         className="btn btn-ghost btn-circle tooltip tooltip-bottom mx-1"
                         hidden={!!undo}
-                        disabled={!canUndo}
+                        disabled={!canUndo()}
                         onClick={undo}
                     >
                         <Undo2 aria-label="Undo" />
                     </button>
                     <button
                         className="btn btn-ghost btn-circle tooltip tooltip-bottom mx-1"
-                        hidden={!!canRedo}
-                        disabled={!canRedo}
+                        hidden={!!redo}
+                        disabled={!canRedo()}
                         onClick={redo}
                         data-tip="Redo changes"
                     >
@@ -181,7 +191,7 @@ export const Header = ({ connectedDeviceLabel }: AppHeaderProps) => {
                     >
                         <div className="indicator">
                             <Save aria-label="Save" />
-                            <span className="badge badge-xs badge-primary indicator-item"></span>
+                            <span hidden={!canRedo() || !canUndo()} className="badge badge-xs badge-primary indicator-item"></span>
                         </div>
                     </button>
                     <button
