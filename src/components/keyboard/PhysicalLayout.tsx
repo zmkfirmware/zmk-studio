@@ -44,46 +44,45 @@ export const PhysicalLayout = ({
     const [scale, setScale] = useState(1)
 
     useLayoutEffect(() => {
-        const element = ref.current
-        if (!element) return
+        const { zoom } = props;
+        const element = ref.current;
+        if (!element) return;
 
-        const parent = element.parentElement
-        if (!parent) return
+        const parent = element.parentElement;
+        if (!parent) return;
 
         const calculateScale = () => {
-            if (props.zoom === 'auto') {
-                const padding = Math.min(window.innerWidth, window.innerHeight) * 0.05 // Padding when in auto mode
+            if (zoom === 'auto') {
+                const padding = Math.min(window.innerWidth, window.innerHeight) * 0.05;
                 const newScale = Math.min(
-                    parent.clientWidth / (element.clientWidth + 2 * padding),
-                    parent.clientHeight / (element.clientHeight + 2 * padding),
-                )
-                setScale(newScale)
+                    parent.clientWidth / (element.clientWidth + padding * 2),
+                    parent.clientHeight / (element.clientHeight + padding * 2)
+                );
+                setScale(newScale);
             } else {
-                setScale(props.zoom || 1)
+                setScale(zoom || 1);
             }
-        }
+        };
 
-        calculateScale() // Initial calculation
+        // Perform initial scale calculation
+        calculateScale();
 
-        const resizeObserver = new ResizeObserver(() => {
-            calculateScale()
-        })
+        // Create a ResizeObserver that recalculates the scale when dimensions change
+        const resizeObserver = new ResizeObserver(calculateScale);
+        resizeObserver.observe(element);
+        resizeObserver.observe(parent);
 
-        resizeObserver.observe(element)
-        resizeObserver.observe(parent)
-
-        return () => {
-            resizeObserver.disconnect()
-        }
-    }, [props.zoom])
+        return () => resizeObserver.disconnect();
+    }, [props.zoom, ref, setScale]);
 
     // TODO: Add a bit of padding for rotation when supported
-    const rightMost = positions
-        .map((k) => k.x + k.width)
-        .reduce((a, b) => Math.max(a, b), 0)
-    const bottomMost = positions
-        .map((k) => k.y + k.height)
-        .reduce((a, b) => Math.max(a, b), 0)
+    const { rightMost, bottomMost } = positions.reduce(
+        (acc, { x, y, width, height }) => ({
+            rightMost: Math.max(acc.rightMost, x + width),
+            bottomMost: Math.max(acc.bottomMost, y + height),
+        }),
+        { rightMost: 0, bottomMost: 0 }
+    );
 
     const positionItems = positions.map((p, idx) => (
         <div

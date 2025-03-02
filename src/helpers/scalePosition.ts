@@ -7,8 +7,8 @@ export function scalePosition(
 ): CSSProperties {
     const left = x * oneU
     const top = y * oneU
-    let transformOrigin = undefined
-    let transform = undefined
+    let transformOrigin: string = ''
+    let transform: string = ''
 
     if (r) {
         const transformX = ((rx || x) - x) * oneU

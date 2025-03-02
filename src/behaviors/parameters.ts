@@ -1,5 +1,5 @@
 import { BehaviorParameterValueDescription } from '@zmkfirmware/zmk-studio-ts-client/behaviors'
-import { hid_usage_page_and_id_from_usage } from '../helpers/hid-usages.ts'
+import { hidUsagePageAndIdFromUsage } from '../helpers/hid-usages.ts'
 
 export function validateValue(
     layerIds: number[],
@@ -16,7 +16,7 @@ export function validateValue(
         } else if (v.range) {
             return value >= v.range.min && value <= v.range.max
         } else if (v.hidUsage) {
-            const [page, id] = hid_usage_page_and_id_from_usage(value)
+            const [page, id] = hidUsagePageAndIdFromUsage(value)
             return page !== 0 && id !== 0
         } else if (v.layerId) {
             return layerIds.includes(value)

@@ -1,5 +1,5 @@
 import type { Notification } from '@zmkfirmware/zmk-studio-ts-client/studio'
-import { usePub } from '../helpers/usePubSub.ts'
+// import { usePub } from '../helpers/usePubSub.ts'
 import { Dispatch } from 'react'
 import {
     create_rpc_connection as createRpcConnection,
@@ -21,7 +21,7 @@ export async function listenForNotifications(
     }
     signal.addEventListener('abort', onAbort, { once: true })
     // do {
-    const pub = usePub()
+    // const pub = usePub()
 
     // try {
     //     const { done, value } = await reader.read()

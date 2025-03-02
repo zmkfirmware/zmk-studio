@@ -21,10 +21,10 @@ export interface UsagePageInfo {
     UsageIds: UsageId[]
 }
 
-export const hid_usage_from_page_and_id = (page: number, id: number) =>
+export const hidUsageFromPageAndId = (page: number, id: number) =>
     (page << 16) + id
 
-export const hid_usage_page_and_id_from_usage = (
+export const hidUsagePageAndIdFromUsage = (
     usage: number,
 ): [number, number] => [(usage >> 16) & 0xffff, usage & 0xffff]
 

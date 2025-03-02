@@ -14,7 +14,7 @@ import {
     Section,
 } from 'react-aria-components'
 import {
-    hid_usage_from_page_and_id,
+    hidUsageFromPageAndId,
     hid_usage_page_get_ids,
 } from '../helpers/hid-usages.ts'
 import { useCallback, useMemo } from 'react'
@@ -59,7 +59,7 @@ const UsageSection = ({ id, min, max }: UsageSectionProps) => {
                 {(i) => (
                     <ListBoxItem
                         className="rac-hover:bg-base-300 pl-3 relative rac-focus:bg-base-300 cursor-default select-none rac-selected:before:content-['✔'] before:absolute before:left-[0] before:top-[0]"
-                        id={hid_usage_from_page_and_id(id, i.Id)}
+                        id={hidUsageFromPageAndId(id, i.Id)}
                     >
                         {i.Name}
                     </ListBoxItem>

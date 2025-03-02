@@ -15,6 +15,7 @@ import undoRedoStore from "../../stores/UndoRedoStore.ts"
 import useConnectionStore from "../../stores/ConnectionStore.ts"
 import { produce } from "immer"
 import { SetLayerPropsResponse } from "@zmkfirmware/zmk-studio-ts-client/keymap"
+// import EditLabelModal from '../EditLabelModal.tsx'
 
 interface Layer {
     id: number
@@ -31,10 +32,10 @@ interface LayerPickerProps {
     canRemove?: boolean
 
     onLayerClicked?: LayerClickCallback
-    setKeymap: any
-    setSelectedLayerIndex: any
-    keymap: any
-    setSelectedKey: any
+    setKeymap?: any
+    setSelectedLayerIndex?: any
+    keymap?: any
+    setSelectedKey?: any
 }
 
 interface EditLabelData {
@@ -158,31 +159,29 @@ export const LayerPicker = ({
 
 
 
-    const moveLayer = useCallback(
-        (start: number, end: number) => {
-            const doMove = async (startIndex: number, destIndex: number) => {
-                if (!connection) {
-                    return
-                }
-
-                const resp = await callRemoteProcedureControl(connection, {
-                    keymap: { moveLayer: { startIndex, destIndex } },
-                })
-
-                if (resp.keymap?.moveLayer?.ok) {
-                    setKeymap(resp.keymap?.moveLayer?.ok)
-                    setSelectedLayerIndex(destIndex)
-                } else {
-                    console.error('Error moving', resp)
-                }
+    const moveLayer = useCallback( (start: number, end: number) => {
+        const doMove = async (startIndex: number, destIndex: number) => {
+            if (!connection) {
+                return
             }
 
-            doIt?.(async () => {
-                await doMove(start, end)
-                return () => doMove(end, start)
+            const resp = await callRemoteProcedureControl(connection, {
+                keymap: { moveLayer: { startIndex, destIndex } },
             })
-        },
-        [doIt],
+
+            if (resp.keymap?.moveLayer?.ok) {
+                setKeymap(resp.keymap?.moveLayer?.ok)
+                setSelectedLayerIndex(destIndex)
+            } else {
+                console.error('Error moving', resp)
+            }
+        }
+
+        doIt?.(async () => {
+            await doMove(start, end)
+            return () => doMove(end, start)
+        })
+        }, [doIt],
     )
     const addLayer = useCallback(() => {
         async function doAdd(): Promise<number> {
@@ -374,48 +373,63 @@ export const LayerPicker = ({
     }, [keymap, selectedLayerIndex, setSelectedKey])
 
     return (
+        <>
         <div className="flex flex-col min-w-40">
             <div className="grid grid-cols-[1fr_auto_auto] items-center">
                 <Label className="after:content-[':'] text-sm">Layers</Label>
-                {removeLayer && (
-                    <button
-                        type="button"
-                        className="hover:text-primary-content hover:bg-primary rounded-sm"
-                        disabled={!canRemove}
-                        onClick={removeLayer}
-                    >
-                        <Minus className="size-4" />
-                    </button>
-                )}
-                {addLayer && (
-                    <button
-                        type="button"
-                        disabled={!canAdd}
-                        className="hover:text-primary-content ml-1 hover:bg-primary rounded-sm disabled:text-gray-500 disabled:hover:bg-base-300 disabled:cursor-not-allowed"
-                        onClick={addLayer}
-                    >
-                        <Plus className="size-4" />
-                    </button>
-                )}
+                            {removeLayer && (
+                                <button
+                                    type="button"
+                                    className="hover:text-primary-content hover:bg-primary rounded-sm"
+                                    disabled={!canRemove}
+                                    onClick={removeLayer}
+                                >
+                                    <Minus className="size-4" />
+                                </button>
+                            )}
+                            {addLayer && (
+                                <button
+                                    type="button"
+                                    disabled={!canAdd}
+                                    className="hover:text-primary-content ml-1 hover:bg-primary rounded-sm disabled:text-gray-500 disabled:hover:bg-base-300 disabled:cursor-not-allowed"
+                                    onClick={addLayer}
+                                >
+                                    <Plus className="size-4" />
+                                </button>
+                            )}
+                {/*<ul className="menu bg-base-200 rounded-box p-0">*/}
+                {/*    <li>*/}
+                {/*        <h2 className="menu-title text-gray-300">Layers*/}
+                {/*            {removeLayer && (*/}
+                {/*                <button*/}
+                {/*                    type="button"*/}
+                {/*                    className="hover:text-primary-content hover:bg-primary rounded-sm"*/}
+                {/*                    disabled={!canRemove}*/}
+                {/*                    onClick={removeLayer}*/}
+                {/*                >*/}
+                {/*                    <Minus className="size-4" />*/}
+                {/*                </button>*/}
+                {/*            )}*/}
+                {/*            {addLayer && (*/}
+                {/*                <button*/}
+                {/*                    type="button"*/}
+                {/*                    disabled={!canAdd}*/}
+                {/*                    className="hover:text-primary-content ml-1 hover:bg-primary rounded-sm disabled:text-gray-500 disabled:hover:bg-base-300 disabled:cursor-not-allowed"*/}
+                {/*                    onClick={addLayer}*/}
+                {/*                >*/}
+                {/*                    <Plus className="size-4" />*/}
+                {/*                </button>*/}
+                {/*            )}*/}
+                {/*        </h2>*/}
+                {/*        <ul>*/}
+                {/*            <li><a>Item 1</a></li>*/}
+                {/*            <li><a>Item 2</a></li>*/}
+                {/*            <li><a>Item 3</a></li>*/}
+                {/*        </ul>*/}
+                {/*    </li>*/}
+                {/*</ul>*/}
+
             </div>
-            {editLabelData !== null && (
-                <>
-                    {/*<Modal*/}
-                    {/*    opened={editLabelData !== null}*/}
-                    {/*    usedFor="editLabel"*/}
-                    {/*    onClose={() => setEditLabelData(null)}*/}
-                    {/*    onOk={handleSaveNewLabel}*/}
-                    {/*>*/}
-                    {/*    <EditLabel editLabelData={editLabelData}></EditLabel>*/}
-                    {/*</Modal>*/}
-                    <EditLabelModal
-                        open={editLabelData !== null}
-                        onClose={() => setEditLabelData(null)}
-                        editLabelData={editLabelData}
-                        handleSaveNewLabel={handleSaveNewLabel}
-                    />
-                </>
-            )}
             <ListBox
                 aria-label="Keymap Layer"
                 selectionMode="single"
@@ -449,6 +463,22 @@ export const LayerPicker = ({
                     </ListBoxItem>
                 )}
             </ListBox>
+            {editLabelData !== null && (
+                <>
+                    {/*<EditLabelModal*/}
+                    {/*    opened={!!editLabelData}*/}
+                    {/*    onClose={() => setEditLabelData(null)}*/}
+                    {/*    editLabelData={editLabelData}*/}
+                    {/*/>*/}
+                    <EditLabelModal
+                        open={editLabelData !== null}
+                        onClose={() => setEditLabelData(null)}
+                        editLabelData={editLabelData}
+                        handleSaveNewLabel={handleSaveNewLabel}
+                    />
+                </>
+            )}
         </div>
+        </>
     )
 }

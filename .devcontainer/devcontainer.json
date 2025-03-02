@@ -4,5 +4,5 @@
   "runArgs": ["--security-opt", "label=disable"],
   "mounts": ["type=bind,source=../zmk,target=/opt/zmk"],
   "containerEnv": {},
-  "forwardPorts": [5173, 6006]
+  "forwardPorts": [5174, 6006]
 }

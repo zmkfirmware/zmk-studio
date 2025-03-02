@@ -1,5 +1,3 @@
-import { Button } from "react-aria-components";
-
 export function RestoreStock() {
   return (
     <>

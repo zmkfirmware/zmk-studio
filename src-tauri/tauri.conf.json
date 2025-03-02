@@ -3,7 +3,7 @@
   "build": {
     "beforeBuildCommand": "npm run build",
     "beforeDevCommand": "npm run dev",
-    "devUrl": "http://localhost:5173",
+    "devUrl": "http://localhost:5174",
     "frontendDist": "../dist/"
   },
   "productName": "ZMK Studio",

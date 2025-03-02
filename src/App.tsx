@@ -14,7 +14,7 @@ import useLockStore from './stores/LockStateStore.ts'
 import undoRedoStore from './stores/UndoRedoStore.ts'
 import { createRoot } from 'react-dom/client'
 import Alert from './components/UI/Alert.tsx'
-import { Modal } from "./components/UI/Modal.tsx"
+import { Drawer } from "./layout/Drawer.tsx"
 
 function App() {
     const { connection, setConnection } = useConnectionStore()
@@ -83,21 +83,27 @@ function App() {
             <>
                 <UnlockModal />
                 <div className="bg-base-100 text-base-content h-full max-h-[100vh] w-full max-w-[100vw] inline-grid grid-cols-[auto] grid-rows-[auto_1fr_auto] overflow-hidden">
+                    <Drawer>
                     <Header connectedDeviceLabel={connectedDeviceName} />
+
                     <Keyboard />
                     <Footer />
+                    </Drawer>
                 </div>
             </>
         )
     } else {
         return (
             <>
-                <Modal usedFor="connectModal" modalButton={""} opened={!connection} hideCloseButton hideXButton>
-                    <ConnectModal
-                        open={!connection}
-                        onTransportCreated={onConnect}
-                    />
-                </Modal>
+                <ConnectModal
+                    open={!connection}
+                    onTransportCreated={onConnect}
+                    usedFor="connectModal"
+                    modalButton={""}
+                    opened={!connection}
+                    hideCloseButton
+                    hideXButton
+                />
             </>
         )
     }

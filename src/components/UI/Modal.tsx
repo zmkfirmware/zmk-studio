@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 
 export interface ModalProps {
-    usedFor: string
+    usedFor?: string
     opened?: boolean
     onClose?: () => void | Promise<void>
     onOk?: () => void | Promise<void>
@@ -12,70 +12,67 @@ export interface ModalProps {
     hideXButton?: boolean
     hideCloseButton?: boolean
     okButtonText?: string
-    children: React.ReactNode
+    children?: React.ReactNode
 }
 
-export function Modal({
-    onClose,
-    onOk,
-    children,
-    type,
-    className = '',
-    customModalBoxClass ='',
-    hideCloseButton = false,
-    hideXButton = false,
-    modalButton,
-    usedFor,
-    okButtonText = 'Ok',
-    opened = false,
-}: ModalProps) {
+export function Modal(props: ModalProps) {
     useEffect(() => {
-        if (opened) {
-            document.getElementById(`modal_${usedFor}`)?.showModal()
+        if (props.opened) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            document.getElementById(`modal_${props.usedFor}`)?.showModal()
         }
         return () => {
-            document.getElementById(`modal_${usedFor}`)?.close()
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            document.getElementById(`modal_${props.usedFor}`)?.close()
         }
     }, [])
-
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     function closeModal() {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         document.getElementById(`modal_${usedFor}`)?.close()
     }
     return (
         <>
             <span
-                hidden={opened || !modalButton}
-                className={`cursor-pointer ${type}`}
+                hidden={props.opened || !props.modalButton}
+                className={`cursor-pointer ${props.type}`}
                 onClick={() =>
-                    document.getElementById(`modal_${usedFor}`)?.showModal()
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
+                    document.getElementById(`modal_${props.usedFor}`)?.showModal()
                 }
             >
-                {modalButton}
+                {props.modalButton}
             </span>
             <dialog
-                id={`modal_${usedFor}`}
-                className={`modal ${className}`}
-                onClose={onClose}
+                id={`modal_${props.usedFor}`}
+                className={`modal ${props.className}`}
+                onClose={props.onClose}
             >
-                <div className={`modal-box ${customModalBoxClass}`}>
-                    {children}
+                <div className={`modal-box ${props.customModalBoxClass}`}>
+                    {props.children}
                     <div className="modal-action">
                         <form method="dialog">
                             {/* if there is a button in form, it will close the modal */}
                             <button
-                                className={`btn ${hideCloseButton ? 'hidden' : ''}`}
-                                onClick={onClose}
+                                className={`btn ${props.hideCloseButton ? 'hidden' : ''}`}
+                                onClick={props.onClose}
                             >
                                 Close
                             </button>
                             <button
-                                onClick={onOk}
-                                className={`btn ${!onOk ? 'hidden' : ''}`}
+                                onClick={props.onOk}
+                                className={`btn ${!props.onOk ? 'hidden' : ''}`}
                             >
-                                {okButtonText}
+                                {props.okButtonText}
                             </button>
                             <button
-                                className={`btn btn-sm btn-circle btn-ghost absolute right-2 top-2 ${hideXButton ? 'hidden' : ''}`}
+                                className={`btn btn-sm btn-circle btn-ghost absolute right-2 top-2 ${props.hideXButton ? 'hidden' : ''}`}
                             >
                                 ✕
                             </button>

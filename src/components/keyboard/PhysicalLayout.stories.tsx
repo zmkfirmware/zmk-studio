@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 import { PhysicalLayout } from "./PhysicalLayout.tsx";
 import { HidUsageLabel } from "./HidUsageLabel.tsx";
-import { hid_usage_from_page_and_id } from "../../helpers/hid-usages.ts";
+import { hidUsageFromPageAndId } from "../../helpers/hid-usages.ts";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -40,7 +40,7 @@ const MINIVAN_POSITIONS = [
     x: i,
     y: 0,
     header: "Key Press",
-    children: [<HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, k)} />],
+    children: [<HidUsageLabel hid_usage={hidUsageFromPageAndId(7, k)} />],
   })),
   {
     x: TOP.length,
@@ -48,7 +48,7 @@ const MINIVAN_POSITIONS = [
     width: 1.75,
     height: 1,
     header: "Key Press",
-    children: [<HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 42)} />],
+    children: [<HidUsageLabel hid_usage={hidUsageFromPageAndId(7, 42)} />],
   },
   {
     x: 0,
@@ -64,7 +64,7 @@ const MINIVAN_POSITIONS = [
     width: 1,
     height: 1,
     header: "Key Press",
-    children: [<HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, k)} />],
+    children: [<HidUsageLabel hid_usage={hidUsageFromPageAndId(7, k)} />],
   })),
   {
     x: MIDDLE.length + 1.25,
@@ -72,7 +72,7 @@ const MINIVAN_POSITIONS = [
     width: 1.5,
     height: 1,
     header: "Key Press",
-    children: [<HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 40)} />],
+    children: [<HidUsageLabel hid_usage={hidUsageFromPageAndId(7, 40)} />],
   },
   {
     x: 0,
@@ -81,7 +81,7 @@ const MINIVAN_POSITIONS = [
     height: 1,
     header: "Key Press",
     children: [
-      <HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 225)} />,
+      <HidUsageLabel hid_usage={hidUsageFromPageAndId(7, 225)} />,
     ],
   },
   ...LOWER.map((k, i) => ({
@@ -90,7 +90,7 @@ const MINIVAN_POSITIONS = [
     width: 1,
     height: 1,
     header: "Key Press",
-    children: [<HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, k)} />],
+    children: [<HidUsageLabel hid_usage={hidUsageFromPageAndId(7, k)} />],
   })),
   {
     x: 0,
@@ -99,7 +99,7 @@ const MINIVAN_POSITIONS = [
     height: 1,
     header: "Key Press",
     children: [
-      <HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 224)} />,
+      <HidUsageLabel hid_usage={hidUsageFromPageAndId(7, 224)} />,
     ],
   },
   {
@@ -109,7 +109,7 @@ const MINIVAN_POSITIONS = [
     height: 1,
     header: "Key Press",
     children: [
-      <HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 227)} />,
+      <HidUsageLabel hid_usage={hidUsageFromPageAndId(7, 227)} />,
     ],
   },
   {
@@ -119,7 +119,7 @@ const MINIVAN_POSITIONS = [
     height: 1,
     header: "Key Press",
     children: [
-      <HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 226)} />,
+      <HidUsageLabel hid_usage={hidUsageFromPageAndId(7, 226)} />,
     ],
   },
   {
@@ -145,7 +145,7 @@ const MINIVAN_POSITIONS = [
     height: 1,
     header: "Key Press",
     children: [
-      <HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 230)} />,
+      <HidUsageLabel hid_usage={hidUsageFromPageAndId(7, 230)} />,
     ],
   },
   {
@@ -154,7 +154,7 @@ const MINIVAN_POSITIONS = [
     width: 1,
     height: 1,
     header: "Key Press",
-    children: [<HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 80)} />],
+    children: [<HidUsageLabel hid_usage={hidUsageFromPageAndId(7, 80)} />],
   },
   {
     x: 10.75,
@@ -162,7 +162,7 @@ const MINIVAN_POSITIONS = [
     width: 1,
     height: 1,
     header: "Key Press",
-    children: [<HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 81)} />],
+    children: [<HidUsageLabel hid_usage={hidUsageFromPageAndId(7, 81)} />],
   },
   {
     x: 11.75,
@@ -170,7 +170,7 @@ const MINIVAN_POSITIONS = [
     width: 1,
     height: 1,
     header: "Key Press",
-    children: [<HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 79)} />],
+    children: [<HidUsageLabel hid_usage={hidUsageFromPageAndId(7, 79)} />],
   },
 ];
 
