@@ -3,14 +3,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { callRemoteProcedureControl } from '../../rpc/logging.ts'
 import {
     Keymap,
-    // SetLayerPropsResponse,
     BehaviorBinding,
-    // Layer,
     SetLayerBindingResponse,
 } from '@zmkfirmware/zmk-studio-ts-client/keymap'
 
-import { LayerPicker } from './LayerPicker.tsx'
-import { PhysicalLayoutPicker } from './PhysicalLayoutPicker.tsx'
 import { Keymap as KeymapComp } from './Keymap.tsx'
 import { useConnectedDeviceData } from '../../rpc/useConnectedDeviceData.ts'
 
@@ -20,14 +16,15 @@ import { LayoutZoom } from './PhysicalLayout.tsx'
 import { useLocalStorageState } from '../../misc/useLocalStorageState.ts'
 import { KeysLayout } from '../keycodes/KeysLayout.tsx'
 import { deserializeLayoutZoom } from '../../helpers/helpers.ts'
-import { useBehaviors, useLayouts } from '../../helpers/useLayouts.ts'
+import { useLayout } from "../../helpers/useLayouts.ts";
 import { X } from 'lucide-react'
 import { Zoom } from '../Zoom.tsx'
 import useConnectionStore from '../../stores/ConnectionStore.ts'
 import undoRedoStore from '../../stores/UndoRedoStore.ts'
+import { useBehaviors } from "../../helpers/Behaviors.ts";
 
 export default function Keyboard() {
-    const [ layouts, _setLayouts, selectedPhysicalLayoutIndex, setSelectedPhysicalLayoutIndex, ] = useLayouts()
+    const { layouts, selectedPhysicalLayoutIndex } = useLayout()
 
     const [keymap, setKeymap] = useConnectedDeviceData<Keymap>(
         { keymap: { getKeymap: true } },
@@ -84,19 +81,19 @@ export default function Keyboard() {
         performSetRequest()
     }, [selectedPhysicalLayoutIndex])
 
-    const doSelectPhysicalLayout = useCallback(
-        (i: number) => {
-            const oldLayout = selectedPhysicalLayoutIndex
-            doIt?.(async () => {
-                setSelectedPhysicalLayoutIndex(i)
-
-                return async () => {
-                    setSelectedPhysicalLayoutIndex(oldLayout)
-                }
-            })
-        },
-        [doIt, selectedPhysicalLayoutIndex],
-    )
+    // const doSelectPhysicalLayout = useCallback(
+    //     (i: number) => {
+    //         const oldLayout = selectedPhysicalLayoutIndex
+    //         doIt?.(async () => {
+    //             setSelectedPhysicalLayoutIndex(i)
+    //
+    //             return async () => {
+    //                 setSelectedPhysicalLayoutIndex(oldLayout)
+    //             }
+    //         })
+    //     },
+    //     [doIt, selectedPhysicalLayoutIndex],
+    // )
 
     const doUpdateBinding = useCallback( (binding: BehaviorBinding) => {
             if (!keymap || selectedKeyPosition === undefined) {

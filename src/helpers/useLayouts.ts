@@ -1,5 +1,5 @@
 import { PhysicalLayout } from '@zmkfirmware/zmk-studio-ts-client/keymap';
-import React, { SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core';
 import { callRemoteProcedureControl } from '../rpc/logging.ts';
 import { Request } from '@zmkfirmware/zmk-studio-ts-client';
@@ -79,63 +79,64 @@ export function useBehaviors(): BehaviorMap {
     return behaviors;
 }
 
-export function useLayouts(): [
-    PhysicalLayout[] | undefined,
-    React.Dispatch<SetStateAction<PhysicalLayout[] | undefined>>,
-    number,
-    React.Dispatch<SetStateAction<number>>,
-] {
+interface UseLayoutsReturn {
+    layouts: PhysicalLayout[] | undefined;
+    setLayouts: Dispatch<SetStateAction<PhysicalLayout[] | undefined>>;
+    selectedPhysicalLayoutIndex: number;
+    setSelectedPhysicalLayoutIndex: Dispatch<SetStateAction<number>>;
+}
+
+export function useLayout(): UseLayoutsReturn {
     const { lockState } = useLockStore();
     const { connection } = useConnectionStore();
 
-    const [layouts, setLayouts] = useState<PhysicalLayout[] | undefined>(
-        undefined,
-    );
-    const [selectedPhysicalLayoutIndex, setSelectedPhysicalLayoutIndex] =
-        useState<number>(0);
+    const [layouts, setLayouts] = useState<PhysicalLayout[] | undefined>(undefined);
+    const [selectedPhysicalLayoutIndex, setSelectedPhysicalLayoutIndex] = useState<number>(0);
 
     useEffect(() => {
-        if (
-            !connection ||
-            lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED
-        ) {
+        // Only fetch if there is a connection and the device is unlocked.
+        if (!connection || lockState !== LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED) {
             setLayouts(undefined);
             return;
         }
 
-        async function startRequest() {
+        let isCancelled = false;
+
+        const fetchLayouts = async () => {
+            // Reset layouts before fetching new data.
             setLayouts(undefined);
 
-            if (!connection) {
-                return;
+            try {
+                console.log('Fetching layouts:', connection, lockState);
+                const response = await callRemoteProcedureControl(connection, {
+                    keymap: { getPhysicalLayouts: true },
+                });
+
+                if (!isCancelled) {
+                    const layoutsResponse = response?.keymap?.getPhysicalLayouts?.layouts;
+                    const activeIndex = response?.keymap?.getPhysicalLayouts?.activeLayoutIndex ?? 0;
+                    setLayouts(layoutsResponse);
+                    setSelectedPhysicalLayoutIndex(activeIndex);
+                }
+            } catch (error) {
+                if (!isCancelled) {
+                    console.error('Failed to fetch layouts:', error);
+                    setLayouts(undefined);
+                }
             }
+        };
 
-            console.log(connection,lockState)
-            const response = await callRemoteProcedureControl(connection, {
-                keymap: { getPhysicalLayouts: true },
-            });
-
-            if (!ignore) {
-                setLayouts(response?.keymap?.getPhysicalLayouts?.layouts);
-                setSelectedPhysicalLayoutIndex(
-                    response?.keymap?.getPhysicalLayouts?.activeLayoutIndex ||
-                        0,
-                );
-            }
-        }
-
-        let ignore = false;
-        startRequest();
+        fetchLayouts();
 
         return () => {
-            ignore = true;
+            isCancelled = true;
         };
     }, [connection, lockState]);
 
-    return [
+    return {
         layouts,
         setLayouts,
         selectedPhysicalLayoutIndex,
         setSelectedPhysicalLayoutIndex,
-    ];
+    };
 }

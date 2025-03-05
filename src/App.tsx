@@ -2,19 +2,19 @@ import { callRemoteProcedureControl } from './rpc/logging'
 import { useEffect, useState } from 'react'
 import { ConnectModal } from './components/Modals/ConnectModal.tsx'
 import type { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index'
-import { useEmitter, useSub } from "./helpers/usePubSub.ts";
+import { useEmitter } from './helpers/usePubSub.ts'
 import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core'
 import { UnlockModal } from './components/UnlockModal.tsx'
 import { connect } from './services/RPCService.ts'
-import { Header } from './layout/Header.tsx'
+import { Header } from './Layout/Header.tsx'
 import Keyboard from './components/keyboard/Keyboard.tsx'
-import { Footer } from './layout/Footer.tsx'
+import { Footer } from './Layout/Footer.tsx'
 import useConnectionStore from './stores/ConnectionStore.ts'
 import useLockStore from './stores/LockStateStore.ts'
 import undoRedoStore from './stores/UndoRedoStore.ts'
 import { createRoot } from 'react-dom/client'
 import Alert from './components/UI/Alert.tsx'
-import { Drawer } from './layout/Drawer.tsx'
+import { Drawer } from './Layout/Drawer.tsx'
 
 function App() {
     const { connection, setConnection } = useConnectionStore()
@@ -24,15 +24,14 @@ function App() {
     const { reset } = undoRedoStore()
     const [connectionAbort] = useState(new AbortController())
     const { setLockState } = useLockStore()
-    const { publish, subscribe } = useEmitter();
+    const { publish, subscribe } = useEmitter()
 
     useEffect(() => {
-        const unsubscribe = subscribe('rpc_notification.core.lockStateChanged', (data) => {
-            console.log('lockStateChanged:', data);
+        return subscribe('rpc_notification.core.lockStateChanged', (data) => {
+            console.log('lockStateChanged:', data)
             setLockState(data)
-        });
-        return unsubscribe;
-    }, [subscribe]);
+        })
+    }, [subscribe])
 
     // console.log("app", connection)
     // useSub('rpc_notification.core.lockStateChanged', (ls) => {

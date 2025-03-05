@@ -1,27 +1,28 @@
-import React, { useCallback, useEffect, useState } from "react"
-import { useLayouts } from "../helpers/useLayouts.ts"
-import { PhysicalLayoutPicker } from "../components/keyboard/PhysicalLayoutPicker.tsx"
-import { LayerPicker } from "../components/keyboard/LayerPicker.tsx"
-import undoRedoStore from "../stores/UndoRedoStore.ts"
-import { useConnectedDeviceData } from "../rpc/useConnectedDeviceData.ts"
-import { Keymap
+import React, { useCallback, useEffect, useState } from 'react'
+import { useLayout } from '../helpers/useLayouts.ts'
+import { PhysicalLayoutPicker } from '../components/keyboard/PhysicalLayoutPicker.tsx'
+import { LayerPicker } from '../components/keyboard/LayerPicker.tsx'
+import undoRedoStore from '../stores/UndoRedoStore.ts'
+import { useConnectedDeviceData } from '../rpc/useConnectedDeviceData.ts'
+import {
+    Keymap,
     // , Layer, SetLayerPropsResponse
-} from "@zmkfirmware/zmk-studio-ts-client/keymap"
-import { callRemoteProcedureControl } from "../rpc/logging.ts"
+} from '@zmkfirmware/zmk-studio-ts-client/keymap'
+import { callRemoteProcedureControl } from '../rpc/logging.ts'
 // import { produce } from "immer"
-import useConnectionStore from "../stores/ConnectionStore.ts"
+import useConnectionStore from '../stores/ConnectionStore.ts'
 
 interface DrawerProps {
     children?: React.ReactNode
 }
+
 export function Drawer({ children }: DrawerProps) {
     const { connection } = useConnectionStore()
-    const [
+    const {
         layouts,
-        _setLayouts,
         selectedPhysicalLayoutIndex,
         setSelectedPhysicalLayoutIndex,
-    ] = useLayouts()
+    } = useLayout()
     const { doIt } = undoRedoStore()
     const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0)
 
@@ -96,9 +97,7 @@ export function Drawer({ children }: DrawerProps) {
                     type="checkbox"
                     className="drawer-toggle"
                 />
-                <div className="drawer-content flex flex-col">
-                    {children}
-                </div>
+                <div className="drawer-content flex flex-col">{children}</div>
                 <div className="drawer-side">
                     {layouts && (
                         <div className="col-start-3 row-start-1 row-end-2">
