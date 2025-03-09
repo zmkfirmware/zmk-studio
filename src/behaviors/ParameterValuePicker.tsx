@@ -58,6 +58,7 @@ export const ParameterValuePicker = ({ value, values, layers, onValueChanged }: 
     }
 
     if (values.every(v => v.constant !== undefined)) {
+        console.log("ConstantValuePicker", values);
         return <ConstantValuePicker value={value} values={values} onValueChanged={onValueChanged} layers={layers} />;
     }
 
@@ -68,6 +69,7 @@ export const ParameterValuePicker = ({ value, values, layers, onValueChanged }: 
         }
 
         if (values[0].hidUsage) {
+            console.log("HidUsagePicker", values[0].hidUsage);
             return (
                 <HidUsagePicker
                     onValueChanged={onValueChanged}
@@ -82,6 +84,7 @@ export const ParameterValuePicker = ({ value, values, layers, onValueChanged }: 
         }
 
         if (values[0].layerId) {
+            console.log("LayerValuePicker", values[0].layerId);
             return <LayerValuePicker value={value} values={values} onValueChanged={onValueChanged} layers={layers} />;
         }
     }

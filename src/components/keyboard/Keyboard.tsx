@@ -193,35 +193,6 @@ export default function Keyboard() {
 
     return (
         <div className="grid grid-cols-[auto_1fr] grid-rows-[1fr_minmax(10em,auto)] bg-base-300 max-w-full min-w-0 min-h-0 h-full">
-            {/*<div className="p-2 flex flex-col gap-2 bg-base-200 row-span-2">*/}
-            {/*    {layouts && (*/}
-            {/*        <div className="col-start-3 row-start-1 row-end-2">*/}
-            {/*            <PhysicalLayoutPicker*/}
-            {/*                layouts={layouts}*/}
-            {/*                selectedPhysicalLayoutIndex={*/}
-            {/*                    selectedPhysicalLayoutIndex*/}
-            {/*                }*/}
-            {/*                onPhysicalLayoutClicked={doSelectPhysicalLayout}*/}
-            {/*            />*/}
-            {/*        </div>*/}
-            {/*    )}*/}
-
-            {/*    {keymap && (*/}
-            {/*        <div className="col-start-1 row-start-1 row-end-2">*/}
-            {/*            <LayerPicker*/}
-            {/*                layers={keymap.layers}*/}
-            {/*                selectedLayerIndex={selectedLayerIndex}*/}
-            {/*                onLayerClicked={setSelectedLayerIndex}*/}
-            {/*                setKeymap={setKeymap}*/}
-            {/*                setSelectedLayerIndex={setSelectedLayerIndex}*/}
-            {/*                canAdd={(keymap.availableLayers || 0) > 0}*/}
-            {/*                canRemove={(keymap.layers?.length || 0) > 1}*/}
-            {/*                setSelectedKey={setSelectedKey}*/}
-            {/*                keymap={keymap}*/}
-            {/*            />*/}
-            {/*        </div>*/}
-            {/*    )}*/}
-            {/*</div>*/}
             {layouts && keymap && behaviors && (
                 <div className="p-2 col-start-2 row-start-1 grid items-center justify-center relative min-w-0">
                     <KeymapComp
