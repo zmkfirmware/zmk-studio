@@ -18,40 +18,29 @@ export function useConnectedDeviceData<T>(
 
     useEffect(
         () => {
-            if (
-                !connection ||
-                (requireUnlock &&
-                    lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED)
-            ) {
+            if ( !connection || (requireUnlock && lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED) ) {
                 setData(undefined);
                 return;
             }
 
             async function startRequest() {
                 setData(undefined);
-                if (!connection) {
-                    return;
-                }
+
+                if (!connection) return
 
                 const response = response_mapper(
-                    await callRemoteProcedureControl(connection, req),
+                    await callRemoteProcedureControl(connection, req)
                 );
 
-                if (!ignore) {
-                    setData(response);
-                }
+                if (!ignore) setData(response)
             }
 
             let ignore = false;
             startRequest();
 
-            return () => {
-                ignore = true;
-            };
+            return () => ignore = true;
         },
-        requireUnlock
-            ? [connection, requireUnlock, lockState]
-            : [connection, requireUnlock],
+        requireUnlock ? [connection, requireUnlock, lockState] : [connection, requireUnlock],
     );
 
     return [data, setData];

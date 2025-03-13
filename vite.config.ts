@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
-
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [react()],
+    plugins: [
+        react(),
+    ],
     // prevent vite from obscuring rust errors
     clearScreen: false,
     // Tauri expects a fixed port, fail if that port is not available

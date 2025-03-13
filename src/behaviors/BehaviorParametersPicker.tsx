@@ -36,11 +36,7 @@ export const BehaviorParametersPicker = ({
         )
     } else {
         const set = metadata.find((s) =>
-            validateValue(
-                layers.map((l) => l.id),
-                param1,
-                s.param1,
-            ),
+            validateValue( layers.map((l) => l.id), param1, s.param1 )
         )
         return (
             <>

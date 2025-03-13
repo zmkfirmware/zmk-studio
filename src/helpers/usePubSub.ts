@@ -9,7 +9,7 @@ export const usePub = () => (name: PropertyKey, data: any) => {
 
 export const useSub = (
     name: PropertyKey,
-    callback: (data: any) => void | Promise<void>,
+    callback: (data) => void | Promise<void>,
 ) => {
     const unsub = () => {
         console.log('unsub', name)
@@ -27,14 +27,14 @@ export const useSub = (
 
 export const useEmitter = () => {
     // Memoized publish function to emit events
-    const publish = useCallback((event: PropertyKey, data: any) => {
+    const publish = useCallback((event: PropertyKey, data) => {
         emitter.emit(event, data);
     }, []);
 
     // Memoized subscribe function that returns an unsubscribe function
     const subscribe = useCallback(
-      (event: PropertyKey, callback: (data: any) => void | Promise<void>) => {
-          console.log('unsub', event,callback)
+      (event: PropertyKey, callback: (data) => void | Promise<void>) => {
+          // console.log('unsub', event,callback)
           emitter.on(event, callback);
           return () => emitter.off(event, callback);
       },

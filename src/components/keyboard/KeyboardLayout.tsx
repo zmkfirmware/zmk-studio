@@ -22,7 +22,7 @@ export interface KeymapProps {
     onKeyPositionClicked: (keyPosition: number) => void
 }
 
-export const Keymap = ({
+export const KeyboardLayout = ({
     layout,
     keymap,
     behaviors,
@@ -35,7 +35,7 @@ export const Keymap = ({
         return <></>
     }
 
-    let positions = layout.keys.map((k, i) => {
+    const positions = layout.keys.map((k, i) => {
         if (i >= keymap.layers[selectedLayerIndex].bindings.length) {
             return {
                 header: 'Unknown',
@@ -49,9 +49,7 @@ export const Keymap = ({
 
         return {
             header:
-                behaviors[
-                    keymap.layers[selectedLayerIndex].bindings[i].behaviorId
-                ]?.displayName || 'Unknown',
+                behaviors[keymap.layers[selectedLayerIndex].bindings[i].behaviorId]?.displayName || 'Unknown',
             x: k.x / 100.0,
             y: k.y / 100.0,
             width: k.width / 100,
@@ -62,17 +60,15 @@ export const Keymap = ({
             children: (
                 <>
                     <HidUsageLabel
-                        hid_usage={
-                            keymap.layers[selectedLayerIndex].bindings[i].param1
-                        }
-                        header={behaviors[
-                            keymap.layers[selectedLayerIndex].bindings[i].behaviorId
-                            ]?.displayName || 'Unknown'}
+                        hid_usage={ keymap.layers[selectedLayerIndex].bindings[i].param1 }
+                        header={behaviors[keymap.layers[selectedLayerIndex].bindings[i].behaviorId]?.displayName || 'Unknown'}
                     />
                 </>
             ),
         }
     })
+    console.log(positions,behaviors)
+
     return (
         <PhysicalLayoutComp
             positions={positions}

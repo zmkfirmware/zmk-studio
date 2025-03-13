@@ -90,14 +90,8 @@ export const PhysicalLayout = ({
             onClick={() => onPositionClicked?.(idx)}
             className="absolute data-[zoomer=true]:hover:z-[1000] leading-[0]"
             data-zoomer={hoverZoom}
-            style={scalePosition(p, oneU)}
-        >
-            <Key
-                hoverZoom={hoverZoom}
-                oneU={oneU}
-                selected={idx === selectedPosition}
-                {...p}
-            />
+            style={scalePosition(p, oneU)}>
+            <Key hoverZoom={hoverZoom} oneU={oneU} selected={idx === selectedPosition}{...p} />
         </div>
     ))
     // console.log( positions, oneU);
@@ -110,8 +104,7 @@ export const PhysicalLayout = ({
                 transform: `scale(${scale})`,
             }}
             ref={ref}
-            {...props}
-        >
+            {...props}>
             {positionItems}
         </div>
     )
