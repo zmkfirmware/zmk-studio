@@ -12,12 +12,10 @@ function remove_prefix(s?: string) {
 }
 
 export const HidUsageLabel = ({ hid_usage }: HidUsageLabelProps) => {
-  let [page, id] = hid_usage_page_and_id_from_usage(hid_usage);
+  const [page, id] = hid_usage_page_and_id_from_usage(hid_usage);
 
   // TODO: Do something with implicit mods!
-  page &= 0xff;
-
-  let labels = hid_usage_get_labels(page, id);
+  const labels = hid_usage_get_labels(page & 0xff, id);
 
   return (
     <span
