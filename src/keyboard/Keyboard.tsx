@@ -103,7 +103,7 @@ function useLayouts(): [
   PhysicalLayout[] | undefined,
   React.Dispatch<SetStateAction<PhysicalLayout[] | undefined>>,
   number,
-  React.Dispatch<SetStateAction<number>>
+  React.Dispatch<SetStateAction<number>>,
 ] {
   let connection = useContext(ConnectionContext);
   let lockState = useContext(LockStateContext);
@@ -174,9 +174,13 @@ export default function Keyboard() {
     true
   );
 
-  const [keymapScale, setKeymapScale] = useLocalStorageState<LayoutZoom>("keymapScale", "auto", {
-    deserialize: deserializeLayoutZoom,
-  });
+  const [keymapScale, setKeymapScale] = useLocalStorageState<LayoutZoom>(
+    "keymapScale",
+    "auto",
+    {
+      deserialize: deserializeLayoutZoom,
+    }
+  );
 
   const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0);
   const [selectedKeyPosition, setSelectedKeyPosition] = useState<
@@ -284,7 +288,6 @@ export default function Keyboard() {
                 draft.layers[layer].bindings[keyPosition] = oldBinding;
               })
             );
-          } else {
           }
         };
       });
@@ -293,7 +296,11 @@ export default function Keyboard() {
   );
 
   let selectedBinding = useMemo(() => {
-    if (keymap == null || selectedKeyPosition == null || !keymap.layers[selectedLayerIndex]) {
+    if (
+      keymap == null ||
+      selectedKeyPosition == null ||
+      !keymap.layers[selectedLayerIndex]
+    ) {
       return null;
     }
 
