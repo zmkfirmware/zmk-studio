@@ -32,7 +32,7 @@ export const PhysicalLayoutPicker = ({
   selectedPhysicalLayoutIndex,
   onPhysicalLayoutClicked,
 }: PhysicalLayoutPickerProps) => {
-  let selectionChanged = useCallback(
+  const selectionChanged = useCallback(
     (e: Key) => {
       onPhysicalLayoutClicked?.(layouts.findIndex((l) => l.name === e));
     },

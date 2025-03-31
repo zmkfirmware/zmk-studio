@@ -35,7 +35,7 @@ export const Keymap = ({
     return <></>;
   }
 
-  let positions = layout.keys.map((k, i) => {
+  const positions = layout.keys.map((k, i) => {
     if (i >= keymap.layers[selectedLayerIndex].bindings.length) {
       return {
         header: "Unknown",

@@ -7,7 +7,7 @@ export function useModalRef(
 ): MutableRefObject<HTMLDialogElement | null> {
   const ref = useRef<HTMLDialogElement | null>(null);
 
-  let reopen = async () => {
+  const reopen = async () => {
     // We do this in a timeout so it runs after the modal has actually closed.
     setTimeout(() => ref.current?.showModal());
   };
