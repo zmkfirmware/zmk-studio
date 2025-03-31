@@ -230,7 +230,12 @@ export const AboutModal = ({ open, onClose }: AboutModalProps) => {
                   };
 
                   return (
-                    <a key={v.name} href={v.url} target="_blank">
+                    <a
+                      key={v.name}
+                      href={v.url}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
                       <picture aria-label={v.name}>
                         {v.darkModeImg && (
                           <source
