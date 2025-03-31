@@ -28,7 +28,6 @@ export default defineConfig([
     },
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
     rules: {
-      "no-empty-pattern": "off",
       "no-constant-condition": "off",
       "prefer-const": "off",
       "react/display-name": "off",

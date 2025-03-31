@@ -18,9 +18,7 @@ export type TransportFactory = {
   };
 };
 
-export interface UnlockModalProps {}
-
-export const UnlockModal = ({}: UnlockModalProps) => {
+export const UnlockModal = () => {
   let conn = useContext(ConnectionContext);
   let lockState = useContext(LockStateContext);
 
