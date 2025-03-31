@@ -29,7 +29,6 @@ export default defineConfig([
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
     rules: {
       "no-constant-condition": "off",
-      "react/display-name": "off",
       "react/jsx-key": "off",
       "react/jsx-no-target-blank": "off",
       "react/no-unescaped-entities": "off",
