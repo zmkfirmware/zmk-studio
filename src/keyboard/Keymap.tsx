@@ -25,30 +25,44 @@ export interface KeymapProps {
 const getBindingChildren = (
   header: string,
   binding: { param1: number; param2: number },
-  keymap: KeymapMsg
 ) => {
   if (header === "Layer-Tap") {
-    return (
-      <span className="flex flex-col text-sm">
+    return [
         <span className="text-sm">
           <HidUsageLabel
             hid_usage={binding.param2}
           />
-        </span>
-        <span className="text-xs inline-flex">
-          <svg className="" xmlns="http://www.w3.org/2000/svg" width="13" height="10" fill="currentColor" viewBox="0 0 16 16">
+        </span>,
+        <span className="text-xs truncate">
+          <svg className="inline-block mb-0.5 mr-1" xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" viewBox="0 0 16 16">
             <path d="M8.235 1.559a.5.5 0 0 0-.47 0l-7.5 4a.5.5 0 0 0 0 .882L3.188 8 .264 9.559a.5.5 0 0 0 0 .882l7.5 4a.5.5 0 0 0 .47 0l7.5-4a.5.5 0 0 0 0-.882L12.813 8l2.922-1.559a.5.5 0 0 0 0-.882zm3.515 7.008L14.438 10 8 13.433 1.562 10 4.25 8.567l3.515 1.874a.5.5 0 0 0 .47 0zM8 9.433 1.562 6 8 2.567 14.438 6z"/>
           </svg>
-          {keymap.layers[binding.param1].name || "Unknown"}
+          {binding.param1}
         </span>
-      </span>
-    );
+    ];
+  }
+
+  if (header === "Mod-Tap") {
+    return [
+        <span className="text-sm">
+          <HidUsageLabel
+            hid_usage={binding.param2}
+          />
+        </span>,
+        <span className="text-sm">
+          <HidUsageLabel
+            hid_usage={binding.param1}
+          />
+        </span>
+    ];
   }
 
   return (
-    <HidUsageLabel
-      hid_usage={binding.param1}
-    />
+    <span className="text-base">
+      <HidUsageLabel
+        hid_usage={binding.param1}
+      />
+    </span>
   );
 };
 
@@ -81,7 +95,7 @@ export const Keymap = ({
     const binding = keymap.layers[selectedLayerIndex].bindings[i];
     const header = behaviors[binding.behaviorId]?.displayName || "Unknown";
 
-    const children = getBindingChildren(header, binding, keymap);
+    const children = getBindingChildren(header, binding);
 
     return {
       id: `${keymap.layers[selectedLayerIndex].id}-${i}`,
