@@ -56,7 +56,7 @@ export const Key = ({
   const children = Children.map(props.children, (c) => (
     <span
       data-zoomer={hoverZoom}
-      className="bg-gray-700 rounded-sm place-content-around"
+      className="bg-gray-700 rounded-sm place-content-around text-base-content"
     >
       {c}
     </span>
