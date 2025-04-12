@@ -21,10 +21,10 @@ const renderIndicator = (numbers: 0|1|2|3 = 1): JSX.Element => (
   );
 
 export const getBindingChildren = (
-  header: string,
+  behavior: string,
   binding: KeyBinding,
 ): JSX.Element | JSX.Element[] => {
-  if (header === "Layer-Tap") {
+  if (behavior === "Layer-Tap") {
     return [
         <div className="relative text-sm">
           {renderIndicator(1)}
@@ -40,7 +40,7 @@ export const getBindingChildren = (
     ];
   }
 
-  if (header === "Mod-Tap") {
+  if (behavior === "Mod-Tap") {
     return [
         <div className="relative">
           {renderIndicator(1)}
@@ -55,13 +55,17 @@ export const getBindingChildren = (
     ];
   }
 
+  if (behavior === "Transparent") {
+    return (
+      <div className="relative text-xs">
+        ▽
+      </div>
+    );
+  }
+
   return (
-    <div className="relative">
-      <span className="text-base">
-        <HidUsageLabel
-          hid_usage={binding.param1}
-        />
-      </span>
+    <div className="relative text-base">
+      <HidUsageLabel hid_usage={binding.param1}/>
     </div>
   );
 };
