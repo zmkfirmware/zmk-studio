@@ -31,10 +31,11 @@ import { LockStateContext } from "../rpc/LockStateContext";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { deserializeLayoutZoom, LayoutZoom } from "./PhysicalLayout";
 import { useLocalStorageState } from "../misc/useLocalStorageState";
+import { useKeymap } from "../context/keymap";
 
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
-function useBehaviors(): BehaviorMap {
+export function useBehaviors(): BehaviorMap {
   let connection = useContext(ConnectionContext);
   let lockState = useContext(LockStateContext);
 
@@ -165,15 +166,11 @@ export default function Keyboard() {
     selectedPhysicalLayoutIndex,
     setSelectedPhysicalLayoutIndex,
   ] = useLayouts();
-  const [keymap, setKeymap] = useConnectedDeviceData<Keymap>(
-    { keymap: { getKeymap: true } },
-    (keymap) => {
-      console.log("Got the keymap!");
-      return keymap?.keymap?.getKeymap;
-    },
-    true
-  );
 
+  const {
+    keymap,
+    setKeymap,
+  } = useKeymap();
   const [keymapScale, setKeymapScale] = useLocalStorageState<LayoutZoom>("keymapScale", "auto", {
     deserialize: deserializeLayoutZoom,
   });
