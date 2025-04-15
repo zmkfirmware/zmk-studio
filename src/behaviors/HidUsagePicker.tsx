@@ -243,7 +243,7 @@ export const HidUsagePicker = ({
         items={usagePages}
         selectionMode="single"
         className="block max-h-[30vh] min-h-[unset] overflow-auto p-2"
-        selectedKeys={[value ? mask_mods(value) : null]}
+        selectedKeys={value ? [mask_mods(value)] : []}
         onSelectionChange={({currentKey}: any) => selectionChanged(currentKey)}
         aria-labelledby="hid-usage-picker"
       >
