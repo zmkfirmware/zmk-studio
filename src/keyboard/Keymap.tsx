@@ -38,7 +38,7 @@ export const Keymap = ({
   const positions = layout.keys.map((k, i) => {
     if (i >= keymap.layers[selectedLayerIndex].bindings.length) {
       return {
-        id: `${keymap.layers[selectedLayerIndex].name}-${i}`,
+        id: `${keymap.layers[selectedLayerIndex].id}-${i}`,
         header: "Unknown",
         x: k.x / 100.0,
         y: k.y / 100.0,
@@ -49,7 +49,7 @@ export const Keymap = ({
     }
 
     return {
-      id: `${keymap.layers[selectedLayerIndex].name}-${i}`,
+      id: `${keymap.layers[selectedLayerIndex].id}-${i}`,
       header:
         behaviors[keymap.layers[selectedLayerIndex].bindings[i].behaviorId]
           ?.displayName || "Unknown",
