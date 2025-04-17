@@ -38,6 +38,7 @@ export const KeyboardLayout = ({
     const positions = layout.keys.map((k, i) => {
         if (i >= keymap.layers[selectedLayerIndex].bindings.length) {
             return {
+                id: `${keymap.layers[selectedLayerIndex].id}-${i}`,
                 header: 'Unknown',
                 x: k.x / 100.0,
                 y: k.y / 100.0,
@@ -48,6 +49,7 @@ export const KeyboardLayout = ({
         }
 
         return {
+            id: `${keymap.layers[selectedLayerIndex].id}-${i}`,
             header:
                 behaviors[keymap.layers[selectedLayerIndex].bindings[i].behaviorId]?.displayName || 'Unknown',
             x: k.x / 100.0,
@@ -67,7 +69,7 @@ export const KeyboardLayout = ({
             ),
         }
     })
-    console.log(positions,behaviors)
+    // console.log(positions,behaviors)
 
     return (
         <PhysicalLayoutComp

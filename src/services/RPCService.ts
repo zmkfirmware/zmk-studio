@@ -8,6 +8,7 @@ import {
 import { callRemoteProcedureControl } from '../rpc/logging.ts'
 import { valueAfter } from '../helpers/async.ts'
 import { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index'
+import { usePub } from "../helpers/usePubSub.ts"
 
 export async function listenForNotifications(
     notification_stream: ReadableStream<Notification>,
@@ -20,38 +21,38 @@ export async function listenForNotifications(
         reader.releaseLock()
     }
     signal.addEventListener('abort', onAbort, { once: true })
-    // do {
-    // const pub = usePub()
+    do {
+    const pub = usePub()
 
-    // try {
-    //     const { done, value } = await reader.read()
-    //     if (done || !value) return
-    //     console.log('done value', done, value)
-    //     console.log('Notification', value)
-    //     pub('rpc_notification', value)
-    //
-    //     const subsystem = Object.entries(value).find(
-    //         ([_k, v]) => v !== undefined,
-    //     )
-    //     if (!subsystem) return
-    //
-    //     const [subId, subData] = subsystem
-    //     const event = Object.entries(subData).find(([_k, v]) => v !== undefined)
-    //
-    //     if (!event) return
-    //
-    //     const [eventName, eventData] = event
-    //     const topic = ['rpc_notification', subId, eventName].join('.')
-    //     console.log(topic)
-    //     pub(topic, eventData)
-    //
-    // } catch (e) {
-    //     console.log(e)
-    //     signal.removeEventListener('abort', onAbort)
-    //     reader.releaseLock()
-    //     throw e
-    // }
-    // } while (true);
+    try {
+        const { done, value } = await reader.read()
+        if (done || !value) return
+        console.log('done value', done, value)
+        console.log('Notification', value)
+        pub('rpc_notification', value)
+
+        const subsystem = Object.entries(value).find(
+            ([_k, v]) => v !== undefined,
+        )
+        if (!subsystem) return
+
+        const [subId, subData] = subsystem
+        const event = Object.entries(subData).find(([_k, v]) => v !== undefined)
+
+        if (!event) return
+
+        const [eventName, eventData] = event
+        const topic = ['rpc_notification', subId, eventName].join('.')
+        console.log(topic)
+        pub(topic, eventData)
+
+    } catch (e) {
+        console.log(e)
+        signal.removeEventListener('abort', onAbort)
+        reader.releaseLock()
+        throw e
+    }
+    } while (true);
     // signal.removeEventListener('abort', onAbort)
     // reader.releaseLock()
     // notification_stream.cancel()
@@ -72,7 +73,7 @@ export async function connect(
     console.log('Connect function', conn)
     const details = await Promise.race([
         callRemoteProcedureControl(conn, { core: { getDeviceInfo: true } })
-            .then((r) => r?.core?.getDeviceInfo)
+            .then((response) => response?.core?.getDeviceInfo)
             .catch((e) => {
                 console.error('Failed first RPC call', e)
                 return undefined

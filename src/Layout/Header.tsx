@@ -60,6 +60,7 @@ export const Header = ({ connectedDeviceLabel }: AppHeaderProps) => {
 
     async function disconnect() {
         if (!connection) return
+        console.log(connection)
         await connection.request_writable.close().finally(() => {
             connectionAbort.abort('User disconnected')
             setConnectionAbort(new AbortController())
@@ -75,7 +76,7 @@ export const Header = ({ connectedDeviceLabel }: AppHeaderProps) => {
               </div>
               <div className="navbar-center">
                   <div className={`dropdown ${!connectedDeviceLabel ? 'btn-disabled' : ''}`}>
-                      <div tabIndex={0} role="button" className="btn">
+                      <div tabIndex={0} role="button" className="btn btn-soft">
                           {connectedDeviceLabel}
                       </div>
                       <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
@@ -88,10 +89,10 @@ export const Header = ({ connectedDeviceLabel }: AppHeaderProps) => {
               </div>
               <div className="navbar-end">
                   <Settings />
-                  <button className="btn btn-ghost btn-circle tooltip tooltip-bottom mx-1" disabled={!canUndo()} onClick={undo}><Undo2 aria-label="Undo" /></button>
-                  <button className="btn btn-ghost btn-circle tooltip tooltip-bottom mx-1" disabled={!canRedo()} onClick={redo}><Redo2 aria-label="Redo" /></button>
-                  <button className="btn btn-ghost btn-circle tooltip tooltip-bottom mx-1" disabled={!unsaved} onClick={() => performAction('saveChanges', { keymap: { saveChanges: true } })}><Save aria-label="Save" /></button>
-                  <button className="btn btn-ghost btn-circle tooltip tooltip-bottom mx-1" disabled={!unsaved} onClick={() => performAction('discardChanges', { keymap: { discardChanges: true } }, reset)}><Trash2 aria-label="Discard" /></button>
+                  <button className="btn btn-ghost btn-circle tooltip tooltip-bottom mx-1" disabled={!canUndo()} onClick={undo} data-tip="Undo"><Undo2 aria-label="Undo" /></button>
+                  <button className="btn btn-ghost btn-circle tooltip tooltip-bottom mx-1" disabled={!canRedo()} onClick={redo} data-tip="Redo"><Redo2 aria-label="Redo" /></button>
+                  <button className="btn btn-ghost btn-circle tooltip tooltip-bottom mx-1" disabled={!unsaved} data-tip="Save" onClick={() => performAction('saveChanges', { keymap: { saveChanges: true } })}><Save aria-label="Save" /></button>
+                  <button className="btn btn-ghost btn-circle tooltip tooltip-bottom mx-1" disabled={!unsaved} data-tip="Discard" onClick={() => performAction('discardChanges', { keymap: { discardChanges: true } }, reset)}><Trash2 aria-label="Discard" /></button>
               </div>
           </div>
       </header>

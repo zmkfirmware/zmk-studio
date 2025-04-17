@@ -32,13 +32,13 @@ export const PhysicalLayoutPicker = ({
     selectedPhysicalLayoutIndex,
     onPhysicalLayoutClicked,
 }: PhysicalLayoutPickerProps) => {
-    let selectionChanged = useCallback(
+    const selectionChanged = useCallback(
         (e: Key) => {
             onPhysicalLayoutClicked?.(layouts.findIndex((l) => l.name === e))
         },
         [layouts, onPhysicalLayoutClicked],
     )
-
+    console.log(layouts[selectedPhysicalLayoutIndex])
     return (
         <Select
             onSelectionChange={selectionChanged}
@@ -66,16 +66,8 @@ export const PhysicalLayoutPicker = ({
                                 <PhysicalLayout
                                     oneU={15}
                                     hoverZoom={false}
-                                    positions={l.keys.map(
-                                        ({
-                                            x,
-                                            y,
-                                            width,
-                                            height,
-                                            r,
-                                            rx,
-                                            ry,
-                                        }) => ({
+                                    positions={l.keys.map( ({ x, y, width, height, r, rx, ry }, i) => ({
+                                            id: `${layouts[selectedPhysicalLayoutIndex].name}-${i}`,
                                             x: x / 100.0,
                                             y: y / 100.0,
                                             width: width / 100.0,

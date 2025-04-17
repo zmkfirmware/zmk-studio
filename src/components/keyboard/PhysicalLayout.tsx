@@ -3,6 +3,7 @@ import { Key } from './Key.tsx'
 import { scalePosition } from '../../helpers/scalePosition.ts'
 
 export type KeyPosition = PropsWithChildren<{
+    id?: string;
     header?: string
     width: number
     height: number
@@ -83,10 +84,11 @@ export const PhysicalLayout = ({
         }),
         { rightMost: 0, bottomMost: 0 }
     );
-
+    console.log(positions)
     const positionItems = positions.map((p, idx) => (
+
         <div
-            key={idx}
+            key={p.id}
             onClick={() => onPositionClicked?.(idx)}
             className="absolute data-[zoomer=true]:hover:z-[1000] leading-[0]"
             data-zoomer={hoverZoom}

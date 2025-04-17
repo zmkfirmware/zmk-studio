@@ -12,9 +12,11 @@ interface ConnectionState {
 }
 
 // Middleware to check if a connection exists and show the modal if not
-const connectionMiddleware = (config) => (set: any, get: any, api: any) =>
-    config(
-        (args) => {
+const connectionMiddleware = (config) => (
+    set,
+    get,
+    api) =>
+    config( (args) => {
             if (args.connection === null) {
                 set({ showConnectionModal: true });
             } else {
