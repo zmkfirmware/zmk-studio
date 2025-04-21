@@ -185,6 +185,7 @@ export const LayerPicker = ({
     )
     const addLayer = useCallback(() => {
         async function doAdd(): Promise<number> {
+            console.log(connection,keymap);
             if (!connection || !keymap) {
                 throw new Error('Not connected')
             }

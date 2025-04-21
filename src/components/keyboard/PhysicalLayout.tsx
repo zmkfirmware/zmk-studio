@@ -84,7 +84,7 @@ export const PhysicalLayout = ({
         }),
         { rightMost: 0, bottomMost: 0 }
     );
-    console.log(positions)
+    // console.log(positions)
     const positionItems = positions.map((p, idx) => (
 
         <div

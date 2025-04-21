@@ -38,7 +38,7 @@ export const PhysicalLayoutPicker = ({
         },
         [layouts, onPhysicalLayoutClicked],
     )
-    console.log(layouts[selectedPhysicalLayoutIndex])
+    // console.log(layouts[selectedPhysicalLayoutIndex])
     return (
         <Select
             onSelectionChange={selectionChanged}

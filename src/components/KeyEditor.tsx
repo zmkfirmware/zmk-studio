@@ -29,9 +29,9 @@ export function KeyEditor ( {
 			),
 		[ behaviors ]
 	)
-	const [ behaviorId, setBehaviorId ] = useState( selectedBinding.behaviorId )
-	const [ param1, setParam1 ] = useState<number | undefined>( selectedBinding.param1 )
-	const [ param2, setParam2 ] = useState<number | undefined>( selectedBinding.param2 )
+	// const [ behaviorId, setBehaviorId ] = useState( selectedBinding.behaviorId )
+	// const [ param1, setParam1 ] = useState<number | undefined>( selectedBinding.param1 )
+	// const [ param2, setParam2 ] = useState<number | undefined>( selectedBinding.param2 )
 
 	console.log(sortedBehaviors)
 	return (

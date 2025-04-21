@@ -115,6 +115,8 @@ export function Drawer({ children }: DrawerProps) {
                         <div className="col-start-1 row-start-1 row-end-2">
                             <LayerPicker
                                 layers={keymap.layers}
+                                keymap={keymap}
+                                setKeymap={setKeymap}
                                 selectedLayerIndex={selectedLayerIndex}
                                 onLayerClicked={setSelectedLayerIndex}
                                 canAdd={(keymap.availableLayers || 0) > 0}
