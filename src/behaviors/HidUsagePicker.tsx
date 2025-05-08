@@ -16,9 +16,11 @@ import {
 import {
   hid_usage_from_page_and_id,
   hid_usage_get_labels,
+  hid_usage_get_labels,
   hid_usage_page_get_ids,
+  UsageId,
 } from "../hid-usages";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 export interface HidUsagePage {
@@ -32,6 +34,15 @@ export interface HidUsagePickerProps {
   value?: number;
   usagePages: HidUsagePage[];
   onValueChanged: (value?: number) => void;
+}
+
+export interface UsageSectionGridProps {
+  id: number;
+  min?: number;
+  max?: number;
+  onMouseOver?: (mouseOverData: {
+    id: number, i: UsageId
+  }) => void;
 }
 
 type UsageSectionProps = HidUsagePage;
