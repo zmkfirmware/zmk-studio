@@ -7,6 +7,7 @@ interface HidLabels {
   short?: string;
   med?: string;
   long?: string;
+  secondary?: string;
 }
 
 const overrides: Record<string, Record<string, HidLabels>> = HidOverrides;
@@ -19,6 +20,10 @@ export interface UsageId {
 export interface UsagePageInfo {
   Name: string;
   UsageIds: UsageId[];
+}
+
+function remove_prefix(s?: string) {
+  return s?.replace(/^Keyboard /, "");
 }
 
 export const hid_usage_from_page_and_id = (page: number, id: number) =>
@@ -43,10 +48,23 @@ export const hid_usage_get_label = (
 
 export const hid_usage_get_labels = (
   usage_page: number,
-  usage_id: number
-): { short?: string; med?: string; long?: string } =>
-  overrides[usage_page.toString()]?.[usage_id.toString()] || {
+  usage_id: number,
+  options: {
+    removePrefix?: boolean;
+  } = {}
+): HidLabels => {
+  const labels = overrides[usage_page.toString()]?.[usage_id.toString()] || {
     short: UsagePages.find((p) => p.Id === usage_page)?.UsageIds?.find(
       (u) => u.Id === usage_id
     )?.Name,
   };
+  if (options.removePrefix) {
+    return {
+      short: remove_prefix(labels.short),
+      med: remove_prefix(labels.med),
+      long: remove_prefix(labels.long),
+      secondary: labels.secondary,
+    };
+  }
+  return labels;
+}
