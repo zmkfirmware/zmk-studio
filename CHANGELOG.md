@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.2](https://github.com/zmkfirmware/zmk-studio/compare/v0.3.1...v0.3.2) (2025-05-10)
+
+
+### Bug Fixes
+
+* keys not rerendering between layers ([#132](https://github.com/zmkfirmware/zmk-studio/issues/132)) ([84f1e3b](https://github.com/zmkfirmware/zmk-studio/commit/84f1e3bb3bc550ed314dea95ea93c611e4184bdb))
+
 ## [0.3.1](https://github.com/zmkfirmware/zmk-studio/compare/v0.3.0...v0.3.1) (2025-01-20)
 
 
