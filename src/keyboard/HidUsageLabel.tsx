@@ -17,7 +17,7 @@ export const HidUsageLabel = ({ hid_usage }: HidUsageLabelProps) => {
   // TODO: Do something with implicit mods!
   page &= 0xff;
 
-  let labels = hid_usage_get_labels(page, id);
+  const labels = hid_usage_get_labels(page, id);
 
   return (
     <span

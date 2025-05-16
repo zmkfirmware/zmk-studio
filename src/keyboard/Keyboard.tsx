@@ -35,8 +35,8 @@ import { useLocalStorageState } from "../misc/useLocalStorageState";
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
 function useBehaviors(): BehaviorMap {
-  let connection = useContext(ConnectionContext);
-  let lockState = useContext(LockStateContext);
+  const connection = useContext(ConnectionContext);
+  const lockState = useContext(LockStateContext);
 
   const [behaviors, setBehaviors] = useState<BehaviorMap>({});
 
@@ -105,8 +105,8 @@ function useLayouts(): [
   number,
   React.Dispatch<SetStateAction<number>>
 ] {
-  let connection = useContext(ConnectionContext);
-  let lockState = useContext(LockStateContext);
+  const connection = useContext(ConnectionContext);
+  const lockState = useContext(LockStateContext);
 
   const [layouts, setLayouts] = useState<PhysicalLayout[] | undefined>(
     undefined
