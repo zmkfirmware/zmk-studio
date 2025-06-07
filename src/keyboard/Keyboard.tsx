@@ -35,8 +35,8 @@ import { useLocalStorageState } from "../misc/useLocalStorageState";
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
 function useBehaviors(): BehaviorMap {
-  let connection = useContext(ConnectionContext);
-  let lockState = useContext(LockStateContext);
+  const connection = useContext(ConnectionContext);
+  const lockState = useContext(LockStateContext);
 
   const [behaviors, setBehaviors] = useState<BehaviorMap>({});
 
@@ -56,25 +56,25 @@ function useBehaviors(): BehaviorMap {
         return;
       }
 
-      let get_behaviors: Request = {
+      const get_behaviors: Request = {
         behaviors: { listAllBehaviors: true },
         requestId: 0,
       };
 
-      let behavior_list = await call_rpc(connection.conn, get_behaviors);
+      const behavior_list = await call_rpc(connection.conn, get_behaviors);
       if (!ignore) {
-        let behavior_map: BehaviorMap = {};
-        for (let behaviorId of behavior_list.behaviors?.listAllBehaviors
+        const behavior_map: BehaviorMap = {};
+        for (const behaviorId of behavior_list.behaviors?.listAllBehaviors
           ?.behaviors || []) {
           if (ignore) {
             break;
           }
-          let details_req = {
+          const details_req = {
             behaviors: { getBehaviorDetails: { behaviorId } },
             requestId: 0,
           };
-          let behavior_details = await call_rpc(connection.conn, details_req);
-          let dets: GetBehaviorDetailsResponse | undefined =
+          const behavior_details = await call_rpc(connection.conn, details_req);
+          const dets: GetBehaviorDetailsResponse | undefined =
             behavior_details?.behaviors?.getBehaviorDetails;
 
           if (dets) {
@@ -103,10 +103,10 @@ function useLayouts(): [
   PhysicalLayout[] | undefined,
   React.Dispatch<SetStateAction<PhysicalLayout[] | undefined>>,
   number,
-  React.Dispatch<SetStateAction<number>>
+  React.Dispatch<SetStateAction<number>>,
 ] {
-  let connection = useContext(ConnectionContext);
-  let lockState = useContext(LockStateContext);
+  const connection = useContext(ConnectionContext);
+  const lockState = useContext(LockStateContext);
 
   const [layouts, setLayouts] = useState<PhysicalLayout[] | undefined>(
     undefined
@@ -130,7 +130,7 @@ function useLayouts(): [
         return;
       }
 
-      let response = await call_rpc(connection.conn, {
+      const response = await call_rpc(connection.conn, {
         keymap: { getPhysicalLayouts: true },
       });
 
@@ -174,9 +174,13 @@ export default function Keyboard() {
     true
   );
 
-  const [keymapScale, setKeymapScale] = useLocalStorageState<LayoutZoom>("keymapScale", "auto", {
-    deserialize: deserializeLayoutZoom,
-  });
+  const [keymapScale, setKeymapScale] = useLocalStorageState<LayoutZoom>(
+    "keymapScale",
+    "auto",
+    {
+      deserialize: deserializeLayoutZoom,
+    }
+  );
 
   const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0);
   const [selectedKeyPosition, setSelectedKeyPosition] = useState<
@@ -198,11 +202,11 @@ export default function Keyboard() {
         return;
       }
 
-      let resp = await call_rpc(conn.conn, {
+      const resp = await call_rpc(conn.conn, {
         keymap: { setActivePhysicalLayout: selectedPhysicalLayoutIndex },
       });
 
-      let new_keymap = resp?.keymap?.setActivePhysicalLayout?.ok;
+      const new_keymap = resp?.keymap?.setActivePhysicalLayout?.ok;
       if (new_keymap) {
         setKeymap(new_keymap);
       } else {
@@ -216,9 +220,9 @@ export default function Keyboard() {
     performSetRequest();
   }, [selectedPhysicalLayoutIndex]);
 
-  let doSelectPhysicalLayout = useCallback(
+  const doSelectPhysicalLayout = useCallback(
     (i: number) => {
-      let oldLayout = selectedPhysicalLayoutIndex;
+      const oldLayout = selectedPhysicalLayoutIndex;
       undoRedo?.(async () => {
         setSelectedPhysicalLayoutIndex(i);
 
@@ -230,7 +234,7 @@ export default function Keyboard() {
     [undoRedo, selectedPhysicalLayoutIndex]
   );
 
-  let doUpdateBinding = useCallback(
+  const doUpdateBinding = useCallback(
     (binding: BehaviorBinding) => {
       if (!keymap || selectedKeyPosition === undefined) {
         console.error(
@@ -248,7 +252,7 @@ export default function Keyboard() {
           throw new Error("Not connected");
         }
 
-        let resp = await call_rpc(conn.conn, {
+        const resp = await call_rpc(conn.conn, {
           keymap: { setLayerBinding: { layerId, keyPosition, binding } },
         });
 
@@ -270,7 +274,7 @@ export default function Keyboard() {
             return;
           }
 
-          let resp = await call_rpc(conn.conn, {
+          const resp = await call_rpc(conn.conn, {
             keymap: {
               setLayerBinding: { layerId, keyPosition, binding: oldBinding },
             },
@@ -284,7 +288,6 @@ export default function Keyboard() {
                 draft.layers[layer].bindings[keyPosition] = oldBinding;
               })
             );
-          } else {
           }
         };
       });
@@ -292,8 +295,12 @@ export default function Keyboard() {
     [conn, keymap, undoRedo, selectedLayerIndex, selectedKeyPosition]
   );
 
-  let selectedBinding = useMemo(() => {
-    if (keymap == null || selectedKeyPosition == null || !keymap.layers[selectedLayerIndex]) {
+  const selectedBinding = useMemo(() => {
+    if (
+      keymap == null ||
+      selectedKeyPosition == null ||
+      !keymap.layers[selectedLayerIndex]
+    ) {
       return null;
     }
 
@@ -307,7 +314,7 @@ export default function Keyboard() {
           return;
         }
 
-        let resp = await call_rpc(conn.conn, {
+        const resp = await call_rpc(conn.conn, {
           keymap: { moveLayer: { startIndex, destIndex } },
         });
 
@@ -379,7 +386,7 @@ export default function Keyboard() {
     }
 
     undoRedo?.(async () => {
-      let index = await doAdd();
+      const index = await doAdd();
       return () => doRemove(index);
     });
   }, [conn, undoRedo, keymap]);
@@ -442,8 +449,8 @@ export default function Keyboard() {
       throw new Error("No keymap loaded");
     }
 
-    let index = selectedLayerIndex;
-    let layerId = keymap.layers[index].id;
+    const index = selectedLayerIndex;
+    const layerId = keymap.layers[index].id;
     undoRedo?.(async () => {
       await doRemove(index);
       return () => doRestore(layerId, index);
