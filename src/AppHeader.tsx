@@ -7,14 +7,24 @@ import {
 } from "react-aria-components";
 import { useConnectedDeviceData } from "./rpc/useConnectedDeviceData";
 import { useSub } from "./usePubSub";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useModalRef } from "./misc/useModalRef";
 import { LockStateContext } from "./rpc/LockStateContext";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { ConnectionContext } from "./rpc/ConnectionContext";
-import { ChevronDown, Undo2, Redo2, Save, Trash2 } from "lucide-react";
+import {
+  ChevronDown,
+  Undo2,
+  Redo2,
+  Save,
+  Trash2,
+  Download,
+} from "lucide-react";
 import { Tooltip } from "./misc/Tooltip";
 import { GenericModal } from "./GenericModal";
+import { useKeymapContext } from "./keyboard/KeymapContext";
+import { exportKeymap } from "./keyboard/keymapExporter";
+import { downloadFile } from "./misc/downloadFile";
 
 export interface AppHeaderProps {
   connectedDeviceLabel?: string;
@@ -43,6 +53,16 @@ export const AppHeader = ({
 
   const lockState = useContext(LockStateContext);
   const connectionState = useContext(ConnectionContext);
+  const { keymap, behaviors, deviceName } = useKeymapContext();
+
+  const handleExport = useCallback(() => {
+    if (keymap && Object.keys(behaviors).length > 0) {
+      const keymapContent = exportKeymap(keymap, behaviors);
+
+      const filename = `${deviceName || "zmk_keyboard"}_${new Date().toISOString().split("T")[0]}.keymap`;
+      downloadFile(keymapContent, filename);
+    }
+  }, [keymap, behaviors, deviceName]);
 
   useEffect(() => {
     if (
@@ -57,11 +77,11 @@ export const AppHeader = ({
   const showSettingsRef = useModalRef(showSettingsReset);
   const [unsaved, setUnsaved] = useConnectedDeviceData<boolean>(
     { keymap: { checkUnsavedChanges: true } },
-    (r) => r.keymap?.checkUnsavedChanges
+    (r) => r.keymap?.checkUnsavedChanges,
   );
 
   useSub("rpc_notification.keymap.unsavedChangesStatusChanged", (unsaved) =>
-    setUnsaved(unsaved)
+    setUnsaved(unsaved),
   );
 
   return (
@@ -155,6 +175,17 @@ export const AppHeader = ({
             <Save className="inline-block w-4 mx-1" aria-label="Save" />
           </Button>
         </Tooltip>
+
+        <Tooltip label="Export Keymap">
+          <Button
+            className="flex items-center justify-center p-1.5 rounded enabled:hover:bg-base-300 disabled:opacity-50"
+            isDisabled={!keymap}
+            onPress={handleExport}
+          >
+            <Download className="inline-block w-4 mx-1" aria-label="Export" />
+          </Button>
+        </Tooltip>
+
         <Tooltip label="Discard">
           <Button
             className="flex items-center justify-center p-1.5 rounded enabled:hover:bg-base-300 disabled:opacity-50"

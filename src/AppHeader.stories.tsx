@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { AppHeader } from "./AppHeader";
+import { AppHeader } from "./AppHeader"
+import { KeymapProvider } from "./keyboard/KeymapContext";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -15,6 +16,13 @@ const meta = {
   argTypes: {
     // backgroundColor: { control: 'color' },
   },
+  decorators: [
+    (Story) => (
+      <KeymapProvider keymap={undefined} behaviors={{}} deviceName={undefined}>
+        <Story />
+      </KeymapProvider>
+    ),
+  ],
   // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
   args: {},
 } satisfies Meta<typeof AppHeader>;

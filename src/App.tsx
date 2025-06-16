@@ -1,9 +1,12 @@
 import { AppHeader } from "./AppHeader";
 
 import { create_rpc_connection } from "@zmkfirmware/zmk-studio-ts-client";
+import { Keymap } from "@zmkfirmware/zmk-studio-ts-client/keymap";
 import { call_rpc } from "./rpc/logging";
 
 import type { Notification } from "@zmkfirmware/zmk-studio-ts-client/studio";
+import type { GetBehaviorDetailsResponse } from "@zmkfirmware/zmk-studio-ts-client/behaviors";
+
 import { ConnectionState, ConnectionContext } from "./rpc/ConnectionContext";
 import { Dispatch, useCallback, useEffect, useState } from "react";
 import { ConnectModal, TransportFactory } from "./ConnectModal";
@@ -29,6 +32,7 @@ import { valueAfter } from "./misc/async";
 import { AppFooter } from "./AppFooter";
 import { AboutModal } from "./AboutModal";
 import { LicenseNoticeModal } from "./misc/LicenseNoticeModal";
+import { KeymapProvider } from "./keyboard/KeymapContext";
 
 declare global {
   interface Window {
@@ -68,7 +72,7 @@ const TRANSPORTS: TransportFactory[] = [
 
 async function listen_for_notifications(
   notification_stream: ReadableStream<Notification>,
-  signal: AbortSignal
+  signal: AbortSignal,
 ): Promise<void> {
   let reader = notification_stream.getReader();
   const onAbort = () => {
@@ -93,7 +97,7 @@ async function listen_for_notifications(
       pub("rpc_notification", value);
 
       const subsystem = Object.entries(value).find(
-        ([_k, v]) => v !== undefined
+        ([_k, v]) => v !== undefined,
       );
       if (!subsystem) {
         continue;
@@ -126,7 +130,7 @@ async function connect(
   transport: RpcTransport,
   setConn: Dispatch<ConnectionState>,
   setConnectedDeviceName: Dispatch<string | undefined>,
-  signal: AbortSignal
+  signal: AbortSignal,
 ) {
   let conn = await create_rpc_connection(transport, { signal });
 
@@ -160,6 +164,8 @@ async function connect(
   setConn({ conn });
 }
 
+type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
+
 function App() {
   const [conn, setConn] = useState<ConnectionState>({ conn: null });
   const [connectedDeviceName, setConnectedDeviceName] = useState<
@@ -169,9 +175,11 @@ function App() {
   const [showAbout, setShowAbout] = useState(false);
   const [showLicenseNotice, setShowLicenseNotice] = useState(false);
   const [connectionAbort, setConnectionAbort] = useState(new AbortController());
+  const [currentKeymap, setCurrentKeymap] = useState<Keymap | undefined>();
+  const [currentBehaviors, setCurrentBehaviors] = useState<BehaviorMap>({});
 
   const [lockState, setLockState] = useState<LockState>(
-    LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED
+    LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED,
   );
 
   useSub("rpc_notification.core.lockStateChanged", (ls) => {
@@ -195,7 +203,7 @@ function App() {
 
       setLockState(
         locked_resp.core?.getLockState ||
-          LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED
+          LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED,
       );
     }
 
@@ -277,7 +285,7 @@ function App() {
       setConnectionAbort(ac);
       connect(t, setConn, setConnectedDeviceName, ac.signal);
     },
-    [setConn, setConnectedDeviceName, setConnectedDeviceName]
+    [setConn, setConnectedDeviceName, setConnectedDeviceName],
   );
 
   return (
@@ -307,7 +315,16 @@ function App() {
               onDisconnect={disconnect}
               onResetSettings={resetSettings}
             />
-            <Keyboard />
+            <KeymapProvider
+              keymap={currentKeymap}
+              behaviors={currentBehaviors}
+              deviceName={connectedDeviceName}
+            >
+              <Keyboard
+                onKeymapChange={setCurrentKeymap}
+                onBehaviorsChange={setCurrentBehaviors}
+              />
+            </KeymapProvider>
             <AppFooter
               onShowAbout={() => setShowAbout(true)}
               onShowLicenseNotice={() => setShowLicenseNotice(true)}

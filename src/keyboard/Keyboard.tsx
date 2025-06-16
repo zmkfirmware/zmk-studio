@@ -34,6 +34,11 @@ import { useLocalStorageState } from "../misc/useLocalStorageState";
 
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
+export interface KeyboardProps {
+  onKeymapChange?: (keymap: Keymap | undefined) => void;
+  onBehaviorsChange?: (behaviors: BehaviorMap) => void;
+}
+
 function useBehaviors(): BehaviorMap {
   let connection = useContext(ConnectionContext);
   let lockState = useContext(LockStateContext);
@@ -103,13 +108,13 @@ function useLayouts(): [
   PhysicalLayout[] | undefined,
   React.Dispatch<SetStateAction<PhysicalLayout[] | undefined>>,
   number,
-  React.Dispatch<SetStateAction<number>>
+  React.Dispatch<SetStateAction<number>>,
 ] {
   let connection = useContext(ConnectionContext);
   let lockState = useContext(LockStateContext);
 
   const [layouts, setLayouts] = useState<PhysicalLayout[] | undefined>(
-    undefined
+    undefined,
   );
   const [selectedPhysicalLayoutIndex, setSelectedPhysicalLayoutIndex] =
     useState<number>(0);
@@ -137,7 +142,7 @@ function useLayouts(): [
       if (!ignore) {
         setLayouts(response?.keymap?.getPhysicalLayouts?.layouts);
         setSelectedPhysicalLayoutIndex(
-          response?.keymap?.getPhysicalLayouts?.activeLayoutIndex || 0
+          response?.keymap?.getPhysicalLayouts?.activeLayoutIndex || 0,
         );
       }
     }
@@ -158,7 +163,10 @@ function useLayouts(): [
   ];
 }
 
-export default function Keyboard() {
+export default function Keyboard({
+  onKeymapChange,
+  onBehaviorsChange,
+}: KeyboardProps) {
   const [
     layouts,
     _setLayouts,
@@ -171,12 +179,16 @@ export default function Keyboard() {
       console.log("Got the keymap!");
       return keymap?.keymap?.getKeymap;
     },
-    true
+    true,
   );
 
-  const [keymapScale, setKeymapScale] = useLocalStorageState<LayoutZoom>("keymapScale", "auto", {
-    deserialize: deserializeLayoutZoom,
-  });
+  const [keymapScale, setKeymapScale] = useLocalStorageState<LayoutZoom>(
+    "keymapScale",
+    "auto",
+    {
+      deserialize: deserializeLayoutZoom,
+    },
+  );
 
   const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0);
   const [selectedKeyPosition, setSelectedKeyPosition] = useState<
@@ -191,6 +203,14 @@ export default function Keyboard() {
     setSelectedLayerIndex(0);
     setSelectedKeyPosition(undefined);
   }, [conn]);
+
+  useEffect(() => {
+    onKeymapChange?.(keymap);
+  }, [keymap, onKeymapChange]);
+
+  useEffect(() => {
+    onBehaviorsChange?.(behaviors);
+  }, [behaviors, onBehaviorsChange]);
 
   useEffect(() => {
     async function performSetRequest() {
@@ -208,7 +228,7 @@ export default function Keyboard() {
       } else {
         console.error(
           "Failed to set the active physical layout err:",
-          resp?.keymap?.setActivePhysicalLayout?.err
+          resp?.keymap?.setActivePhysicalLayout?.err,
         );
       }
     }
@@ -227,14 +247,14 @@ export default function Keyboard() {
         };
       });
     },
-    [undoRedo, selectedPhysicalLayoutIndex]
+    [undoRedo, selectedPhysicalLayoutIndex],
   );
 
   let doUpdateBinding = useCallback(
     (binding: BehaviorBinding) => {
       if (!keymap || selectedKeyPosition === undefined) {
         console.error(
-          "Can't update binding without a selected key position and loaded keymap"
+          "Can't update binding without a selected key position and loaded keymap",
         );
         return;
       }
@@ -259,7 +279,7 @@ export default function Keyboard() {
           setKeymap(
             produce((draft: any) => {
               draft.layers[layer].bindings[keyPosition] = binding;
-            })
+            }),
           );
         } else {
           console.error("Failed to set binding", resp.keymap?.setLayerBinding);
@@ -282,18 +302,22 @@ export default function Keyboard() {
             setKeymap(
               produce((draft: any) => {
                 draft.layers[layer].bindings[keyPosition] = oldBinding;
-              })
+              }),
             );
           } else {
           }
         };
       });
     },
-    [conn, keymap, undoRedo, selectedLayerIndex, selectedKeyPosition]
+    [conn, keymap, undoRedo, selectedLayerIndex, selectedKeyPosition],
   );
 
   let selectedBinding = useMemo(() => {
-    if (keymap == null || selectedKeyPosition == null || !keymap.layers[selectedLayerIndex]) {
+    if (
+      keymap == null ||
+      selectedKeyPosition == null ||
+      !keymap.layers[selectedLayerIndex]
+    ) {
       return null;
     }
 
@@ -324,7 +348,7 @@ export default function Keyboard() {
         return () => doMove(end, start);
       });
     },
-    [undoRedo]
+    [undoRedo],
   );
 
   const addLayer = useCallback(() => {
@@ -341,7 +365,7 @@ export default function Keyboard() {
           produce((draft: any) => {
             draft.layers.push(resp.keymap!.addLayer!.ok!.layer);
             draft.availableLayers--;
-          })
+          }),
         );
 
         setSelectedLayerIndex(newSelection);
@@ -368,12 +392,12 @@ export default function Keyboard() {
           produce((draft: any) => {
             draft.layers.splice(layerIndex, 1);
             draft.availableLayers++;
-          })
+          }),
         );
       } else {
         console.error("Remove error", resp.keymap?.removeLayer?.err);
         throw new Error(
-          "Failed to remove layer:" + resp.keymap?.removeLayer?.err
+          "Failed to remove layer:" + resp.keymap?.removeLayer?.err,
         );
       }
     }
@@ -402,12 +426,12 @@ export default function Keyboard() {
           produce((draft: any) => {
             draft.layers.splice(layerIndex, 1);
             draft.availableLayers++;
-          })
+          }),
         );
       } else {
         console.error("Remove error", resp.keymap?.removeLayer?.err);
         throw new Error(
-          "Failed to remove layer:" + resp.keymap?.removeLayer?.err
+          "Failed to remove layer:" + resp.keymap?.removeLayer?.err,
         );
       }
     }
@@ -427,13 +451,13 @@ export default function Keyboard() {
           produce((draft: any) => {
             draft.layers.splice(atIndex, 0, resp!.keymap!.restoreLayer!.ok);
             draft.availableLayers--;
-          })
+          }),
         );
         setSelectedLayerIndex(atIndex);
       } else {
         console.error("Remove error", resp.keymap?.restoreLayer?.err);
         throw new Error(
-          "Failed to restore layer:" + resp.keymap?.restoreLayer?.err
+          "Failed to restore layer:" + resp.keymap?.restoreLayer?.err,
         );
       }
     }
@@ -468,14 +492,14 @@ export default function Keyboard() {
           setKeymap(
             produce((draft: any) => {
               const layer_index = draft.layers.findIndex(
-                (l: Layer) => l.id == layerId
+                (l: Layer) => l.id == layerId,
               );
               draft.layers[layer_index].name = name;
-            })
+            }),
           );
         } else {
           throw new Error(
-            "Failed to change layer name:" + resp.keymap?.setLayerProps
+            "Failed to change layer name:" + resp.keymap?.setLayerProps,
           );
         }
       }
@@ -487,7 +511,7 @@ export default function Keyboard() {
         };
       });
     },
-    [conn, undoRedo, keymap]
+    [conn, undoRedo, keymap],
   );
 
   useEffect(() => {
