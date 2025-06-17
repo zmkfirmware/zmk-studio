@@ -7,6 +7,7 @@ interface HidLabels {
   short?: string;
   med?: string;
   long?: string;
+  icon?: string;
 }
 
 const overrides: Record<string, Record<string, HidLabels>> = HidOverrides;
@@ -44,7 +45,7 @@ export const hid_usage_get_label = (
 export const hid_usage_get_labels = (
   usage_page: number,
   usage_id: number
-): { short?: string; med?: string; long?: string } =>
+): { short?: string; med?: string; long?: string; icon?: string } =>
   overrides[usage_page.toString()]?.[usage_id.toString()] || {
     short: UsagePages.find((p) => p.Id === usage_page)?.UsageIds?.find(
       (u) => u.Id === usage_id
