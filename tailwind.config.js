@@ -5,6 +5,9 @@ import contQueries from "@tailwindcss/container-queries";
 export default {
   content: ["./index.html", "./download.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
+    fontSize: {
+      xs: "0.4rem",
+    },
     extend: {
       fontFamily: {
         sans: ["Inter", "system-ui"],
