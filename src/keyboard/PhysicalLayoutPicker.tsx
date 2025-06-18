@@ -14,7 +14,7 @@ import { useCallback } from "react";
 
 export interface PhysicalLayoutItem {
   name: string;
-  keys: Array<KeyPosition>;
+  keys: Array<Omit<KeyPosition, "id">>;
 }
 
 export type PhysicalLayoutClickCallback = (index: number) => void;
@@ -32,11 +32,11 @@ export const PhysicalLayoutPicker = ({
   selectedPhysicalLayoutIndex,
   onPhysicalLayoutClicked,
 }: PhysicalLayoutPickerProps) => {
-  let selectionChanged = useCallback(
+  const selectionChanged = useCallback(
     (e: Key) => {
       onPhysicalLayoutClicked?.(layouts.findIndex((l) => l.name === e));
     },
-    [layouts, onPhysicalLayoutClicked]
+    [layouts, onPhysicalLayoutClicked],
   );
 
   return (
@@ -67,7 +67,8 @@ export const PhysicalLayoutPicker = ({
                   oneU={15}
                   hoverZoom={false}
                   positions={l.keys.map(
-                    ({ x, y, width, height, r, rx, ry }) => ({
+                    ({ x, y, width, height, r, rx, ry }, i) => ({
+                      id: `${layouts[selectedPhysicalLayoutIndex].name}-${i}`,
                       x: x / 100.0,
                       y: y / 100.0,
                       width: width / 100.0,
@@ -75,7 +76,7 @@ export const PhysicalLayoutPicker = ({
                       r: (r || 0) / 100.0,
                       rx: (rx || 0) / 100.0,
                       ry: (ry || 0) / 100.0,
-                    })
+                    }),
                   )}
                 />
               </div>

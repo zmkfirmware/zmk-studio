@@ -174,17 +174,19 @@ const MINIVAN_POSITIONS = [
     children: [<HidUsageLabel hid_usage={hid_usage_from_page_and_id(7, 79)} />],
   },
 ];
+const POSITIONS = MINIVAN_POSITIONS.map((k, i) => ({ ...k, id: `base-${i}` }));
 
 export const Minivan: Story = {
   args: {
-    positions: MINIVAN_POSITIONS,
+    positions: POSITIONS,
     hoverZoom: true,
   },
 };
 
 export const MiniMinivan: Story = {
   args: {
-    positions: MINIVAN_POSITIONS.map(({ x, y, width, height }) => ({
+    positions: POSITIONS.map(({ id, x, y, width, height }) => ({
+      id,
       x,
       y,
       width,

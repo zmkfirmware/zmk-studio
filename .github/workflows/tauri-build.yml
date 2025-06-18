@@ -14,12 +14,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: "macos-latest" # for Arm based macs (M1 and above).
-            name: macos-arm
-            args: "--target aarch64-apple-darwin"
-          - platform: "macos-latest" # for Intel based macs.
-            name: macos-intel
-            args: "--target x86_64-apple-darwin"
+          - platform: "macos-latest"
+            name: macos
+            args: "--target universal-apple-darwin"
           - platform: "ubuntu-24.04"
             name: linux
             args: ""
@@ -108,3 +105,10 @@ jobs:
             src-tauri/target/*/release/bundle/**/*.app
             src-tauri/target/release/bundle/**/*.msi
             src-tauri/target/release/bundle/**/*.exe
+  deploy-netlify:
+    if: github.event_name == 'release'
+    needs: publish-tauri
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Netlify
+        run: curl -X POST -d '{}' ${{ secrets.NETLIFY_DEPLOY_HOOK }}

@@ -6,8 +6,9 @@
     "devUrl": "http://localhost:5173",
     "frontendDist": "../dist/"
   },
-  "productName": "zmk-studio",
-  "version": "0.2.4",
+  "productName": "ZMK Studio",
+  "mainBinaryName": "zmk-studio",
+  "version": "0.3.1",
   "identifier": "dev.zmk.studio",
   "bundle": {
     "active": true,
