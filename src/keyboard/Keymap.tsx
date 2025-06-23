@@ -49,9 +49,13 @@ export const Keymap = ({
     }
 
     const binding = keymap.layers[selectedLayerIndex].bindings[i];
-    const header = behaviors[binding.behaviorId]?.displayName || "Unknown";
+    const behavior = behaviors[binding.behaviorId];
+    const header = behavior?.displayName || "Unknown";
 
-    const children = getBindingChildren(header, binding);
+    // Get layer IDs for metadata-driven rendering
+    const layerIds = keymap.layers.map(layer => layer.id);
+
+    const children = getBindingChildren(behavior, binding, layerIds);
 
     return {
       id: `${keymap.layers[selectedLayerIndex].id}-${i}`,
