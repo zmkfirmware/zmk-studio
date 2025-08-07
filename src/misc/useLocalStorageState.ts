@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 
 function basicSerialize<T>(value: T): string {
-  if (typeof value === "object") {
-    return JSON.stringify(value);
+  return typeof value !== "string" ? JSON.stringify(value) : String(value);
+}
+
+function toJson<T>(value: string): T {
+  try {
+    return JSON.parse(value) as T;
+  } catch {
+    return value as T;
   }
-  return String(value);
 }
 
 export function useLocalStorageState<T>(
@@ -14,25 +19,22 @@ export function useLocalStorageState<T>(
     serialize?: (value: T) => string;
     deserialize?: (value: string) => T;
   },
-) {
-  const reactState = useState<T>(() => {
-    const savedValue = localStorage.getItem(key);
-    if (savedValue !== null) {
-      if (options?.deserialize) {
-        return options.deserialize(savedValue);
-      }
-      return savedValue as T; // Assuming T is a string
-    }
-    return defaultValue;
+): [T, React.Dispatch<React.SetStateAction<T>>] {
+  const [state, setState] = useState<T>(() => {
+    const saved = localStorage.getItem(key);
+
+    if (saved === null) return defaultValue;
+    return (
+      options?.deserialize?.(saved) ?? (toJson(saved) as T) ?? defaultValue
+    );
   });
 
-  const [state] = reactState;
-
   useEffect(() => {
-    const serializedState =
-      options?.serialize?.(state) || basicSerialize(state);
-    localStorage.setItem(key, serializedState);
-  }, [state, key, options]);
+    localStorage.setItem(
+      key,
+      options?.serialize?.(state) ?? basicSerialize(state),
+    );
+  }, [key, state, options]);
 
-  return reactState;
+  return [state, setState];
 }

@@ -16,7 +16,7 @@ export interface KeymapProps {
   layout: PhysicalLayout;
   keymap: KeymapMsg;
   behaviors: BehaviorMap;
-  scale: LayoutZoom;
+  scale?: LayoutZoom;
   selectedLayerIndex: number;
   selectedKeyPosition: number | undefined;
   onKeyPositionClicked: (keyPosition: number) => void;
