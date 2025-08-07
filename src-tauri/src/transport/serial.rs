@@ -77,7 +77,7 @@ pub async fn serial_list_devices(app_handle: AppHandle) -> Result<Vec<super::com
             if let SerialPortType::UsbPort(u) = pi.port_type {
                 Some(super::commands::AvailableDevice {
                     id: pi.port_name,
-                    label: u.product.unwrap_or("TODO".to_string()),
+                    label: u.product.unwrap_or("Unnamed keyboard".to_string()),
                 })
             } else {
                 None
