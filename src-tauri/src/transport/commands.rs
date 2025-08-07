@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 use tauri::ipc::InvokeBody;
 use tauri::{
     command,
-    ipc::{Request},
+    ipc::Request,
     State,
 };
 
