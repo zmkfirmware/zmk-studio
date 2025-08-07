@@ -1,4 +1,6 @@
 import {
+  Dispatch,
+  SetStateAction,
   CSSProperties,
   PropsWithChildren,
   useLayoutEffect,
@@ -34,7 +36,7 @@ interface PhysicalLayoutProps {
   oneU?: number;
   hoverZoom?: boolean;
   zoom?: LayoutZoom;
-  onPositionClicked?: (position: number) => void;
+  onPositionClicked?: Dispatch<SetStateAction<number | undefined>>;
 }
 
 interface PhysicalLayoutPositionLocation {
@@ -116,17 +118,21 @@ export const PhysicalLayout = ({
   }, [props.zoom]);
 
   // TODO: Add a bit of padding for rotation when supported
-  let rightMost = positions
+  const rightMost = positions
     .map((k) => k.x + k.width)
     .reduce((a, b) => Math.max(a, b), 0);
-  let bottomMost = positions
+  const bottomMost = positions
     .map((k) => k.y + k.height)
     .reduce((a, b) => Math.max(a, b), 0);
 
   const positionItems = positions.map((p, idx) => (
     <div
       key={p.id}
-      onClick={() => onPositionClicked?.(idx)}
+      onClick={() =>
+        onPositionClicked?.((prev: number | undefined) =>
+          prev !== idx ? idx : undefined,
+        )
+      }
       className="absolute data-[zoomer=true]:hover:z-[1000] leading-[0]"
       data-zoomer={hoverZoom}
       style={scalePosition(p, oneU)}
