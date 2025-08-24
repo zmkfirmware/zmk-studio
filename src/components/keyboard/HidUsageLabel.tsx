@@ -13,7 +13,6 @@ function remove_prefix(s?: string) {
 }
 
 export const HidUsageLabel = ({ hid_usage }: HidUsageLabelProps) => {
-    // eslint-disable-next-line prefer-const
     let [page, id] = hidUsagePageAndIdFromUsage(hid_usage)
 
     // TODO: Do something with implicit mods!

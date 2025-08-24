@@ -91,38 +91,30 @@ export const BehaviorBindingPicker = ( {
 		setParam2( binding.param2 )
 		console.log( binding )
 	}, [ binding ] )
+
 	return (
-		<div className="flex flex-col gap-2">
-			<div>
-				<div className="tabs tabs-lift tabs-xs">
-					{ sortedBehaviors.map( ( b ) => (
-						<input type="radio" className="tab" aria-label={ b.displayName } key={ b.id } value={ b.id } onClick={ ( e ) => {
-							console.log(e.target)
-							setBehaviorId( parseInt( e.target.value ) )
-							setParam1( 0 )
-							setParam2( 0 )
-						} } />
-					) ) }
-				</div>
-				{/*<label>Behavior: </label>*/}
-				{/*<select*/}
-				{/*	value={ behaviorId }*/}
-				{/*	className="h-8 rounded"*/}
-				{/*	onChange={ ( e ) => {*/}
-				{/*		setBehaviorId( parseInt( e.target.value ) )*/}
-				{/*		setParam1( 0 )*/}
-				{/*		setParam2( 0 )*/}
-				{/*	} }*/}
-				{/*>*/}
-				{/*	{ sortedBehaviors.map( ( b ) => (*/}
-				{/*		<option key={ b.id } value={ b.id }>*/}
-				{/*			{ b.displayName }*/}
-				{/*		</option>*/}
-				{/*	) ) }*/}
-				{/*</select>*/}
-			</div>
+		<div className="flex flex-row gap-2 w-full">
+			<ul className="menu bg-base-200 rounded-box w-50 flex-nowrap flex-col h-96 overflow-auto">
+				{ sortedBehaviors.map( ( b ) => (
+					<li key={ b.id }>
+						<a
+							aria-label={ b.displayName }
+							data-behavior-id={ b.id }
+							onClick={ ( e ) => {
+								const target = e.target as HTMLAnchorElement;
+								const behaviorId = parseInt( target.getAttribute( 'data-behavior-id' ) || '0' );
+								setBehaviorId( behaviorId );
+								setParam1( 0 );
+								setParam2( 0 );
+							} }
+						>
+							{ b.displayName }
+						</a>
+					</li>
+				) ) }
+			</ul>
 			{ metadata && (
-				<>
+				<div className="flex-1">
 					<BehaviorParametersPicker
 						metadata={ metadata }
 						param1={ param1 }
@@ -131,7 +123,7 @@ export const BehaviorBindingPicker = ( {
 						onParam1Changed={ setParam1 }
 						onParam2Changed={ setParam2 }
 					/>
-				</>
+				</div>
 			) }
 		</div>
 	)

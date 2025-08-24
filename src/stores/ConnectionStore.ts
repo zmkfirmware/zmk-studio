@@ -5,7 +5,8 @@ import { RpcConnection } from '@zmkfirmware/zmk-studio-ts-client';
 // Define the store interface
 interface ConnectionState {
     connection: RpcConnection | null;
-    setConnection: (connection: RpcConnection | null) => void;
+    transportType: 'serial' | 'ble' | null;
+    setConnection: (connection: RpcConnection | null, transportType?: 'serial' | 'ble') => void;
     resetConnection: () => void;
     showConnectionModal: boolean;
     setShowConnectionModal: (visible: boolean) => void;
@@ -33,8 +34,9 @@ const useConnectionStore = create<ConnectionState>()(
     devtools(
         connectionMiddleware((set) => ({
             connection: null,
-            setConnection: (connection) => set({ connection: connection }),
-            resetConnection: () => set({ connection: null }),
+            transportType: null,
+            setConnection: (connection, transportType = null) => set({ connection, transportType }),
+            resetConnection: () => set({ connection: null, transportType: null }),
             showConnectionModal: false,
             setShowConnectionModal: (visible) =>
                 set({ showConnectionModal: visible }),

@@ -1,5 +1,13 @@
-import { CSSProperties, useState } from 'react';
+import { CSSProperties, useCallback, useState } from "react"
+import { Key } from "react-aria-components"
 
+/**
+ * Keycode Component
+ * 
+ * Represents a single key in the keyboard layout.
+ * Supports selection state for multiple key selection functionality.
+ * Uses baseKeyValue as a hidden attribute for selection.
+ */
 interface KeycodeProps {
     id?: number;
     label: string;
@@ -8,7 +16,9 @@ interface KeycodeProps {
     x: number;
     y: number;
     keyCode: string;
+    baseKeyValue?: number;
     onSelect: (keyCode: string) => void;
+    isSelected?: boolean;
 }
 
 export default function Keycode({
@@ -18,9 +28,10 @@ export default function Keycode({
     x,
     y,
     keyCode,
-    onSelect
+    baseKeyValue,
+    onSelect,
+    isSelected = false
 }: KeycodeProps) {
-    const [isSelected, setIsSelected] = useState(false);
     const keySize = 50;
 
     const style: CSSProperties = {
@@ -33,8 +44,8 @@ export default function Keycode({
         border: isSelected ? '2px solid blue' : '1px solid gray'
     };
 
-    const handleClick = () => {
-        setIsSelected(true);
+    const handleClick = (event) => {
+        console.log(event)
         onSelect(keyCode);
     };
 
@@ -44,6 +55,7 @@ export default function Keycode({
             style={style}
             dangerouslySetInnerHTML={{ __html: label }}
             value={keyCode}
+            data-base-key-value={baseKeyValue}
             onClick={handleClick}
         ></button>
     );

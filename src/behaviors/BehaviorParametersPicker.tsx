@@ -26,13 +26,13 @@ export const BehaviorParametersPicker = ({
     //     layers);
     if (param1 === undefined) {
         return (
-            <div>
+            <>
                 <ParameterValuePicker
                     values={metadata.flatMap((m) => m.param1)}
                     onValueChanged={onParam1Changed}
                     layers={layers}
                 />
-            </div>
+            </>
         )
     } else {
         const set = metadata.find((s) =>

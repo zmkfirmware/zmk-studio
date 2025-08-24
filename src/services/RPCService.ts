@@ -68,6 +68,7 @@ export async function connect(
     setConnection: Dispatch<RpcConnection | null>,
     setConnectedDeviceName: Dispatch<string | undefined>,
     signal: AbortSignal,
+    transportType: 'serial' | 'ble',
 ) {
     const conn = await createRpcConnection(transport, { signal })
     console.log('Connect function', conn)
@@ -100,5 +101,5 @@ export async function connect(
         })
 
     setConnectedDeviceName(details.name)
-    setConnection(conn)
+    setConnection(conn, transportType)
 }

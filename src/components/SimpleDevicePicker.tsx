@@ -3,10 +3,11 @@ import type { AvailableDevice } from '../tauri'
 import { UserCancelledError } from '@zmkfirmware/zmk-studio-ts-client/transport/errors'
 import { TransportFactory } from './Modals/ConnectModal.tsx'
 import { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index'
+import { Button } from "@/components/ui/button.tsx"
 
 interface SimpleDevicePickerProps {
     transports: TransportFactory[]
-    onTransportCreated: (t: RpcTransport) => void
+    onTransportCreated: (t: RpcTransport, transportType: 'serial' | 'ble') => void
 }
 
 export function SimpleDevicePicker({
@@ -24,7 +25,7 @@ export function SimpleDevicePicker({
 
                 if (!ignore) {
                     if (transport) {
-                        onTransportCreated(transport)
+                        onTransportCreated(transport, selectedTransport!.transportType)
                     }
                     setSelectedTransport(undefined)
                 }
@@ -66,13 +67,13 @@ export function SimpleDevicePicker({
 
         const connections = transports.map((t) => (
             <li key={t.label} className="list-none">
-                <button
+                <Button
                     className="bg-base-300 hover:bg-primary hover:text-primary-content rounded px-2 py-1"
                     type="button"
                     onClick={async () => setSelectedTransport(t)}
                 >
                     {t.label}
-                </button>
+                </Button>
             </li>
         ))
         return (
@@ -90,6 +91,7 @@ export function SimpleDevicePicker({
                                         await selectedTransport!.pick_and_connect!.connect(
                                             d,
                                         ),
+                                        selectedTransport!.transportType,
                                     )
                                     setSelectedTransport(undefined)
                                 }}

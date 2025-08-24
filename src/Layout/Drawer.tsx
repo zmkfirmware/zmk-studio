@@ -9,7 +9,6 @@ import {
     // , Layer, SetLayerPropsResponse
 } from '@zmkfirmware/zmk-studio-ts-client/keymap'
 import { callRemoteProcedureControl } from '../rpc/logging.ts'
-// import { produce } from "immer"
 import useConnectionStore from '../stores/ConnectionStore.ts'
 
 interface DrawerProps {
@@ -46,7 +45,7 @@ export function Drawer({ children }: DrawerProps) {
                 }
             })
         },
-        [doIt, selectedPhysicalLayoutIndex],
+        [doIt, selectedPhysicalLayoutIndex, setSelectedPhysicalLayoutIndex],
     )
 
     useEffect(() => {
@@ -77,12 +76,13 @@ export function Drawer({ children }: DrawerProps) {
         }
 
         performSetRequest()
-    }, [selectedPhysicalLayoutIndex])
+    }, [connection, layouts, selectedPhysicalLayoutIndex, setKeymap])
 
     useEffect(() => {
         if (!keymap?.layers) return
 
         const layers = keymap.layers.length - 1
+        console.log(selectedLayerIndex, layers, selectedLayerIndex > layers, keymap.layers.length)
 
         if (selectedLayerIndex > layers) {
             setSelectedLayerIndex(layers)
@@ -121,6 +121,7 @@ export function Drawer({ children }: DrawerProps) {
                                 onLayerClicked={setSelectedLayerIndex}
                                 canAdd={(keymap.availableLayers || 0) > 0}
                                 canRemove={(keymap.layers?.length || 0) > 1}
+                                setSelectedLayerIndex={setSelectedLayerIndex}
                             />
                         </div>
                     )}

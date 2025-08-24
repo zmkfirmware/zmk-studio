@@ -6,11 +6,13 @@ import { ExternalLink } from '../../misc/ExternalLink.tsx'
 import { DeviceList } from '../DeviceList.tsx'
 import { SimpleDevicePicker } from '../SimpleDevicePicker.tsx'
 import { TRANSPORTS } from '../../helpers/transports.ts'
-import { Modal, ModalProps } from "../UI/Modal.tsx"
+import { Modal, ModalProps } from "@/components/ui/Modal.tsx"
 import useConnectionStore from "../../stores/ConnectionStore.ts"
+import { ModernModal } from "@/components/ui/ModernModal.tsx"
 
 export type TransportFactory = {
     label: string
+    transportType: 'serial' | 'ble'
     isWireless?: boolean
     connect?: () => Promise<RpcTransport>
     pick_and_connect?: {
@@ -21,7 +23,12 @@ export type TransportFactory = {
 
 export interface ConnectModalProps extends ModalProps{
     open?: boolean
-    onTransportCreated: (t: RpcTransport) => void
+    onTransportCreated: (t: RpcTransport, transportType: 'serial' | 'ble') => void
+    usedFor?: string
+    modalButton?: string
+    opened?: boolean
+    hideCloseButton?: boolean
+    hideXButton?: boolean
 }
 
 export const ConnectModal = ({
@@ -34,7 +41,7 @@ export const ConnectModal = ({
 
     function connectOptions(
         transports: TransportFactory[],
-        onTransportCreated: (t: RpcTransport) => void,
+        onTransportCreated: (t: RpcTransport, transportType: 'serial' | 'ble') => void,
         open?: boolean,
     ) {
         const useSimplePicker = useMemo( () => transports.every((t) => !t.pick_and_connect),
@@ -92,12 +99,15 @@ export const ConnectModal = ({
 
     return (
         <>
-            <Modal usedFor="connectModal" modalButton={""} opened={open} hideCloseButton hideXButton>
-                <h1 className="text-xl text-center">Welcome to ZMK Studio</h1>
-                {haveTransports
-                    ? connectOptions(transports, onTransportCreated, open)
-                    : noTransportsOptionsPrompt()}
-            </Modal>
+            {/*<Modal usedFor="connectModal" modalButton={""} opened={open} hideCloseButton hideXButton>*/}
+                <ModernModal opened={open} close={false} xButton={false} success={false} customModalBoxClass='w-11/14 max-w-2xl' isDismissable={true}>
+                    <h1 className="text-xl text-center">Welcome to ZMK Studio</h1>
+                    {haveTransports
+                        ? connectOptions(transports, onTransportCreated, open)
+                        : noTransportsOptionsPrompt()}
+                </ModernModal>
+
+            {/*</Modal>*/}
         </>
     )
 }

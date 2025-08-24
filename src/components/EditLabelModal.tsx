@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Modal, ModalProps } from "./UI/Modal"
+import { Modal, ModalProps } from "@/components/ui/Modal"
 
 interface EditLabelData {
     id: number;
@@ -20,12 +20,12 @@ export default function EditLabelModal(props: EditLabelProps) {
     const [newLabelName, setNewLabelName] = useState(props.editLabelData.name);
     // const [label, setLabel] = useState(editLabelData);
     function handleSave(){
-        props.handleSaveNewLabel(props.editLabelData.id, props.editLabelData.name, newLabelName);
+       return props.handleSaveNewLabel(props.editLabelData.id, props.editLabelData.name, newLabelName);
     }
 
     return (
         <>
-            <Modal usedFor="editLabel" modalButton={""} opened={props.opened} hideCloseButton customModalBoxClass={'w-auto'}>
+            <Modal usedFor="editLabel" modalButton={""} opened={props.opened} customModalBoxClass={'w-auto'}>
                 <h2 className="mb-3 text-lg">New Layer Name</h2>
                 {/*<label className="input input-bordered flex items-center gap-2">*/}
                 {/*    Label*/}

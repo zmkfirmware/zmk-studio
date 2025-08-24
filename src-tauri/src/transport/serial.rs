@@ -10,11 +10,19 @@ use tauri_plugin_cli::CliExt;
 
 const READ_BUF_SIZE: usize = 1024;
 
+// Add a new state to track the spawned tasks
+#[derive(Debug, Default)]
+pub struct SerialConnectionState {
+    pub read_handle: Option<tauri::async_runtime::JoinHandle<()>>,
+    pub write_handle: Option<tauri::async_runtime::JoinHandle<()>>,
+}
+
 #[command]
 pub async fn serial_connect(
     id: String,
     app_handle: AppHandle,
     state: State<'_, super::commands::ActiveConnection<'_>>,
+    serial_state: State<'_, SerialConnectionState>,
 ) -> Result<bool, String> {
     match tokio_serial::new(id, 9600).open_native_async() {
         Ok(mut port) => {
@@ -47,7 +55,7 @@ pub async fn serial_connect(
                 app_handle.emit("connection_disconnected", ());
             });
 
-            tauri::async_runtime::spawn(async move {
+            let write_process = tauri::async_runtime::spawn(async move {
                 use tauri::Manager;
 
                 while let Some(data) = recv.next().await {
@@ -59,12 +67,39 @@ pub async fn serial_connect(
                 *state.conn.lock().await = None;
             });
 
+            // Store the handles for later cleanup
+            *serial_state.read_handle.lock().await = Some(read_process);
+            *serial_state.write_handle.lock().await = Some(write_process);
+
             Ok(true)
         }
         Err(e) => {
             Err(format!("Failed to open the serial port: {}", e.description))
         }
     }
+}
+
+#[command]
+pub async fn serial_disconnect(
+    app_handle: AppHandle,
+    state: State<'_, super::commands::ActiveConnection<'_>>,
+    serial_state: State<'_, SerialConnectionState>,
+) -> Result<(), String> {
+    // Abort the spawned tasks
+    if let Some(handle) = serial_state.read_handle.lock().await.take() {
+        handle.abort();
+    }
+    if let Some(handle) = serial_state.write_handle.lock().await.take() {
+        handle.abort();
+    }
+
+    // Clear the connection state
+    *state.conn.lock().await = None;
+
+    // Emit disconnect event
+    app_handle.emit("connection_disconnected", ()).map_err(|e| e.to_string())?;
+
+    Ok(())
 }
 
 #[command]

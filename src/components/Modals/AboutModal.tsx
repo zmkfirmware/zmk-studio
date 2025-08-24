@@ -2,10 +2,18 @@ import sponsors from '../../data/sponsors.ts'
 import SponsorSize from '../../enums/SponsorSize.ts'
 import { ExternalLink } from '../../misc/ExternalLink.tsx'
 import React from 'react'
+import { ModernModal } from "@/components/ui/ModernModal.tsx"
 
-export function About() {
+export function AboutModal() {
     return (
         <>
+            <ModernModal
+                customModalBoxClass="w-11/14 max-w-5xl"
+                close={false}
+                success={false}
+                type='text'
+                text=' About ZMK Studio'
+            >
             <div className="flex justify-between items-start">
                 <p>
                     The ZMK Project:{' '}
@@ -81,6 +89,7 @@ export function About() {
                     )
                 })}
             </div>
+            </ModernModal>
         </>
     )
 }

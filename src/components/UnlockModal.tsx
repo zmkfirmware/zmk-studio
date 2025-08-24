@@ -7,7 +7,7 @@ import { useModalRef } from '../misc/useModalRef.ts'
 import { ExternalLink } from '../misc/ExternalLink.tsx'
 import useConnectionStore from '../stores/ConnectionStore.ts'
 import useLockStore from '../stores/LockStateStore.ts'
-import { Modal } from "./UI/Modal.tsx"
+import { Modal } from "@/components/ui/Modal.tsx"
 
 export type TransportFactory = {
     label: string
@@ -31,12 +31,12 @@ export const UnlockModal = ({}: UnlockModalProps) => {
     );
     const dialog = useModalRef(open, false, false);
 
-    // console.log(open,dialog)
+    console.log(open,dialog)
     return (
             <Modal
                 usedFor="unlockModal"
                 modalButton={''}
-                opened={!open}
+                opened={!dialog}
                 hideCloseButton
                 hideXButton
             >

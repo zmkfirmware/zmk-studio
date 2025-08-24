@@ -107,6 +107,7 @@ function mods_to_flags(mods: Mods[]): number {
 }
 
 function mask_mods(value: number) {
+    console.log(value & ~(mods_to_flags(all_mods) << 24))
     return value & ~(mods_to_flags(all_mods) << 24)
 }
 
@@ -121,7 +122,6 @@ export const HidUsagePicker = ({
 
         return all_mods.filter((m) => m & flags).map((m) => m.toLocaleString())
     }, [value])
-
     const selectionChanged = useCallback(
         (e: Key | null) => {
             let value = typeof e == 'number' ? e : undefined
@@ -130,6 +130,7 @@ export const HidUsagePicker = ({
                 value = value | (mod_flags << 24)
             }
 
+            console.log(value)
             onValueChanged(value)
         },
         [onValueChanged, mods],
@@ -143,6 +144,7 @@ export const HidUsagePicker = ({
 
             const mod_flags = mods_to_flags(m.map((m) => parseInt(m)))
             const new_value = mask_mods(value) | (mod_flags << 24)
+            console.log(new_value)
             onValueChanged(new_value)
         },
         [value],

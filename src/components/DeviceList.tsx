@@ -8,7 +8,7 @@ import { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index'
 interface DeviceListProps {
     open?: boolean
     transports: TransportFactory[]
-    onTransportCreated: (t: RpcTransport) => void
+    onTransportCreated: (t: RpcTransport, transportType: 'serial' | 'ble') => void
 }
 
 export function DeviceList({
@@ -65,7 +65,7 @@ export function DeviceList({
             if (dev) {
                 dev[0]
                     .pick_and_connect!.connect(dev[1])
-                    .then(onTransportCreated)
+                    .then((transport) => onTransportCreated(transport, dev[0].transportType))
                     .catch((e) => alert(e))
             }
         },

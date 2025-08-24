@@ -1,5 +1,6 @@
 import { BehaviorParameterValueDescription } from '@zmkfirmware/zmk-studio-ts-client/behaviors';
-import { HidUsagePicker } from './HidUsagePicker';
+import { KeysLayout } from '../components/keycodes/KeysLayout';
+import { HidUsagePicker } from "./HidUsagePicker.tsx"
 
 export interface ParameterValuePickerProps {
     value?: number;
@@ -69,16 +70,12 @@ export const ParameterValuePicker = ({ value, values, layers, onValueChanged }: 
         }
 
         if (values[0].hidUsage) {
-            console.log("HidUsagePicker", values[0].hidUsage);
+            console.log("KeysLayout with modifier support", values[0].hidUsage);
             return (
-                <HidUsagePicker
+                <KeysLayout
                     onValueChanged={onValueChanged}
                     label={values[0].name}
                     value={value}
-                    usagePages={[
-                        { id: 7, min: 4, max: values[0].hidUsage.keyboardMax },
-                        { id: 12, max: values[0].hidUsage.consumerMax },
-                    ]}
                 />
             );
         }

@@ -54,3 +54,7 @@ export async function connect(dev: AvailableDevice): Promise<RpcTransport> {
 
   return { label: dev.label, abortController, readable, writable };
 }
+
+export async function disconnect(): Promise<void> {
+  await invoke("transport_close");
+}
