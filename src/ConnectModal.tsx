@@ -5,9 +5,9 @@ import { UserCancelledError } from "@zmkfirmware/zmk-studio-ts-client/transport/
 import type { AvailableDevice } from "./tauri/index";
 import { Bluetooth, RefreshCw } from "lucide-react";
 import { Key, ListBox, ListBoxItem, Selection } from "react-aria-components";
-import { useModalRef } from "./misc/useModalRef";
 import { ExternalLink } from "./misc/ExternalLink";
-import { GenericModal } from "./GenericModal";
+import { Modal, ModalContent } from "./components/modal/Modal";
+import { ZmkStudio } from "./components/ZmkStudio";
 
 export type TransportFactory = {
   label: string;
@@ -200,7 +200,7 @@ function simpleDevicePicker(
   return (
     <div>
       <p className="text-sm">Select a connection type.</p>
-      <ul className="flex gap-2 pt-2">{connections}</ul>
+      <ul className="flex justify-center items-center gap-2 pt-2">{connections}</ul>
       {selectedTransport && availableDevices && (
         <ul>
           {availableDevices.map((d) => (
@@ -278,16 +278,20 @@ export const ConnectModal = ({
   transports,
   onTransportCreated,
 }: ConnectModalProps) => {
-  const dialog = useModalRef(open || false, false, false);
-
   const haveTransports = useMemo(() => transports.length > 0, [transports]);
 
   return (
-    <GenericModal ref={dialog} className="max-w-xl">
-      <h1 className="text-xl">Welcome to ZMK Studio</h1>
-      {haveTransports
-        ? connectOptions(transports, onTransportCreated, open)
-        : noTransportsOptionsPrompt()}
-    </GenericModal>
+    <Modal open={open ?? true} onOpenChange={()=> {}} onEscapeClose={false} onBackdropClose={false}>
+      <ModalContent className="w-11/12 sm:w-10/12 md:w-8/12 lg:w-5/12 xl:w-4/12 mx-auto min-h-48 flex flex-col justify-between items-center gap-6 pt-8 pb-2" showCloseButton={false}>
+        <ZmkStudio />
+        {haveTransports
+          ? connectOptions(transports, onTransportCreated, open)
+          : noTransportsOptionsPrompt()}
+
+        <div className="text-xs text-center opacity-40 select-none">
+          <span>&copy; 2024 - The ZMK Contributors</span>
+        </div>
+      </ModalContent>
+    </Modal>
   );
 };

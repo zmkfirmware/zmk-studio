@@ -8,8 +8,7 @@ import {
   Selection,
   useDragAndDrop,
 } from "react-aria-components";
-import { useModalRef } from "../misc/useModalRef";
-import { GenericModal } from "../GenericModal";
+import { Modal, ModalContent } from "../components/modal/Modal.tsx";
 
 interface Layer {
   id: number;
@@ -49,56 +48,62 @@ const EditLabelModal = ({
 }: {
   open: boolean;
   onClose: () => void;
-  editLabelData: EditLabelData;
+  editLabelData: EditLabelData | null;
   handleSaveNewLabel: (
     id: number,
     oldName: string,
     newName: string | null
   ) => void;
 }) => {
-  const ref = useModalRef(open);
-  const [newLabelName, setNewLabelName] = useState(editLabelData.name);
+  const [newLabelName, setNewLabelName] = useState(editLabelData?.name ?? '');
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
+    if (!editLabelData) return 
+    
     handleSaveNewLabel(editLabelData.id, editLabelData.name, newLabelName);
     onClose();
-  };
+  }, [editLabelData]);
 
   return (
-    <GenericModal
-      ref={ref}
-      onClose={onClose}
-      className="min-w-min w-[30vw] flex flex-col"
-    >
-      <span className="mb-3 text-lg">New Layer Name</span>
-      <input
-        className="p-1 border rounded border-base-content border-solid"
-        type="text"
-        defaultValue={editLabelData.name}
-        autoFocus
-        onChange={(e) => setNewLabelName(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            handleSave();
-          }
-        }}
-      />
-      <div className="mt-4 flex justify-end">
-        <button className="py-1.5 px-2" type="button" onClick={onClose}>
-          Cancel
-        </button>
-        <button
-          className="py-1.5 px-2 ml-4 rounded-md bg-gray-100 text-black hover:bg-gray-300"
-          type="button"
-          onClick={() => {
-            handleSave();
-          }}
-        >
-          Save
-        </button>
-      </div>
-    </GenericModal>
+    <Modal open={open} onOpenChange={onClose}>
+      <ModalContent
+        className="min-w-min w-[30vw] flex flex-col"
+      >
+        {editLabelData && (
+          <>
+            <span className="mb-3 text-lg">New Layer Name</span>
+            <input
+              className="p-1 border rounded border-base-content border-solid"
+              type="text"
+              defaultValue={editLabelData.name}
+              autoFocus
+              onChange={(e) => setNewLabelName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleSave();
+                }
+              }}
+            />
+            <div className="mt-4 flex justify-end">
+              <button className="py-1.5 px-2" type="button" onClick={onClose}>
+                Cancel
+              </button>
+              <button
+                className="py-1.5 px-2 ml-4 rounded-md bg-gray-100 text-black hover:bg-gray-300"
+                type="button"
+                disabled={!!editLabelData}
+                onClick={() => {
+                  handleSave();
+                }}
+              >
+                Save
+              </button>
+            </div>
+          </>
+        )}
+      </ModalContent>
+    </Modal>
   );
 };
 
@@ -190,14 +195,14 @@ export const LayerPicker = ({
           </button>
         )}
       </div>
-      {editLabelData !== null && (
-        <EditLabelModal
-          open={editLabelData !== null}
-          onClose={() => setEditLabelData(null)}
-          editLabelData={editLabelData}
-          handleSaveNewLabel={handleSaveNewLabel}
-        />
-      )}
+
+      <EditLabelModal
+        open={!!editLabelData}
+        onClose={() => setEditLabelData(null)}
+        editLabelData={editLabelData}
+        handleSaveNewLabel={handleSaveNewLabel}
+      />
+    
       <ListBox
         aria-label="Keymap Layer"
         selectionMode="single"
