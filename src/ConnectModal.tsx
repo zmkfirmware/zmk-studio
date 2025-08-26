@@ -38,7 +38,7 @@ function deviceList(
 
   async function LoadEm() {
     setRefreshing(true);
-    let entries: Array<[TransportFactory, AvailableDevice]> = [];
+    const entries: Array<[TransportFactory, AvailableDevice]> = [];
     for (const t of transports.filter((t) => t.pick_and_connect)) {
       const devices = await t.pick_and_connect?.list();
       if (!devices) {
@@ -186,7 +186,7 @@ function simpleDevicePicker(
     };
   }, [selectedTransport]);
 
-  let connections = transports.map((t) => (
+  const connections = transports.map((t) => (
     <li key={t.label} className="list-none">
       <button
         className="bg-base-300 hover:bg-primary hover:text-primary-content rounded px-2 py-1"
