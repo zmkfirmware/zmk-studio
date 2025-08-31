@@ -104,34 +104,32 @@ export function ModernModal({
 					<TextTrigger>{ text }</TextTrigger>
 				</DialogTrigger>
 			)}
-			<DialogOverlay>
-				<DialogContent  className={`${customModalBoxClass}`} showCloseButton={xButton}
-				                {...(isDismissable
-					                ? {
-						                onEscapeKeyDown: blockDismiss,
-						                onPointerDownOutside: blockDismiss,
-						                onInteractOutside: blockDismiss,
-					                }
-					                : {})}
-				>
-					<DialogHeader>
-						<DialogTitle>{ title }</DialogTitle>
-						<DialogDescription>{ description }</DialogDescription>
-					</DialogHeader>{ children }
-					{ showFooter && (
-						<DialogFooter>
-							{ close && (
-								<DialogClose asChild>
-									<Button variant="outline" onClick={handleClose}>{ close }</Button>
-								</DialogClose>
-							)}
-							{ success && (
-								<Button type="submit" onClick={handleOk}>{ success }</Button>
-							)}
-						</DialogFooter>
-					)}
-				</DialogContent>
-			</DialogOverlay>
+			<DialogContent  className={`${customModalBoxClass}`} showCloseButton={xButton}
+			                {...(isDismissable
+				                ? {
+					                onEscapeKeyDown: blockDismiss,
+					                onPointerDownOutside: blockDismiss,
+					                onInteractOutside: blockDismiss,
+				                }
+				                : {})}
+			>
+				<DialogHeader>
+					<DialogTitle>{ title }</DialogTitle>
+					<DialogDescription>{ description }</DialogDescription>
+				</DialogHeader>{ children }
+				{ showFooter && (
+					<DialogFooter>
+						{ close && (
+							<DialogClose asChild>
+								<Button variant="outline" onClick={handleClose}>{ close }</Button>
+							</DialogClose>
+						)}
+						{ success && (
+							<Button type="submit" onClick={handleOk}>{ success }</Button>
+						)}
+					</DialogFooter>
+				)}
+			</DialogContent>
 		</Dialog>
 
 	)

@@ -17,6 +17,11 @@ use tauri::{
 pub struct AvailableDevice {
     pub label: String,
     pub id: String,
+    pub manufacturer: Option<String>,
+    pub serial_number: Option<String>,
+    pub vid: Option<u16>,
+    pub pid: Option<u16>,
+    pub communication: String,
 }
 
 #[derive(Debug, Default)]

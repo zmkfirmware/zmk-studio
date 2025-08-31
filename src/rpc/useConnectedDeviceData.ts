@@ -16,8 +16,7 @@ export function useConnectedDeviceData<T>(
     const { lockState } = useLockStore();
     const [data, setData] = useState<T | undefined>(undefined);
 
-    useEffect(
-        () => {
+    useEffect( () => {
             if ( !connection || (requireUnlock && lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED) ) {
                 setData(undefined);
                 return;

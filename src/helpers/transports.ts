@@ -13,14 +13,14 @@ declare global {
 export const TRANSPORTS: TransportFactory[] = [
 	navigator.serial && {
 		label: 'USB',
-		transportType: 'serial',
+		communication: 'serial',
 		connect: serial_connect,
 	},
 	...(navigator.bluetooth && navigator.userAgent.indexOf('Linux') >= 0
 		? [
 			{
 				label: 'BLE',
-				transportType: 'ble',
+				communication: 'ble',
 				connect: gatt_connect,
 			},
 		]
@@ -29,7 +29,7 @@ export const TRANSPORTS: TransportFactory[] = [
 		? [
 			{
 				label: 'BLE',
-				transportType: 'ble',
+				communication: 'ble',
 				isWireless: true,
 				pick_and_connect: {
 					connect: tauri_ble_connect,
@@ -42,7 +42,7 @@ export const TRANSPORTS: TransportFactory[] = [
 		? [
 			{
 				label: 'USB',
-				transportType: 'serial',
+				communication: 'serial',
 				pick_and_connect: {
 					connect: tauri_serial_connect,
 					list: serial_list_devices,

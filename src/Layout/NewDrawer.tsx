@@ -116,7 +116,7 @@ export function NewDrawer({ children, connectedDeviceLabel }: DrawerProps) {
                     <SidebarGroup>
                         <SidebarMenu>
                             {keymap && (
-                                <div className="col-start-1 row-start-1 row-end-2">
+                                // <div className="col-start-1 row-start-1 row-end-2">
                                     <LayerPicker
                                         layers={keymap.layers}
                                         keymap={keymap}
@@ -127,7 +127,7 @@ export function NewDrawer({ children, connectedDeviceLabel }: DrawerProps) {
                                         canRemove={(keymap.layers?.length || 0) > 1}
                                         setSelectedLayerIndex={setSelectedLayerIndex}
                                     />
-                                </div>
+                                // </div>
                             )}
                         </SidebarMenu>
                     </SidebarGroup>

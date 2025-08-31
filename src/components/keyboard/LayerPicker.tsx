@@ -1,15 +1,10 @@
-import { Pencil, Minus, Plus } from "lucide-react"
+import { EllipsisVertical, Plus, Trash } from "lucide-react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import {
 	DropIndicator,
-	Label,
-	ListBox,
-	ListBoxItem,
 	Selection,
 	useDragAndDrop
 } from "react-aria-components"
-// import { useModalRef } from "../../misc/useModalRef.ts"
-// import { GenericModal } from "../GenericModal.tsx"
 import { callRemoteProcedureControl } from "../../rpc/logging.ts"
 import undoRedoStore from "../../stores/UndoRedoStore.ts"
 import useConnectionStore from "../../stores/ConnectionStore.ts"
@@ -17,6 +12,23 @@ import { produce } from "immer"
 import { SetLayerPropsResponse } from "@zmkfirmware/zmk-studio-ts-client/keymap"
 import EditLabelModal from "../EditLabelModal.tsx"
 
+import {
+	SidebarGroupAction,
+	SidebarGroupContent,
+	SidebarGroupLabel,
+	SidebarMenu, SidebarMenuAction, SidebarMenuButton,
+	SidebarMenuItem
+} from "@/components/ui/sidebar.tsx"
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu.tsx"
+
+// import { useModalRef } from "../../misc/useModalRef.ts"
+// import { GenericModal } from "../GenericModal.tsx"
 // import EditLabelModal from '../EditLabelModal.tsx'
 
 interface Layer {
@@ -119,6 +131,7 @@ export const LayerPicker = ( {
 	...props
 }: LayerPickerProps ) => {
 	const [ editLabelData, setEditLabelData ] = useState<EditLabelData | null>( null )
+	const [ dropdownOpen, setDropdownOpen ] = useState<number | null>( null )
 	const { doIt } = undoRedoStore()
 	const { connection } = useConnectionStore()
 
@@ -131,12 +144,13 @@ export const LayerPicker = ( {
 		}) )
 	}, [ layers, selectedLayerIndex ] )
 
-	const selectionChanged = useCallback( ( s: Selection ) => {
+	console.log(layer_items)
+	const selectionChanged = useCallback( ( s: any ) => {
 			if ( s === "all" ) {
 				return
 			}
-			console.log( s , layer_items.findIndex( ( l ) => s.has( l.id ) ) )
-			onLayerClicked?.( layer_items.findIndex( ( l ) => s.has( l.id ) ) )
+			console.log( s, layer_items.findIndex( ( l ) => s === l.index ) )
+			onLayerClicked?.( layer_items.findIndex( ( l ) => s === l.index ))
 		},
 		[ onLayerClicked, layer_items ]
 	)
@@ -286,11 +300,7 @@ export const LayerPicker = ( {
 			if ( resp.keymap?.restoreLayer?.ok ) {
 				setKeymap(
 					produce( ( draft: any ) => {
-						draft.layers.splice(
-							atIndex,
-							0,
-							resp!.keymap!.restoreLayer!.ok
-						)
+						draft.layers.splice( atIndex, 0, resp!.keymap!.restoreLayer!.ok )
 						draft.availableLayers--
 					} )
 				)
@@ -327,23 +337,15 @@ export const LayerPicker = ( {
 					keymap: { setLayerProps: { layerId, name } }
 				} )
 
-				if (
-					resp.keymap?.setLayerProps ==
-					SetLayerPropsResponse.SET_LAYER_PROPS_RESP_OK
-				) {
+				if ( resp.keymap?.setLayerProps == SetLayerPropsResponse.SET_LAYER_PROPS_RESP_OK ) {
 					setKeymap(
 						produce( ( draft: any ) => {
-							const layer_index = draft.layers.findIndex(
-								( l: Layer ) => l.id == layerId
-							)
+							const layer_index = draft.layers.findIndex( ( l: Layer ) => l.id == layerId )
 							draft.layers[layer_index].name = name
 						} )
 					)
 				} else {
-					throw new Error(
-						"Failed to change layer name:" +
-						resp.keymap?.setLayerProps
-					)
+					throw new Error( "Failed to change layer name:" + resp.keymap?.setLayerProps )
 				}
 			}
 
@@ -376,84 +378,151 @@ export const LayerPicker = ( {
 
 	}, [ keymap, selectedLayerIndex, setSelectedKey, setSelectedLayerIndex ] )
 
+	// Close dropdown when clicking outside
+	useEffect( () => {
+		const handleClickOutside = ( event: MouseEvent ) => {
+			if ( dropdownOpen !== null ) {
+				setDropdownOpen( null )
+			}
+		}
+
+		document.addEventListener( "mousedown", handleClickOutside )
+		return () => {
+			document.removeEventListener( "mousedown", handleClickOutside )
+		}
+	}, [ dropdownOpen ] )
+
+	// Close dropdown when edit modal opens
+	useEffect( () => {
+		if ( editLabelData !== null ) {
+			setDropdownOpen( null )
+		}
+	}, [ editLabelData ] )
+
 	return (
 		<>
-			<div className="flex flex-col min-w-40">
-				<div className="grid grid-cols-[1fr_auto_auto] items-center">
-					<Label className="after:content-[':'] text-sm">Layers</Label>
-					{ removeLayer && (
-						<button
-							type="button"
-							className="hover:text-primary-content hover:bg-primary rounded-sm"
-							disabled={ !canRemove }
-							onClick={ removeLayer }
-						>
-							<Minus className="size-4" />
-						</button>
-					) }
-					{ addLayer && (
-						<button
-							type="button"
-							disabled={ !canAdd }
-							className="hover:text-primary-content ml-1 hover:bg-primary rounded-sm disabled:text-gray-500 disabled:hover:bg-base-300 disabled:cursor-not-allowed"
-							onClick={ addLayer }
-						>
-							<Plus className="size-4" />
-						</button>
-					) }
+			<SidebarGroupContent>
+				<SidebarGroupLabel>Layers</SidebarGroupLabel>
+				<SidebarGroupAction title="Add Layer" onClick={ addLayer } disabled={ !canAdd }>
+					{/*<Button onClick={addLayer} disabled={ !canAdd } variant="ghost" size="icon" className="size-8" >*/ }
+					<Plus className="size-4" /> <span className="sr-only">Add Layer</span>
+					{/*</Button>*/ }
+				</SidebarGroupAction>
+				<SidebarMenu>
+					{ layer_items.map( ( item ) => (
+						<SidebarMenuItem key={ item.name }>
+							<SidebarMenuButton
+								asChild
+								isActive={ item.index === selectedLayerIndex }
+								onClick={ (event) => {
+									onLayerClicked?.( item.index )
+									selectionChanged( item.index)
+								} }
+							>
+								<span>{ item.name }</span>
+							</SidebarMenuButton>
+							<DropdownMenu>
+								<DropdownMenuTrigger>
+									<SidebarMenuAction showOnHover className="data-[state=open]:bg-accent rounded-sm">
+										<EllipsisVertical /> <span className="sr-only">More</span>
+									</SidebarMenuAction>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent side="right" align="start">
+									<DropdownMenuItem>
+										<EditLabelModal
+											onClose={ () => setEditLabelData( null ) }
+											editLabelData={ item }
+											handleSaveNewLabel={ handleSaveNewLabel }
+										/>
+									</DropdownMenuItem>
+									<DropdownMenuSeparator />
+									<DropdownMenuItem variant="destructive" disabled={ !canRemove } onClick={ ( e ) => {
+										e.stopPropagation()
+										removeLayer()
+									} }>
+										<Trash />
+										<span>Delete</span>
+									</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
+						</SidebarMenuItem>
+					) ) }
+				</SidebarMenu>
+			</SidebarGroupContent>
+			{/*<div className="flex flex-col min-w-40">*/ }
+			{/*	<ListBox*/ }
+			{/*		aria-label="Keymap Layer"*/ }
+			{/*		selectionMode="single"*/ }
+			{/*		items={ layer_items }*/ }
+			{/*		disallowEmptySelection={ true }*/ }
+			{/*		selectedKeys={*/ }
+			{/*			layer_items[selectedLayerIndex]*/ }
+			{/*				? [ layer_items[selectedLayerIndex].id ]*/ }
+			{/*				: []*/ }
+			{/*		}*/ }
+			{/*		className="ml-2 items-center justify-center cursor-pointer"*/ }
+			{/*		onSelectionChange={ selectionChanged }*/ }
+			{/*		dragAndDropHooks={ dragAndDropHooks }*/ }
+			{/*		{ ...props }*/ }
+			{/*	>*/ }
+			{/*		{ ( layer_item ) => (*/ }
+			{/*			<ListBoxItem*/ }
+			{/*				textValue={ layer_item.name }*/ }
+			{/*				className="p-1 b-1 my-1 group grid grid-cols-[1fr_auto] items-center aria-selected:bg-primary aria-selected:text-primary-content border rounded border-transparent border-solid hover:bg-base-300"*/ }
+			{/*			>*/ }
+			{/*				<span>{ layer_item.name }</span>*/ }
 
-				</div>
-				<ListBox
-					aria-label="Keymap Layer"
-					selectionMode="single"
-					items={ layer_items }
-					disallowEmptySelection={ true }
-					selectedKeys={
-						layer_items[selectedLayerIndex]
-							? [ layer_items[selectedLayerIndex].id ]
-							: []
-					}
-					className="ml-2 items-center justify-center cursor-pointer"
-					onSelectionChange={ selectionChanged }
-					dragAndDropHooks={ dragAndDropHooks }
-					{ ...props }
-				>
-					{ ( layer_item ) => (
-						<ListBoxItem
-							textValue={ layer_item.name }
-							className="p-1 b-1 my-1 group grid grid-cols-[1fr_auto] items-center aria-selected:bg-primary aria-selected:text-primary-content border rounded border-transparent border-solid hover:bg-base-300"
-						>
-							<span>{ layer_item.name }</span>
-							<Pencil
-								className="h-4 w-4 mx-1 invisible group-hover:visible"
-								onClick={ () =>
-									setEditLabelData( {
-										id: layer_item.id,
-										name: layer_item.name
-									} )
-								}
-							/>
-						</ListBoxItem>
-					) }
-				</ListBox>
-				{ editLabelData !== null && (
-					<>
-						<EditLabelModal
-							usedFor='editLabel'
-							opened={ editLabelData !== null }
-							onClose={ () => setEditLabelData( null ) }
-							editLabelData={ editLabelData }
-							handleSaveNewLabel={handleSaveNewLabel}
-						/>
-						{/*<EditLabelModal*/}
-						{/*	open={ editLabelData !== null }*/}
-						{/*	onClose={ () => setEditLabelData( null ) }*/}
-						{/*	editLabelData={ editLabelData }*/}
-						{/*	handleSaveNewLabel={ handleSaveNewLabel }*/}
-						{/*/>*/}
-					</>
-				) }
-			</div>
+			{/*				<div className="relative">*/ }
+			{/*					<MoreVertical*/ }
+			{/*						className="h-4 w-4 mx-1 invisible group-hover:visible cursor-pointer"*/ }
+			{/*						onClick={ (e) => {*/ }
+			{/*							e.stopPropagation()*/ }
+			{/*							setDropdownOpen(dropdownOpen === layer_item.index ? null : layer_item.index)*/ }
+			{/*						} }*/ }
+			{/*					/>*/ }
+			{/*					{ dropdownOpen === layer_item.index && (*/ }
+			{/*						<div className="absolute right-0 top-6 z-50 bg-base-100 border border-base-300 rounded-md shadow-lg min-w-32 py-1">*/ }
+			{/*							<button*/ }
+			{/*								className="w-full text-left px-3 py-2 hover:bg-base-200 text-sm"*/ }
+			{/*								onClick={ (e) => {*/ }
+			{/*									e.stopPropagation()*/ }
+			{/*									setEditLabelData({*/ }
+			{/*										id: layer_item.id,*/ }
+			{/*										name: layer_item.name*/ }
+			{/*									})*/ }
+			{/*									setDropdownOpen(null)*/ }
+			{/*								} }*/ }
+			{/*							>*/ }
+			{/*								Rename*/ }
+			{/*							</button>*/ }
+			{/*							{ canRemove && (*/ }
+			{/*								<button*/ }
+			{/*									className={`w-full text-left px-3 py-2 text-sm ${*/ }
+			{/*										layer_item.index === selectedLayerIndex*/ }
+			{/*											? 'hover:bg-base-200 text-error'*/ }
+			{/*											: 'text-gray-400 cursor-not-allowed'*/ }
+			{/*									}`}*/ }
+			{/*									disabled={layer_item.index !== selectedLayerIndex}*/ }
+			{/*									title={layer_item.index === selectedLayerIndex ? "Delete this layer" : "Can only delete the currently selected layer"}*/ }
+			{/*									onClick={ (e) => {*/ }
+			{/*										e.stopPropagation()*/ }
+			{/*										// Only allow deletion if this is the currently selected layer*/ }
+			{/*										if (layer_item.index === selectedLayerIndex) {*/ }
+			{/*											removeLayer()*/ }
+			{/*										}*/ }
+			{/*										setDropdownOpen(null)*/ }
+			{/*									} }*/ }
+			{/*								>*/ }
+			{/*									Delete*/ }
+			{/*								</button>*/ }
+			{/*							) }*/ }
+			{/*						</div>*/ }
+			{/*					) }*/ }
+			{/*				</div>*/ }
+			{/*			</ListBoxItem>*/ }
+			{/*		) }*/ }
+			{/*	</ListBox>*/ }
+			{/*</div>*/ }
 		</>
 	)
 }

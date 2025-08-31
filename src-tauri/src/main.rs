@@ -7,7 +7,6 @@ use futures::lock::Mutex;
 
 mod transport;
 use transport::commands::{transport_close, transport_send_data, ActiveConnection};
-use transport::serial::{SerialConnectionState, serial_disconnect};
 
 use transport::gatt::{gatt_connect, gatt_list_devices};
 use transport::serial::{serial_connect, serial_list_devices};
@@ -18,10 +17,6 @@ fn main() {
         .manage(ActiveConnection {
             conn: Mutex::new(None),
         })
-        .manage(SerialConnectionState {
-            read_handle: Mutex::new(None),
-            write_handle: Mutex::new(None),
-        })
         .invoke_handler(tauri::generate_handler![
             transport_send_data,
             transport_close,
@@ -29,7 +24,6 @@ fn main() {
             gatt_connect,
             serial_list_devices,
             serial_connect,
-            serial_disconnect,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

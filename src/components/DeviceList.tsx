@@ -8,7 +8,7 @@ import { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index'
 interface DeviceListProps {
     open?: boolean
     transports: TransportFactory[]
-    onTransportCreated: (t: RpcTransport, transportType: 'serial' | 'ble') => void
+    onTransportCreated: (t: RpcTransport, communication: 'serial' | 'ble') => void
 }
 
 export function DeviceList({
@@ -25,19 +25,22 @@ export function DeviceList({
     async function LoadEm() {
         setRefreshing(true)
         const entries: Array<[TransportFactory, AvailableDevice]> = []
+
         for (const t of transports.filter((t) => t.pick_and_connect)) {
             const devices = await t.pick_and_connect?.list()
-            if (!devices) {
+
+            if (!devices || devices.length === 0) {
                 continue
             }
-
+            console.log(devices)
             entries.push(
                 ...devices.map<[TransportFactory, AvailableDevice]>((d) => {
+                    console.log(t,d)
                     return [t, d]
                 }),
             )
         }
-
+        console.log(entries)
         setDevices(entries)
         setRefreshing(false)
     }
@@ -65,7 +68,10 @@ export function DeviceList({
             if (dev) {
                 dev[0]
                     .pick_and_connect!.connect(dev[1])
-                    .then((transport) => onTransportCreated(transport, dev[0].transportType))
+                    .then((transport) => {
+                        console.log(keys, dev, transport)
+                        onTransportCreated( transport, dev[0].communication )
+                    })
                     .catch((e) => alert(e))
             }
         },

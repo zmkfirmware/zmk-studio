@@ -63,12 +63,14 @@ export class SerialTransport {
     } catch (error) {
       console.error('Read process error:', error);
     } finally {
-      this.reader?.releaseLock();
+      // Ensure the port is closed when the read process ends
+      await this.cleanup();
       this.eventEmitter.emit('connection_disconnected');
     }
   }
 
-  async serialDisconnect(): Promise<void> {
+  // Add a cleanup method to properly close the port
+  private async cleanup() {
     // Abort read process
     this.readHandle?.abort();
 
@@ -76,17 +78,23 @@ export class SerialTransport {
     this.reader?.releaseLock();
     this.writer?.releaseLock();
 
-    // Close port
+    // Close port - this is crucial for Web Serial API
     if (this.port) {
-      await this.port.close();
+      try {
+        await this.port.close();
+      } catch (error) {
+        console.warn('Error closing serial port:', error);
+      }
     }
 
     // Clear references
     this.reader = undefined;
     this.writer = undefined;
     this.port = undefined;
+  }
 
-    // Emit disconnect event
+  async serialDisconnect(): Promise<void> {
+    await this.cleanup();
     this.eventEmitter.emit('connection_disconnected');
   }
 

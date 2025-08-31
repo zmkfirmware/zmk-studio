@@ -146,8 +146,24 @@ pub async fn gatt_list_devices() -> Result<Vec<super::commands::AvailableDevice>
             if check_connected(&a, &device).await {
                 let label = device.name_async().await.unwrap_or("Unknown".to_string());
                 let id = serde_json::to_string(&device.id()).unwrap();
+                
+                // For Bluetooth devices, we don't have the same level of detail as USB devices
+                // Set these to None since they're not available in the same format
+                let manufacturer = None;
+                let serial_number = None;
+                let vid = None;
+                let pid = None;
+                let communication = "Bluetooth".to_string();
 
-                ret.push(super::commands::AvailableDevice { label, id });
+                ret.push(super::commands::AvailableDevice { 
+                    label, 
+                    id,
+                    manufacturer,
+                    serial_number,
+                    vid,
+                    pid,
+                    communication,
+                });
             } else {
                 println!("Device isn't connected: {:?}", device);
             }

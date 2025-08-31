@@ -12,7 +12,7 @@ import { ModernModal } from "@/components/ui/ModernModal.tsx"
 
 export type TransportFactory = {
     label: string
-    transportType: 'serial' | 'ble'
+    communication: 'serial' | 'ble'
     isWireless?: boolean
     connect?: () => Promise<RpcTransport>
     pick_and_connect?: {
@@ -23,7 +23,7 @@ export type TransportFactory = {
 
 export interface ConnectModalProps extends ModalProps{
     open?: boolean
-    onTransportCreated: (t: RpcTransport, transportType: 'serial' | 'ble') => void
+    onTransportCreated: (t: RpcTransport, communication: 'serial' | 'ble') => void
     usedFor?: string
     modalButton?: string
     opened?: boolean
@@ -37,14 +37,15 @@ export const ConnectModal = ({
 }: ConnectModalProps) => {
     const transports = TRANSPORTS
     const haveTransports = useMemo(() => transports.length > 0, [transports])
-    const { connection } = useConnectionStore()
+    // const { connection } = useConnectionStore()
 
     function connectOptions(
         transports: TransportFactory[],
-        onTransportCreated: (t: RpcTransport, transportType: 'serial' | 'ble') => void,
+        onTransportCreated: (t: RpcTransport, communication: 'serial' | 'ble') => void,
         open?: boolean,
     ) {
-        const useSimplePicker = useMemo( () => transports.every((t) => !t.pick_and_connect),
+        const useSimplePicker = useMemo( () =>
+                transports.every((t) => !t.pick_and_connect),
             [transports],
         )
 

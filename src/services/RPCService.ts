@@ -65,10 +65,10 @@ export async function listenForNotifications(
 
 export async function connect(
     transport: RpcTransport,
-    setConnection: Dispatch<RpcConnection | null>,
+    setConnection: any,
     setConnectedDeviceName: Dispatch<string | undefined>,
     signal: AbortSignal,
-    transportType: 'serial' | 'ble',
+    communication: 'serial' | 'ble',
 ) {
     const conn = await createRpcConnection(transport, { signal })
     console.log('Connect function', conn)
@@ -101,5 +101,5 @@ export async function connect(
         })
 
     setConnectedDeviceName(details.name)
-    setConnection(conn, transportType)
+    setConnection(conn, communication)
 }

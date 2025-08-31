@@ -1,9 +1,10 @@
 import { useCallback } from "react"
-import { Popover, PopoverTrigger, PopoverDialog } from "../ui/popover"
+import { Popover, PopoverTrigger, PopoverDialog, PopoverContent } from "../ui/popover"
 import { PhysicalLayout, type KeyPosition } from "./PhysicalLayout.tsx"
-import { SidebarGroupContent, SidebarGroupLabel, SidebarGroupAction } from "../ui/sidebar"
-import {  Plus } from "lucide-react"
+import { SidebarGroupContent, SidebarGroupLabel, SidebarGroupAction, SidebarMenuButton } from "../ui/sidebar"
+import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button.tsx"
+import { OverlayArrow, Pressable } from "react-aria-components"
 
 export interface PhysicalLayoutItem {
 	name: string
@@ -29,7 +30,7 @@ export const PhysicalLayoutPicker = ( {
 		},
 		[ onPhysicalLayoutClicked ]
 	)
-	console.log(layouts);
+	console.log( layouts )
 	return (
 		<SidebarGroupContent>
 			<SidebarGroupLabel>Layouts</SidebarGroupLabel>
@@ -39,28 +40,32 @@ export const PhysicalLayoutPicker = ( {
 			{ layouts && (
 				<div className="space-y-2">
 					{ layouts.map( ( layout, index ) => (
-						<div key={ layout.name } className="flex items-center justify-between">
-							<PopoverTrigger>
+						<div key={ layout.name } className="w-full">
+
 							<Popover>
-									<div className="flex-1">
-										<div className="text-sm font-medium">{ layout.name }</div>
-										<div className="text-xs text-muted-foreground">
+								<PopoverTrigger className="w-full">
+									<SidebarMenuButton>
+										<h3 className="font-medium">{ layout.name }</h3>
+										<p className="text-sm text-muted-foreground">
 											{ layout.keys.length } keys
-										</div>
-									</div>
-								<PopoverDialog className="w-80 p-4">
-									<div className="space-y-4">
-										<div>
-											<h3 className="font-medium">{ layout.name }</h3>
-											<p className="text-sm text-muted-foreground">
-												{ layout.keys.length } keys
-											</p>
-										</div>
+										</p>
+									</SidebarMenuButton>
+								</PopoverTrigger>
+								<PopoverContent>
+									<div className="space-y-4 ">
 										<div className="flex justify-center">
 											<PhysicalLayout
 												oneU={ 20 }
 												hoverZoom={ false }
-												positions={ layout.keys.map( ( { x, y, width, height, r, rx, ry }, i ) => ({
+												positions={ layout.keys.map( ( {
+													x,
+													y,
+													width,
+													height,
+													r,
+													rx,
+													ry
+												}, i ) => ({
 													id: `${ layout.name }-${ i }`,
 													x: x / 100.0,
 													y: y / 100.0,
@@ -73,16 +78,60 @@ export const PhysicalLayoutPicker = ( {
 											/>
 										</div>
 										<Button
-										   variant={index === selectedPhysicalLayoutIndex ? "default" : "outline"}
-										   className="w-full"
-										   onClick={() => handleLayoutSelect(index)}
+											variant={ index === selectedPhysicalLayoutIndex ? "default" : "outline" }
+											className="w-full"
+											onClick={ () => handleLayoutSelect( index ) }
 										>
-										   {index === selectedPhysicalLayoutIndex ? "Selected" : "Select Layout"}
+											{ index === selectedPhysicalLayoutIndex ? "Selected" : "Select Layout" }
 										</Button>
 									</div>
-								</PopoverDialog>
+								</PopoverContent>
 							</Popover>
-						</PopoverTrigger>
+							{/*	<Popover>*/ }
+							{/*<PopoverTrigger>*/ }
+							{/*</PopoverTrigger>*/ }
+							{/*		<PopoverDialog className="w-80 p-4">*/ }
+							{/*			<div className="space-y-4">*/ }
+							{/*				<div>*/ }
+							{/*					<h3 className="font-medium">{ layout.name }</h3>*/ }
+							{/*					<p className="text-sm text-muted-foreground">*/ }
+							{/*						{ layout.keys.length } keys*/ }
+							{/*					</p>*/ }
+							{/*				</div>*/ }
+							{/*				<div className="flex justify-center">*/ }
+							{/*					<PhysicalLayout*/ }
+							{/*						oneU={ 20 }*/ }
+							{/*						hoverZoom={ false }*/ }
+							{/*						positions={ layout.keys.map( ( {*/ }
+							{/*							x,*/ }
+							{/*							y,*/ }
+							{/*							width,*/ }
+							{/*							height,*/ }
+							{/*							r,*/ }
+							{/*							rx,*/ }
+							{/*							ry*/ }
+							{/*						}, i ) => ({*/ }
+							{/*							id: `${ layout.name }-${ i }`,*/ }
+							{/*							x: x / 100.0,*/ }
+							{/*							y: y / 100.0,*/ }
+							{/*							width: width / 100.0,*/ }
+							{/*							height: height / 100.0,*/ }
+							{/*							r: (r || 0) / 100.0,*/ }
+							{/*							rx: (rx || 0) / 100.0,*/ }
+							{/*							ry: (ry || 0) / 100.0*/ }
+							{/*						}) ) }*/ }
+							{/*					/>*/ }
+							{/*				</div>*/ }
+							{/*				<Button*/ }
+							{/*					variant={ index === selectedPhysicalLayoutIndex ? "default" : "outline" }*/ }
+							{/*					className="w-full"*/ }
+							{/*					onClick={ () => handleLayoutSelect( index ) }*/ }
+							{/*				>*/ }
+							{/*					{ index === selectedPhysicalLayoutIndex ? "Selected" : "Select Layout" }*/ }
+							{/*				</Button>*/ }
+							{/*			</div>*/ }
+							{/*		</PopoverDialog>*/ }
+							{/*	</Popover>*/ }
 
 						</div>
 					) ) }
