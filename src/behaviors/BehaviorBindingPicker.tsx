@@ -6,7 +6,42 @@ import {
 } from "@zmkfirmware/zmk-studio-ts-client/behaviors"
 import { BehaviorBinding } from "@zmkfirmware/zmk-studio-ts-client/keymap"
 import { BehaviorParametersPicker } from "./BehaviorParametersPicker"
+import { BehaviorSelector } from "./BehaviorSelector"
 import { validateValue } from "./parameters"
+import {
+	Sidebar,
+	SidebarFooter,
+	SidebarGroupContent, SidebarGroupLabel,
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem
+} from "@/components/ui/sidebar"
+import { SidebarContent, SidebarGroup, SidebarHeader } from "@/components/ui/sidebar.tsx"
+import { SelectedKeysDisplay } from "@/components/keycodes/SelectedKeysDisplay"
+
+// Modifier key definitions (same as HidUsagePicker)
+enum Mods {
+	LeftControl = 0x01,
+	LeftShift = 0x02,
+	LeftAlt = 0x04,
+	LeftGUI = 0x08,
+	RightControl = 0x10,
+	RightShift = 0x20,
+	RightAlt = 0x40,
+	RightGUI = 0x80,
+}
+
+// Map keyboard IDs to modifier flags
+const KEY_ID_TO_MOD: Record<number, Mods> = {
+	224: Mods.LeftControl,   // Keyboard LeftControl
+	225: Mods.LeftShift,     // Keyboard LeftShift
+	226: Mods.LeftAlt,       // Keyboard LeftAlt
+	227: Mods.LeftGUI,       // Keyboard Left GUI
+	228: Mods.RightControl,  // Keyboard RightControl
+	229: Mods.RightShift,    // Keyboard RightShift
+	230: Mods.RightAlt,      // Keyboard RightAlt
+	231: Mods.RightGUI,      // Keyboard Right GUI
+}
 
 export interface BehaviorBindingPickerProps {
 	binding: BehaviorBinding
@@ -49,17 +84,13 @@ export const BehaviorBindingPicker = ( {
 	const [ param1, setParam1 ] = useState<number | undefined>( binding.param1 )
 	const [ param2, setParam2 ] = useState<number | undefined>( binding.param2 )
 
+	// Add state for selected keys display - with some test data to see the component
+	const [ selectedKey, setSelectedKey ] = useState<number | undefined>(4) // Test with Space key
+	const [ selectedModifiers, setSelectedModifiers ] = useState<Mods[]>([Mods.LeftControl, Mods.LeftShift]) // Test with some modifiers
+
 	const metadata = useMemo( () =>
 			behaviors.find( ( b ) => b.id == behaviorId )?.metadata,
 		[ behaviorId, behaviors ]
-	)
-
-	const sortedBehaviors = useMemo(
-		() =>
-			behaviors.sort( ( a, b ) =>
-				a.displayName.localeCompare( b.displayName )
-			),
-		[ behaviors ]
 	)
 
 	useEffect( () => {
@@ -92,27 +123,47 @@ export const BehaviorBindingPicker = ( {
 		console.log( binding )
 	}, [ binding ] )
 
+	const handleBehaviorSelected = (selectedBehaviorId: number) => {
+		setBehaviorId(selectedBehaviorId)
+		setParam1(0)
+		setParam2(0)
+	}
+
+	// Handlers for SelectedKeysDisplay
+	const handleClearAll = () => {
+		setSelectedKey(undefined)
+		setSelectedModifiers([])
+	}
+
+	const handleRemoveKey = (key: number) => {
+		setSelectedKey(undefined)
+	}
+
+	const handleRemoveModifier = (keyId: number) => {
+		// Find the modifier that corresponds to this keyId
+		const modifier = KEY_ID_TO_MOD[keyId];
+		if (modifier) {
+			setSelectedModifiers(prev => prev.filter(m => m !== modifier));
+		}
+	}
+
 	return (
-		<div className="flex flex-row gap-2 w-full">
-			<ul className="menu bg-base-200 rounded-box w-50 flex-nowrap flex-col h-96 overflow-auto">
-				{ sortedBehaviors.map( ( b ) => (
-					<li key={ b.id }>
-						<a
-							aria-label={ b.displayName }
-							data-behavior-id={ b.id }
-							onClick={ ( e ) => {
-								const target = e.target as HTMLAnchorElement;
-								const behaviorId = parseInt( target.getAttribute( 'data-behavior-id' ) || '0' );
-								setBehaviorId( behaviorId );
-								setParam1( 0 );
-								setParam2( 0 );
-							} }
-						>
-							{ b.displayName }
-						</a>
-					</li>
-				) ) }
-			</ul>
+		<div className="flex flex-col w-full">
+			<div className="flex flex-row flex-1 gap-3">
+				<BehaviorSelector
+					behaviors={behaviors}
+					selectedBehaviorId={behaviorId}
+					onBehaviorSelected={handleBehaviorSelected}
+					placeholder="Select behavior..."
+				/>
+				<SelectedKeysDisplay
+					selectedKey={selectedKey}
+					selectedModifiers={selectedModifiers}
+					onClearAll={handleClearAll}
+					onRemoveKey={handleRemoveKey}
+					onRemoveModifier={handleRemoveModifier}
+				/>
+			</div>
 			{ metadata && (
 				<div className="flex-1">
 					<BehaviorParametersPicker

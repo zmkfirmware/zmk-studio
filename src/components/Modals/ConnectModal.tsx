@@ -6,9 +6,9 @@ import { ExternalLink } from '../../misc/ExternalLink.tsx'
 import { DeviceList } from '../DeviceList.tsx'
 import { SimpleDevicePicker } from '../SimpleDevicePicker.tsx'
 import { TRANSPORTS } from '../../helpers/transports.ts'
-import { Modal, ModalProps } from "@/components/ui/Modal.tsx"
+import { OldModal, ModalProps } from "@/components/ui/OldModal.tsx"
 import useConnectionStore from "../../stores/ConnectionStore.ts"
-import { ModernModal } from "@/components/ui/ModernModal.tsx"
+import { Modal } from "@/components/ui/Modal.tsx"
 
 export type TransportFactory = {
     label: string
@@ -99,17 +99,12 @@ export const ConnectModal = ({
     }
 
     return (
-        <>
-            {/*<Modal usedFor="connectModal" modalButton={""} opened={open} hideCloseButton hideXButton>*/}
-                <ModernModal opened={open} close={false} xButton={false} success={false} customModalBoxClass='w-11/14 max-w-2xl' isDismissable={true}>
-                    <h1 className="text-xl text-center">Welcome to ZMK Studio</h1>
-                    {haveTransports
-                        ? connectOptions(transports, onTransportCreated, open)
-                        : noTransportsOptionsPrompt()}
-                </ModernModal>
-
-            {/*</Modal>*/}
-        </>
+        <Modal opened={open} close={false} xButton={false} success={false} customModalBoxClass='w-11/14 max-w-2xl' isDismissable={true}>
+            <h1 className="text-xl text-center">Welcome to ZMK Studio</h1>
+            {haveTransports
+                ? connectOptions(transports, onTransportCreated, open)
+                : noTransportsOptionsPrompt()}
+        </Modal>
     )
 }
 

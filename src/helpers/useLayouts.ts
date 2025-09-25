@@ -1,11 +1,12 @@
 import { PhysicalLayout } from '@zmkfirmware/zmk-studio-ts-client/keymap';
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core';
-import { callRemoteProcedureControl } from '../rpc/logging.ts';
 import { Request } from '@zmkfirmware/zmk-studio-ts-client';
 import type { GetBehaviorDetailsResponse } from '@zmkfirmware/zmk-studio-ts-client/behaviors';
 import useConnectionStore from '../stores/ConnectionStore.ts';
 import useLockStore from "../stores/LockStateStore.ts";
+import { callRemoteProcedureControl } from "@/services/RpcConnectionService.ts"
+import { getBehavior, getBehaviors } from "@/services/RpcEventsService.ts"
 
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
@@ -15,10 +16,7 @@ export function useBehaviors(): BehaviorMap {
     const [behaviors, setBehaviors] = useState<BehaviorMap>({});
 
     useEffect(() => {
-        if (
-            !connection ||
-            lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED
-        ) {
+        if ( !connection || lockState != LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED ) {
             setBehaviors({});
             return;
         }
@@ -26,44 +24,25 @@ export function useBehaviors(): BehaviorMap {
         async function startRequest() {
             setBehaviors({});
 
-            if (!connection) {
-                return;
-            }
+            const behaviorListResponse = await getBehaviors();
 
-            const get_behaviors: Request = {
-                behaviors: { listAllBehaviors: true },
-                requestId: 0,
-            };
-            console.log(connection,lockState)
-            const behavior_list = await callRemoteProcedureControl(
-                connection,
-                get_behaviors,
-            );
             if (!ignore) {
-                const behavior_map: BehaviorMap = {};
-                for (const behaviorId of behavior_list.behaviors
-                    ?.listAllBehaviors?.behaviors || []) {
+                const behaviorMap: BehaviorMap = {};
+                for (const behavior of behaviorListResponse.behaviors?.listAllBehaviors?.behaviors || []) {
+
                     if (ignore) {
                         break;
                     }
-                    const details_req = {
-                        behaviors: { getBehaviorDetails: { behaviorId } },
-                        requestId: 0,
-                    };
-                    const behavior_details = await callRemoteProcedureControl(
-                        connection,
-                        details_req,
-                    );
-                    const dets: GetBehaviorDetailsResponse | undefined =
-                        behavior_details?.behaviors?.getBehaviorDetails;
 
-                    if (dets) {
-                        behavior_map[dets.id] = dets;
+                    const behaviorDetails = await getBehavior(behavior)
+
+                    if (behaviorDetails) {
+                        behaviorMap[behaviorDetails.id] = behaviorDetails;
                     }
                 }
 
                 if (!ignore) {
-                    setBehaviors(behavior_map);
+                    setBehaviors(behaviorMap);
                 }
             }
         }
@@ -87,8 +66,7 @@ interface UseLayoutsReturn {
 }
 
 export function useLayout(): UseLayoutsReturn {
-    const { lockState } = useLockStore();
-    const { connection } = useConnectionStore();
+    const { connection, lockState } = useConnectionStore();
 
     const [layouts, setLayouts] = useState<PhysicalLayout[] | undefined>(undefined);
     const [selectedPhysicalLayoutIndex, setSelectedPhysicalLayoutIndex] = useState<number>(0);

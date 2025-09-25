@@ -1,7 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from "react"
 import Keyboard from './keyboard/Keyboard.tsx'
 import { KeyEditor } from './KeyEditor.tsx'
 import { Keymap } from '@zmkfirmware/zmk-studio-ts-client/keymap'
+import useConnectionStore from "../stores/ConnectionStore.ts"
+
+import { useConnectedDeviceData } from "@/services/RpcConnectionService.ts"
 
 /**
  * KeyboardEditor Component
@@ -10,21 +13,49 @@ import { Keymap } from '@zmkfirmware/zmk-studio-ts-client/keymap'
  * Handles the selection state and coordinates between the keyboard display and key editing interface.
  */
 interface KeyboardEditorProps {
-    keymap: Keymap | undefined
-    setKeymap: (keymap: Keymap | ((prev: Keymap) => Keymap)) => void
+    selectedLayerIndex: number
+    setSelectedLayerIndex: (index: number) => void
 }
 
 export function KeyboardEditor({ 
-    keymap, 
-    setKeymap 
+    selectedLayerIndex,
+    setSelectedLayerIndex
 }: KeyboardEditorProps) {
     // Shared state between Keyboard and KeyEditor
     const [selectedKey, setSelectedKey] = useState<boolean>(false)
     const [selectedKeyPosition, setSelectedKeyPosition] = useState<number | undefined>(undefined)
-    const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0)
+    const { connection } = useConnectionStore()
+
+    const [ keymap, setKeymap ] = useConnectedDeviceData<Keymap>(
+        { keymap: { getKeymap: true } },
+        ( keymap ) => {
+            console.log( "Got the keymap!" )
+            return keymap?.keymap?.getKeymap
+        },
+        true
+    )
+
+    // Reset layer selection when connection changes
+    useEffect(() => {
+        console.log('Connection changed, resetting layer selection to 0')
+        setSelectedLayerIndex(0)
+        setSelectedKeyPosition(undefined)
+    }, [connection])
+
+    // Ensure selectedLayerIndex is valid when keymap changes
+    useEffect(() => {
+        if (!keymap?.layers) return
+
+        const maxLayerIndex = keymap.layers.length - 1
+        console.log('Keymap changed, current selectedLayerIndex:', selectedLayerIndex, 'maxLayerIndex:', maxLayerIndex)
+        if (selectedLayerIndex > maxLayerIndex) {
+            console.log('Adjusting selectedLayerIndex from', selectedLayerIndex, 'to', maxLayerIndex)
+            setSelectedLayerIndex(maxLayerIndex)
+        }
+    }, [keymap, selectedLayerIndex, setSelectedLayerIndex])
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col flex-1">
             <Keyboard 
                 keymap={keymap}
                 selectedLayerIndex={selectedLayerIndex}

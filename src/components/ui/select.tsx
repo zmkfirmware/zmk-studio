@@ -1,160 +1,158 @@
-"use client"
-
-import { ChevronDown } from "lucide-react"
-import {
-  Button as AriaButton,
-  ButtonProps as AriaButtonProps,
-  ListBox as AriaListBox,
-  ListBoxProps as AriaListBoxProps,
-  PopoverProps as AriaPopoverProps,
-  Select as AriaSelect,
-  SelectProps as AriaSelectProps,
-  SelectValue as AriaSelectValue,
-  SelectValueProps as AriaSelectValueProps,
-  ValidationResult as AriaValidationResult,
-  composeRenderProps,
-  Text,
-} from "react-aria-components"
+import * as React from "react"
+import * as SelectPrimitive from "@radix-ui/react-select"
+import { Check, ChevronDown, ChevronUp } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-import { FieldError, Label } from "./field"
-import {
-  ListBoxCollection,
-  ListBoxHeader,
-  ListBoxItem,
-  ListBoxSection,
-} from "./list-box"
-import { Popover } from "./popover"
+const Select = SelectPrimitive.Root
 
-const Select = AriaSelect
+const SelectGroup = SelectPrimitive.Group
 
-const SelectItem = ListBoxItem
+const SelectValue = SelectPrimitive.Value
 
-const SelectHeader = ListBoxHeader
-
-const SelectSection = ListBoxSection
-
-const SelectCollection = ListBoxCollection
-
-const SelectValue = <T extends object>({
-  className,
-  ...props
-}: AriaSelectValueProps<T>) => (
-  <AriaSelectValue
-    className={composeRenderProps(className, (className) =>
-      cn(
-        "line-clamp-1 data-[placeholder]:text-muted-foreground",
-        /* Description */
-        "[&>[slot=description]]:hidden",
-        className
-      )
-    )}
-    {...props}
-  />
-)
-
-const SelectTrigger = ({ className, children, ...props }: AriaButtonProps) => (
-  <AriaButton
-    className={composeRenderProps(className, (className) =>
-      cn(
-        "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background",
-        /* Disabled */
-        "data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50",
-        /* Focused */
-        "data-[focus-visible]:outline-none data-[focus-visible]:ring-2 data-[focus-visible]:ring-ring data-[focus-visible]:ring-offset-2",
-        /* Resets */
-        "focus-visible:outline-none",
-        className
-      )
+const SelectTrigger = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
+>(({ className, children, ...props }, ref) => (
+  <SelectPrimitive.Trigger
+    ref={ref}
+    className={cn(
+      "flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+      className
     )}
     {...props}
   >
-    {composeRenderProps(children, (children) => (
-      <>
-        {children}
-        <ChevronDown aria-hidden="true" className="size-4 opacity-50" />
-      </>
-    ))}
-  </AriaButton>
-)
+    {children}
+    <SelectPrimitive.Icon asChild>
+      <ChevronDown className="h-4 w-4 opacity-50" />
+    </SelectPrimitive.Icon>
+  </SelectPrimitive.Trigger>
+))
+SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
 
-const SelectPopover = ({ className, ...props }: AriaPopoverProps) => (
-  <Popover
-    className={composeRenderProps(className, (className) =>
-      cn("w-[--trigger-width]", className)
+
+const SelectScrollUpButton = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.ScrollUpButton>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.ScrollUpButton>
+>(({ className, ...props }, ref) => (
+  <SelectPrimitive.ScrollUpButton
+    ref={ref}
+    className={cn(
+      "flex cursor-default items-center justify-center py-1",
+      className
     )}
     {...props}
-  />
-)
+  >
+    <ChevronUp className="h-4 w-4" />
+  </SelectPrimitive.ScrollUpButton>
+))
+SelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName
 
-const SelectListBox = <T extends object>({
-  className,
-  ...props
-}: AriaListBoxProps<T>) => (
-  <AriaListBox
-    className={composeRenderProps(className, (className) =>
-      cn(
-        "max-h-[inherit] overflow-auto p-1 outline-none [clip-path:inset(0_0_0_0_round_calc(var(--radius)-2px))]",
+const SelectScrollDownButton = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.ScrollDownButton>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.ScrollDownButton>
+>(({ className, ...props }, ref) => (
+  <SelectPrimitive.ScrollDownButton
+    ref={ref}
+    className={cn(
+      "flex cursor-default items-center justify-center py-1",
+      className
+    )}
+    {...props}
+  >
+    <ChevronDown className="h-4 w-4" />
+  </SelectPrimitive.ScrollDownButton>
+))
+SelectScrollDownButton.displayName =
+  SelectPrimitive.ScrollDownButton.displayName
+
+const SelectContent = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
+>(({ className, children, position = "popper", ...props }, ref) => (
+  <SelectPrimitive.Portal>
+    <SelectPrimitive.Content
+      ref={ref}
+      className={cn(
+        "relative z-50 max-h-[--radix-select-content-available-height] min-w-[8rem] overflow-y-auto overflow-x-hidden rounded-md border bg-popover text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-select-content-transform-origin]",
+        position === "popper" &&
+          "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
         className
-      )
-    )}
-    {...props}
-  />
-)
-
-interface JollySelectProps<T extends object>
-  extends Omit<AriaSelectProps<T>, "children"> {
-  label?: string
-  description?: string
-  errorMessage?: string | ((validation: AriaValidationResult) => string)
-  items?: Iterable<T>
-  children: React.ReactNode | ((item: T) => React.ReactNode)
-}
-
-function JollySelect<T extends object>({
-  label,
-  description,
-  errorMessage,
-  children,
-  className,
-  items,
-  ...props
-}: JollySelectProps<T>) {
-  return (
-    <Select
-      className={composeRenderProps(className, (className) =>
-        cn("group flex flex-col gap-2", className)
       )}
+      position={position}
       {...props}
     >
-      <Label>{label}</Label>
-      <SelectTrigger>
-        <SelectValue />
-      </SelectTrigger>
-      {description && (
-        <Text className="text-sm text-muted-foreground" slot="description">
-          {description}
-        </Text>
-      )}
-      <FieldError>{errorMessage}</FieldError>
-      <SelectPopover>
-        <SelectListBox items={items}>{children}</SelectListBox>
-      </SelectPopover>
-    </Select>
-  )
-}
+      <SelectScrollUpButton />
+      <SelectPrimitive.Viewport
+        className={cn(
+          "p-1",
+          position === "popper" &&
+            "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
+        )}
+      >
+        {children}
+      </SelectPrimitive.Viewport>
+      <SelectScrollDownButton />
+    </SelectPrimitive.Content>
+  </SelectPrimitive.Portal>
+))
+SelectContent.displayName = SelectPrimitive.Content.displayName
+
+const SelectLabel = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Label>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Label>
+>(({ className, ...props }, ref) => (
+  <SelectPrimitive.Label
+    ref={ref}
+    className={cn("px-2 py-1.5 text-sm font-semibold", className)}
+    {...props}
+  />
+))
+SelectLabel.displayName = SelectPrimitive.Label.displayName
+
+const SelectItem = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Item>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
+>(({ className, children, ...props }, ref) => (
+  <SelectPrimitive.Item
+    ref={ref}
+    className={cn(
+      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      className
+    )}
+    {...props}
+  >
+    <span className="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
+      <SelectPrimitive.ItemIndicator>
+        <Check className="h-4 w-4" />
+      </SelectPrimitive.ItemIndicator>
+    </span>
+    <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+  </SelectPrimitive.Item>
+))
+SelectItem.displayName = SelectPrimitive.Item.displayName
+
+const SelectSeparator = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Separator>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Separator>
+>(({ className, ...props }, ref) => (
+  <SelectPrimitive.Separator
+    ref={ref}
+    className={cn("-mx-1 my-1 h-px bg-muted", className)}
+    {...props}
+  />
+))
+SelectSeparator.displayName = SelectPrimitive.Separator.displayName
 
 export {
   Select,
+  SelectGroup,
   SelectValue,
   SelectTrigger,
+  SelectContent,
+  SelectLabel,
   SelectItem,
-  SelectPopover,
-  SelectHeader,
-  SelectListBox,
-  SelectSection,
-  SelectCollection,
-  JollySelect,
+  SelectSeparator,
+  SelectScrollUpButton,
+  SelectScrollDownButton,
 }
-export type { JollySelectProps }

@@ -4,6 +4,8 @@ import { Key, ListBox, ListBoxItem, Selection } from 'react-aria-components'
 import { Bluetooth, RefreshCw } from 'lucide-react'
 import { TransportFactory } from './Modals/ConnectModal.tsx'
 import { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index'
+import { UserCancelledError } from '@zmkfirmware/zmk-studio-ts-client/transport/errors'
+import { ErrorDialog } from './Modals/ErrorDialog.tsx'
 
 interface DeviceListProps {
     open?: boolean
@@ -21,6 +23,17 @@ export function DeviceList({
     >([])
     const [selectedDev, setSelectedDev] = useState(new Set<Key>())
     const [refreshing, setRefreshing] = useState(false)
+    const [errorDialog, setErrorDialog] = useState<{
+        open: boolean
+        title: string
+        message: string
+        details?: string
+    }>({
+        open: false,
+        title: '',
+        message: '',
+        details: ''
+    })
 
     async function LoadEm() {
         setRefreshing(true)
@@ -66,13 +79,22 @@ export function DeviceList({
             }
             const dev = devices.find(([_t, d]) => keys.has(d.id))
             if (dev) {
-                dev[0]
-                    .pick_and_connect!.connect(dev[1])
-                    .then((transport) => {
-                        console.log(keys, dev, transport)
-                        onTransportCreated( transport, dev[0].communication )
-                    })
-                    .catch((e) => alert(e))
+                try {
+                    const transport = await dev[0].pick_and_connect!.connect(dev[1])
+                    console.log(keys, dev, transport)
+                    onTransportCreated(transport, dev[0].communication)
+                } catch (e) {
+                    console.error('Connection error:', e)
+                    if (e instanceof Error && !(e instanceof UserCancelledError)) {
+                        // Show custom error dialog instead of browser alert
+                        setErrorDialog({
+                            open: true,
+                            title: 'Connection Error',
+                            message: 'Failed to connect to the selected device.',
+                            details: e.message
+                        })
+                    }
+                }
             }
         },
         [devices, onTransportCreated],
@@ -113,6 +135,14 @@ export function DeviceList({
                     </ListBoxItem>
                 )}
             </ListBox>
+
+            <ErrorDialog
+                open={errorDialog.open}
+                onClose={() => setErrorDialog(prev => ({ ...prev, open: false }))}
+                title={errorDialog.title}
+                message={errorDialog.message}
+                details={errorDialog.details}
+            />
         </div>
     )
 }

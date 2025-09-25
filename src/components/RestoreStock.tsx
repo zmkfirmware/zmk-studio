@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Modal, ModalProps } from "@/components/ui/Modal.tsx"
+import { Modal } from "@/components/ui/Modal.tsx"
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu.tsx"
 import { RotateCcw } from "lucide-react"
 
@@ -19,34 +19,33 @@ export function RestoreStock ( props: RestoreStockSettings ) {
 		setShowModal( false )
 	}
 
+	const handleClose = () => {
+		setShowModal( false )
+	}
+
 	return (
 		<>
-			<DropdownMenuItem onClick={ handleClick }>
+			<DropdownMenuItem
+				onSelect={(e) => e.preventDefault()}
+				onClick={ handleClick }
+			>
 				<RotateCcw className="mr-2 h-4 w-4" />
 				Restore Stock Settings
 			</DropdownMenuItem>
 
-			{ showModal && (
-				<Modal
-					usedFor="restoreStockSettings"
-					customModalBoxClass="w-11/12 max-w-5xl"
-					onOk={ handleOk }
-					okButtonText="Restore Stock Settings"
-					modalButton={ null }
-					hideCloseButton
-					open={ showModal }
-					onOpenChange={ setShowModal }
-				>
-					<h2 className="my-2 text-lg">Restore Stock Settings</h2>
-					<div>
-						<p>
-							Settings reset will remove any customizations previously
-							made in ZMK Studio and restore the stock keymap
-						</p>
-						<p>Continue?</p>
-					</div>
-				</Modal>
-			) }
+			<Modal
+				opened={ showModal }
+				onClose={ handleClose }
+				onOk={ handleOk }
+				customModalBoxClass="w-11/12 max-w-5xl"
+				success="Restore Stock Settings"
+				close="Cancel"
+				title="Restore Stock Settings"
+				description="Settings reset will remove any customizations previously made in ZMK Studio and restore the stock keymap. Continue?"
+				showFooter={ true }
+				xButton={ true }
+				type='text'
+			/>
 		</>
 	)
 }

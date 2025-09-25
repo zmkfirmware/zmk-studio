@@ -2,12 +2,12 @@ import sponsors from '../../data/sponsors.ts'
 import SponsorSize from '../../enums/SponsorSize.ts'
 import { ExternalLink } from '../../misc/ExternalLink.tsx'
 import React from 'react'
-import { ModernModal } from "@/components/ui/ModernModal.tsx"
+import { Modal } from "@/components/ui/Modal.tsx"
 
 export function AboutModal() {
     return (
         <>
-            <ModernModal
+            <Modal
                 customModalBoxClass="w-11/14 max-w-5xl"
                 close={false}
                 success={false}
@@ -89,7 +89,7 @@ export function AboutModal() {
                     )
                 })}
             </div>
-            </ModernModal>
+            </Modal>
         </>
     )
 }

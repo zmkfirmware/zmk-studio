@@ -1,8 +1,8 @@
 import NOTICE from "../../../NOTICE?raw";
-import { ModernModal } from "@/components/ui/ModernModal.tsx"
+import { Modal } from "@/components/ui/Modal.tsx"
 export function LicenseNoticeModal() {
   return <>
-    <ModernModal
+    <Modal
         customModalBoxClass="w-11/14 max-w-4xl"
         close={false}
         success={false}
@@ -17,6 +17,6 @@ export function LicenseNoticeModal() {
           </p>
         <pre className="m-4 font-mono text-xs">{ NOTICE }</pre>
       </div>
-    </ModernModal>
+    </Modal>
   </>;
 }

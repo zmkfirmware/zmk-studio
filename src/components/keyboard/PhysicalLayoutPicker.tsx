@@ -1,5 +1,5 @@
 import { useCallback } from "react"
-import { Popover, PopoverTrigger, PopoverDialog, PopoverContent } from "../ui/popover"
+import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover"
 import { PhysicalLayout, type KeyPosition } from "./PhysicalLayout.tsx"
 import { SidebarGroupContent, SidebarGroupLabel, SidebarGroupAction, SidebarMenuButton } from "../ui/sidebar"
 import { Plus } from "lucide-react"

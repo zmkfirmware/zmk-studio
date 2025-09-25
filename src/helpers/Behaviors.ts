@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react"
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core"
-import { callRemoteProcedureControl } from "../rpc/logging.ts"
 import type { GetBehaviorDetailsResponse } from "@zmkfirmware/zmk-studio-ts-client/behaviors"
 import useConnectionStore from "../stores/ConnectionStore.ts"
-import useLockStore from "../stores/LockStateStore.ts"
+import { callRemoteProcedureControl } from "@/services/RpcConnectionService.ts"
 
 export type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
 export function useBehaviors (): BehaviorMap {
-	const { connection } = useConnectionStore()
-	const { lockState } = useLockStore()
+	const { connection, lockState } = useConnectionStore()
 	const [ behaviors, setBehaviors ] = useState<BehaviorMap>( {} )
 
 	useEffect( () => {

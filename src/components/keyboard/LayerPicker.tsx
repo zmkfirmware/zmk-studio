@@ -1,20 +1,15 @@
 import { EllipsisVertical, Plus, Trash } from "lucide-react"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import {
-	DropIndicator,
-	Selection,
-	useDragAndDrop
-} from "react-aria-components"
-import { callRemoteProcedureControl } from "../../rpc/logging.ts"
+import { DropIndicator, useDragAndDrop } from "react-aria-components"
 import undoRedoStore from "../../stores/UndoRedoStore.ts"
 import useConnectionStore from "../../stores/ConnectionStore.ts"
 import { produce } from "immer"
 import { SetLayerPropsResponse } from "@zmkfirmware/zmk-studio-ts-client/keymap"
-import EditLabelModal from "../EditLabelModal.tsx"
+import EditLabel from "../EditLabel.tsx"
 
 import {
+	SidebarGroup,
 	SidebarGroupAction,
-	SidebarGroupContent,
 	SidebarGroupLabel,
 	SidebarMenu, SidebarMenuAction, SidebarMenuButton,
 	SidebarMenuItem
@@ -26,10 +21,8 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu.tsx"
+import { callRemoteProcedureControl } from "@/services/RpcConnectionService.ts"
 
-// import { useModalRef } from "../../misc/useModalRef.ts"
-// import { GenericModal } from "../GenericModal.tsx"
-// import EditLabelModal from '../EditLabelModal.tsx'
 
 interface Layer {
 	id: number
@@ -213,6 +206,7 @@ export const LayerPicker = ( {
 			console.log( resp )
 			if ( resp.keymap?.addLayer?.ok ) {
 				const newSelection = keymap.layers.length
+				console.log('Adding new layer, setting selectedLayerIndex to:', newSelection)
 				setKeymap(
 					produce( ( draft: any ) => {
 						draft.layers.push( resp.keymap!.addLayer!.ok!.layer )
@@ -221,6 +215,7 @@ export const LayerPicker = ( {
 				)
 
 				setSelectedLayerIndex( newSelection )
+				console.log('setSelectedLayerIndex called with:', newSelection)
 
 				return resp.keymap.addLayer.ok.index
 			} else {
@@ -401,7 +396,7 @@ export const LayerPicker = ( {
 
 	return (
 		<>
-			<SidebarGroupContent>
+			<SidebarGroup>
 				<SidebarGroupLabel>Layers</SidebarGroupLabel>
 				<SidebarGroupAction title="Add Layer" onClick={ addLayer } disabled={ !canAdd }>
 					{/*<Button onClick={addLayer} disabled={ !canAdd } variant="ghost" size="icon" className="size-8" >*/ }
@@ -416,20 +411,19 @@ export const LayerPicker = ( {
 								isActive={ item.index === selectedLayerIndex }
 								onClick={ (event) => {
 									onLayerClicked?.( item.index )
-									selectionChanged( item.index)
 								} }
 							>
 								<span>{ item.name }</span>
 							</SidebarMenuButton>
 							<DropdownMenu>
-								<DropdownMenuTrigger>
+								<DropdownMenuTrigger asChild>
 									<SidebarMenuAction showOnHover className="data-[state=open]:bg-accent rounded-sm">
 										<EllipsisVertical /> <span className="sr-only">More</span>
 									</SidebarMenuAction>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent side="right" align="start">
-									<DropdownMenuItem>
-										<EditLabelModal
+									<DropdownMenuItem  onSelect={(e) => e.preventDefault()} >
+										<EditLabel
 											onClose={ () => setEditLabelData( null ) }
 											editLabelData={ item }
 											handleSaveNewLabel={ handleSaveNewLabel }
@@ -448,7 +442,7 @@ export const LayerPicker = ( {
 						</SidebarMenuItem>
 					) ) }
 				</SidebarMenu>
-			</SidebarGroupContent>
+			</SidebarGroup>
 			{/*<div className="flex flex-col min-w-40">*/ }
 			{/*	<ListBox*/ }
 			{/*		aria-label="Keymap Layer"*/ }

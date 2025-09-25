@@ -1,93 +1,147 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useState } from "react"
+import {
+	Dialog,
+	DialogOverlay,
+	DialogTrigger,
+	DialogContent,
+	DialogHeader,
+	DialogFooter,
+	DialogTitle,
+	DialogDescription, DialogClose
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { LucideIcon } from "lucide-react"
+import { ButtonProps } from "react-aria-components"
 
-export interface ModalProps {
-    usedFor?: string
-    opened?: boolean
-    onClose?: () => void | Promise<void>
-    onOk?: () => void | Promise<void>
-    type?: 'btn'
-    className?: string
-    customModalBoxClass?: string
-    modalButton?: string | React.ReactNode
-    hideXButton?: boolean
-    hideCloseButton?: boolean
-    okButtonText?: string
-    children?: React.ReactNode
+// Create a forwardRef wrapper for span
+const TextTrigger = React.forwardRef<HTMLSpanElement, React.HTMLAttributes<HTMLSpanElement>>(
+	( { className, ...props }, ref ) => (
+		<span
+			ref={ ref }
+			className={ `underline-offset-4 cursor-pointer ${ className || "" }` }
+			{ ...props }
+		/>
+	)
+)
+TextTrigger.displayName = "TextTrigger"
+
+export interface ModernModalProps {
+	usedFor?: string
+	opened?: boolean
+	onClose?: () => void | Promise<void>
+	onOk?: () => void | Promise<void>
+	type?: "button" | "text" | "icon"
+	icon?: JSX.Element,
+	variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
+	className?: string
+	customModalBoxClass?: string
+	text?: string | React.ReactNode
+	xButton?: boolean
+	close?: string | boolean
+	success?: string | boolean
+	title?: string
+	description?: string
+	children?: React.ReactNode
+	isDismissable?: boolean,
+	showFooter?: boolean
+	widthClass?: string
+	heightClass?: string
 }
 
-export function Modal({
-    usedFor = 'default',
-    opened = false,
-    onClose,
-    onOk,
-    type,
-    className = '',
-    customModalBoxClass = '',
-    modalButton,
-    hideXButton = false,
-    hideCloseButton = false,
-    okButtonText = 'OK',
-    children
-}: ModalProps) {
-    const dialogRef = useRef<HTMLDialogElement>(null)
+export function Modal ( {
+	opened = false,
+	onClose,
+	onOk,
+	type = "button",
+	text,
+	icon,
+	variant = "default",
+	className = "",
+	customModalBoxClass = "",
+	xButton = true,
+	close = "Cancel",
+	success = "OK",
+	showFooter = true,
+	title,
+	description,
+	children,
+	isDismissable = false,
+	widthClass,
+	heightClass
+}: ModernModalProps ) {
+	const [ isOpen, setIsOpen ] = useState( opened )
 
-    useEffect(() => {
-        const dialog = dialogRef.current
+	// Update internal state when opened prop changes
+	useEffect( () => {
+		setIsOpen( opened )
+	}, [ opened ] )
 
-        if (!dialog) return
+	const handleClose = () => {
+		setIsOpen( false )
+		onClose?.()
+	}
 
-        opened ? dialog.showModal() : dialog.close()
-    }, [opened])
+	const handleOk = async () => {
+		if ( onOk ) {
+			await onOk()
+		}
+		handleClose()
+	}
 
-    const handleClose = () => onClose?.()
-    const handleOk = () => onOk?.()
+	const handleOpenChange = ( open: boolean ) => {
+		setIsOpen( open )
+		if ( !open ) {
+			onClose?.()
+		}
+	}
 
-    return (
-        <>
-            {modalButton && !opened && (
-                <span
-                    className={`cursor-pointer ${type || ''}`}
-                    onClick={() => dialogRef.current?.showModal()}
-                >
-                    {modalButton}
-                </span>
-            )}
-            <dialog
-                ref={dialogRef}
-                className={`modal ${className}`}
-                onClose={handleClose}
-            >
-                <div className={`modal-box ${customModalBoxClass}`}>
-                    {children}
-                    <div className="modal-action">
-                        <form method="dialog">
-                            {!hideCloseButton && (
-                                <button
-                                    className="btn"
-                                    onClick={handleClose}
-                                >
-                                    Close
-                                </button>
-                            )}
-                            {onOk && (
-                                <button
-                                    onClick={handleOk}
-                                    className="btn"
-                                >
-                                    {okButtonText}
-                                </button>
-                            )}
-                            {!hideXButton && (
-                                <button
-                                    className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                                >
-                                    ✕
-                                </button>
-                            )}
-                        </form>
-                    </div>
-                </div>
-            </dialog>
-        </>
-    )
-}
+	const blockDismiss = ( e ) => e.preventDefault()
+
+	return (
+		<Dialog open={ isOpen } onOpenChange={ handleOpenChange }>
+
+			{ type == "button" && !opened && (
+				<DialogTrigger asChild>
+					<Button variant={ variant } className="cursor-pointer">{ text }</Button>
+				</DialogTrigger>
+			) }
+			{ type == "text" && !opened && (
+				<DialogTrigger asChild>
+					<TextTrigger>{ text }</TextTrigger>
+				</DialogTrigger>
+			) }
+			{ type == "icon" && !opened && (
+				<DialogTrigger asChild>
+					<Button variant={ variant } size="icon" className="cursor-pointer">{ icon }</Button>
+				</DialogTrigger>
+			) }
+			<DialogContent className={ `${ customModalBoxClass }` } showCloseButton={ xButton }
+			               { ...(isDismissable
+				               ? {
+					               onEscapeKeyDown: blockDismiss,
+					               onPointerDownOutside: blockDismiss,
+					               onInteractOutside: blockDismiss
+				               }
+				               : {}) }
+			>
+				<DialogHeader>
+					<DialogTitle>{ title }</DialogTitle>
+					<DialogDescription>{ description }</DialogDescription>
+				</DialogHeader>{ children }
+				{ showFooter && (
+					<DialogFooter>
+						{ close && (
+							<DialogClose asChild>
+								<Button variant="outline" onClick={ handleClose }>{ close }</Button>
+							</DialogClose>
+						) }
+						{ success && (
+							<Button type="submit" onClick={ handleOk }>{ success }</Button>
+						) }
+					</DialogFooter>
+				) }
+			</DialogContent>
+		</Dialog>
+
+	)
+} 

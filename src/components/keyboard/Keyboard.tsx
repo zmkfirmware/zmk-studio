@@ -1,14 +1,13 @@
 import { useEffect } from "react"
-import { callRemoteProcedureControl } from "../../rpc/logging.ts"
 import { Keymap, } from "@zmkfirmware/zmk-studio-ts-client/keymap"
 import { KeyboardLayout } from "./KeyboardLayout.tsx"
-import { LayoutZoom } from "./PhysicalLayout.tsx"
 import { useLocalStorageState } from "../../misc/useLocalStorageState.ts"
-import { deserializeLayoutZoom } from "../../helpers/helpers.ts"
+import { deserializeLayoutZoom, LayoutZoom } from "../../helpers/helpers.ts"
 import { useLayout } from "../../helpers/useLayouts.ts"
 import { Zoom } from "../Zoom.tsx"
 import useConnectionStore from "../../stores/ConnectionStore.ts"
 import { useBehaviors } from "../../helpers/Behaviors.ts"
+import { getKeymapLayout } from "@/services/RpcEventsService.ts"
 
 interface KeyboardProps {
 	keymap: Keymap | undefined;
@@ -31,6 +30,8 @@ export default function Keyboard({
 }: KeyboardProps) {
 	const { layouts, selectedPhysicalLayoutIndex } = useLayout()
 
+	//todo change to zustand storing system
+
 	const [ keymapScale, setKeymapScale ] = useLocalStorageState<LayoutZoom>(
 		"keymapScale",
 		"auto",
@@ -39,29 +40,18 @@ export default function Keyboard({
 	const behaviors = useBehaviors()
 	const { connection } = useConnectionStore()
 
-	useEffect( () => {
-		setSelectedLayerIndex( 0 )
-		setSelectedKeyPosition( undefined )
-	}, [ connection, setSelectedLayerIndex, setSelectedKeyPosition ] )
+	// useEffect( () => {
+	// 	setSelectedLayerIndex( 0 )
+	// 	setSelectedKeyPosition( undefined )
+	// }, [ connection, setSelectedLayerIndex, setSelectedKeyPosition ] )
 
 	useEffect( () => {
-		async function performSetRequest () {
-			if ( !connection || !layouts ) return
+		(async ()=> {
+			await getKeymapLayout( selectedPhysicalLayoutIndex, layouts )
+		})()
 
-			const resp = await callRemoteProcedureControl( connection, {
-				keymap: { setActivePhysicalLayout: selectedPhysicalLayoutIndex }
-			} )
-
-			const new_keymap = resp?.keymap?.setActivePhysicalLayout?.ok
-			if ( new_keymap ) {
-				console.log( "New keymap received from physical layout change" )
-			} else {
-				console.error( "Failed to set the active physical layout err:", resp?.keymap?.setActivePhysicalLayout?.err )
-			}
-		}
-
-		performSetRequest()
 	}, [ selectedPhysicalLayoutIndex, connection, layouts ] )
+
 
 	useEffect( () => {
 		if ( !keymap?.layers ) return
@@ -88,8 +78,7 @@ export default function Keyboard({
 					<Zoom
 						value={ keymapScale }
 						onChange={ ( e ) => {
-							const value = deserializeLayoutZoom( e.target.value )
-							setKeymapScale( value )
+							setKeymapScale( deserializeLayoutZoom( e ) )
 						} }
 					/>
 				</div>

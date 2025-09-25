@@ -1,6 +1,7 @@
 import { PropsWithChildren, useLayoutEffect, useRef, useState } from 'react'
 import { Key } from './Key.tsx'
 import { scalePosition } from '../../helpers/scalePosition.ts'
+import { LayoutZoom } from "@/helpers/helpers.ts"
 
 export type KeyPosition = PropsWithChildren<{
     id?: string;
@@ -14,8 +15,6 @@ export type KeyPosition = PropsWithChildren<{
     ry?: number
 }>
 
-export type LayoutZoom = number | 'auto'
-
 interface PhysicalLayoutProps {
     positions: Array<KeyPosition>
     selectedPosition?: number
@@ -23,14 +22,6 @@ interface PhysicalLayoutProps {
     hoverZoom?: boolean
     zoom?: LayoutZoom
     onPositionClicked?: (position: number) => void
-}
-
-export interface PhysicalLayoutPositionLocation {
-    x: number
-    y: number
-    r?: number
-    rx?: number
-    ry?: number
 }
 
 export const PhysicalLayout = ({
@@ -84,9 +75,9 @@ export const PhysicalLayout = ({
         }),
         { rightMost: 0, bottomMost: 0 }
     );
-    // console.log(positions)
-    const positionItems = positions.map((p, idx) => (
 
+    // console.log(positions)
+    const keysPositions = positions.map((p, idx) => (
         <div
             key={p.id}
             onClick={() => onPositionClicked?.(idx)}
@@ -107,7 +98,7 @@ export const PhysicalLayout = ({
             }}
             ref={ref}
             {...props}>
-            {positionItems}
+            {keysPositions}
         </div>
     )
 }

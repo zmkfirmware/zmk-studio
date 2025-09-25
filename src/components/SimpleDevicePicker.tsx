@@ -4,7 +4,7 @@ import { UserCancelledError } from '@zmkfirmware/zmk-studio-ts-client/transport/
 import { TransportFactory } from './Modals/ConnectModal.tsx'
 import { RpcTransport } from '@zmkfirmware/zmk-studio-ts-client/transport/index'
 import { Button } from "@/components/ui/button.tsx"
-import { ErrorDialog } from "@/components/Modals/ErrorDialog.tsx"
+import { toast } from "sonner"
 
 interface SimpleDevicePickerProps {
     transports: TransportFactory[]
@@ -18,17 +18,6 @@ export function SimpleDevicePicker({
     const [availableDevices, setAvailableDevices] = useState<AvailableDevice[] | undefined>(undefined)
     const [selectedTransport, setSelectedTransport] = useState<TransportFactory | undefined>(undefined)
     const [ignore, setIgnore] = useState<boolean>(false)
-    const [errorDialog, setErrorDialog] = useState<{
-        open: boolean
-        title: string
-        message: string
-        details?: string
-    }>({
-        open: false,
-        title: '',
-        message: '',
-        details: ''
-    })
 
     async function connectTransport() {
         try {
@@ -38,38 +27,35 @@ export function SimpleDevicePicker({
                 if (transport) {
                     onTransportCreated(transport, selectedTransport!.communication)
                 }
-                setSelectedTransport(undefined)
             }
+
+            setSelectedTransport(undefined)
         } catch (e) {
             if (!ignore) {
-                console.error(e)
                 if (e instanceof Error && !(e instanceof UserCancelledError)) {
-                    // Show custom error dialog instead of browser alert
-                    setErrorDialog({
-                        open: true,
-                        title: 'Connection Error',
-                        message: 'Failed to connect to the device.',
-                        details: e.message
+                    toast.error("Failed to connect to the selected device.", {
+                        description: e.message,
                     })
                 }
-                setSelectedTransport(undefined)
             }
+            setSelectedTransport(undefined)
         }
     }
 
     async function loadAvailableDevices() {
         const devices = await selectedTransport?.pick_and_connect?.list()
-
-        if (!ignore) {
-            setAvailableDevices(devices)
-        }
+        console.log(devices)
+        setAvailableDevices(devices)
     }
 
     useEffect(() => {
+        // Reset ignore state at the start of each new connection attempt
+        setIgnore(false)
         if (!selectedTransport) {
             setAvailableDevices(undefined)
             return
         }
+
 
         if (selectedTransport.connect) {
             connectTransport()
@@ -107,18 +93,16 @@ export function SimpleDevicePicker({
                                 try {
                                     const transport = await selectedTransport!.pick_and_connect!.connect(d)
                                     onTransportCreated(transport, selectedTransport!.communication)
-                                    setSelectedTransport(undefined)
                                 } catch (e) {
+                                    console.log(e)
                                     if (e instanceof Error && !(e instanceof UserCancelledError)) {
-                                        setErrorDialog({
-                                            open: true,
-                                            title: 'Connection Error',
-                                            message: 'Failed to connect to the selected device.',
-                                            details: e.message
+                                        toast.error("Failed to connect to the selected device.", {
+                                            description: e.message,
                                         })
+
                                     }
-                                    setSelectedTransport(undefined)
                                 }
+                                setSelectedTransport(undefined)
                             }}
                         >
                             {d.label}
@@ -126,14 +110,6 @@ export function SimpleDevicePicker({
                     ))}
                 </ul>
             )}
-
-            <ErrorDialog
-                open={errorDialog.open}
-                onClose={() => setErrorDialog(prev => ({ ...prev, open: false }))}
-                title={errorDialog.title}
-                message={errorDialog.message}
-                details={errorDialog.details}
-            />
         </div>
     )
 }

@@ -6,8 +6,10 @@ import { useCallback, useMemo } from "react"
 import undoRedoStore from "../stores/UndoRedoStore.ts"
 import useConnectionStore from "../stores/ConnectionStore.ts"
 import { produce } from "immer"
-import { callRemoteProcedureControl } from "../rpc/logging.ts"
 import { SetLayerBindingResponse } from "@zmkfirmware/zmk-studio-ts-client/keymap"
+import { Card, CardContent } from "./ui/card"
+import { Button } from "./ui/button"
+import { callRemoteProcedureControl } from "@/services/RpcConnectionService.ts"
 
 interface KeyEditorProps {
 	selectedKey: boolean;
@@ -138,32 +140,34 @@ export function KeyEditor({
 		<>
 			{selectedKey && (
 				<div className="p-2 col-start-2 row-start-2 w-full">
-					<div className="card bg-base-100 shadow-xl">
-						<div className="card-body p-4">
+					<Card className="relative">
+						<CardContent className="p-4">
 							<div className="flex flex-row gap-4 w-full">
-									<BehaviorBindingPicker
-										binding={selectedBinding}
-										behaviors={Object.values(behaviors)}
-										layers={keymap?.layers.map(
-											( { id, name }, li ) => ({
-												id,
-												name: name || li.toLocaleString()
-											})
-										) || []}
-										onBindingChanged={doUpdateBinding}
-									/>
+								<BehaviorBindingPicker
+									binding={selectedBinding}
+									behaviors={Object.values(behaviors)}
+									layers={keymap?.layers.map(
+										( { id, name }, li ) => ({
+											id,
+											name: name || li.toLocaleString()
+										})
+									) || []}
+									onBindingChanged={doUpdateBinding}
+								/>
 							</div>
-								<button
-									className="btn btn-square btn-sm absolute right-0 top-0 btn-soft btn-primary"
-									onClick={() => {
-										setSelectedKey(false)
-										setSelectedKeyPosition(undefined)
-									}}
-								>
-									<X />
-								</button>
-						</div>
-					</div>
+							<Button
+								variant="ghost"
+								size="sm"
+								className="absolute right-2 top-2 h-8 w-8 p-0"
+								onClick={() => {
+									setSelectedKey(false)
+									setSelectedKeyPosition(undefined)
+								}}
+							>
+								<X className="h-4 w-4" />
+							</Button>
+						</CardContent>
+					</Card>
 				</div>
 			)}
 		</>

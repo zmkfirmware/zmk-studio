@@ -3,6 +3,7 @@ import { keyboards } from "../../data/keys"
 import Keycode from "./Keycode.tsx"
 import React from "react";
 import { Key } from "react-aria-components"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 
 /**
  * KeysLayout Component
@@ -150,7 +151,7 @@ function convertZmkToHidUsage(zmkCode: number): number | undefined {
 }
 
 export function KeysLayout({ value, label, onValueChanged }: KeysLayoutProps) {
-	const [activeTab, setActiveTab] = useState(0)
+	const [activeTab, setActiveTab] = useState("0")
 	const [selectedKey, setSelectedKey] = useState<number | undefined>(undefined)
 	const [selectedModifiers, setSelectedModifiers] = useState<Mods[]>([])
 
@@ -396,106 +397,102 @@ export function KeysLayout({ value, label, onValueChanged }: KeysLayoutProps) {
 
 	return (
 		<>
-			{/* Selected Key Display - shows the currently selected key like HidUsagePicker */}
-			{(selectedKey !== undefined || selectedModifiers.length > 0) && (
-				<div className="mb-4 p-3 bg-base-200 rounded-lg">
-					<div className="flex items-center justify-between mb-2">
-						<h3 className="text-sm font-semibold">Selected Key & Modifiers:</h3>
-						<button 
-							onClick={clearAllSelected}
-							className="btn btn-xs btn-ghost"
+			{/*Selected Key Display - shows the currently selected key like HidUsagePicker*/}
+			{/*{(selectedKey !== undefined || selectedModifiers.length > 0) && (*/}
+			{/*	<div className="mb-4 p-3 bg-base-200 rounded-lg">*/}
+			{/*		<div className="flex items-center justify-between mb-2">*/}
+			{/*			<h3 className="text-sm font-semibold">Selected Key & Modifiers:</h3>*/}
+			{/*			<button */}
+			{/*				onClick={clearAllSelected}*/}
+			{/*				className="btn btn-xs btn-ghost"*/}
+			{/*			>*/}
+			{/*				Clear All*/}
+			{/*			</button>*/}
+			{/*		</div>*/}
+			{/*		<div className="flex flex-wrap gap-2">*/}
+			{/*			/!* Display selected key *!/*/}
+			{/*			{selectedKey !== undefined && (*/}
+			{/*				<div className="badge badge-primary gap-1">*/}
+			{/*					{getSelectedKeyDisplayLabel()}*/}
+			{/*					<button */}
+			{/*						onClick={() => setSelectedKey(undefined)}*/}
+			{/*						className="btn btn-xs btn-ghost p-0 h-4 w-4"*/}
+			{/*					>*/}
+			{/*						×*/}
+			{/*					</button>*/}
+			{/*				</div>*/}
+			{/*			)}*/}
+			{/*			/!* Display selected modifiers *!/*/}
+			{/*			{selectedModifiers.map(modifier => {*/}
+			{/*				// Find the key ID that corresponds to this modifier*/}
+			{/*				const keyId = Object.keys(KEY_ID_TO_MOD).find(k => KEY_ID_TO_MOD[parseInt(k)] === modifier);*/}
+			{/*				const keyInfo = keyId ? getKeyInfo(parseInt(keyId)) : null;*/}
+			{/*				*/}
+			{/*				console.log("Displaying modifier:", { */}
+			{/*					modifier, */}
+			{/*					keyId, */}
+			{/*					keyInfo, */}
+			{/*					modLabel: mod_labels[modifier] */}
+			{/*				});*/}
+			{/*				*/}
+			{/*				return (*/}
+			{/*					<div key={`mod-${modifier}`} className="badge badge-secondary gap-1">*/}
+			{/*						{keyInfo?.Label || mod_labels[modifier]}*/}
+			{/*						<button */}
+			{/*							onClick={() => {*/}
+			{/*								console.log("Modifier X button clicked for:", { modifier, keyId });*/}
+			{/*								if (keyId) {*/}
+			{/*									removeSelectedKey(parseInt(keyId));*/}
+			{/*								}*/}
+			{/*							}}*/}
+			{/*							className="btn btn-xs btn-ghost p-0 h-4 w-4"*/}
+			{/*						>*/}
+			{/*							×*/}
+			{/*						</button>*/}
+			{/*					</div>*/}
+			{/*				);*/}
+			{/*			})}*/}
+			{/*		</div>*/}
+			{/*	</div>*/}
+			{/*)}*/}
+
+			<Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+				<TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+					{keyboards.map((keyboard, index) => (
+						<TabsTrigger key={keyboard.Name} value={index.toString()}>
+							{keyboard.Name}
+						</TabsTrigger>
+					))}
+				</TabsList>
+				
+				{keyboards.map((keyboard, index) => (
+					<TabsContent key={keyboard.Name} value={index.toString()} className="mt-4">
+						<div
+							className="relative p-6"
+							style={{ height: "auto", minHeight: "350px" }}
 						>
-							Clear All
-						</button>
-					</div>
-					<div className="flex flex-wrap gap-2">
-						{/* Display selected key */}
-						{selectedKey !== undefined && (
-							<div className="badge badge-primary gap-1">
-								{getSelectedKeyDisplayLabel()}
-								<button 
-									onClick={() => setSelectedKey(undefined)}
-									className="btn btn-xs btn-ghost p-0 h-4 w-4"
-								>
-									×
-								</button>
-							</div>
-						)}
-						{/* Display selected modifiers */}
-						{selectedModifiers.map(modifier => {
-							// Find the key ID that corresponds to this modifier
-							const keyId = Object.keys(KEY_ID_TO_MOD).find(k => KEY_ID_TO_MOD[parseInt(k)] === modifier);
-							const keyInfo = keyId ? getKeyInfo(parseInt(keyId)) : null;
-							
-							console.log("Displaying modifier:", { 
-								modifier, 
-								keyId, 
-								keyInfo, 
-								modLabel: mod_labels[modifier] 
-							});
-							
-							return (
-								<div key={`mod-${modifier}`} className="badge badge-secondary gap-1">
-									{keyInfo?.Label || mod_labels[modifier]}
-									<button 
-										onClick={() => {
-											console.log("Modifier X button clicked for:", { modifier, keyId });
-											if (keyId) {
-												removeSelectedKey(parseInt(keyId));
-											}
-										}}
-										className="btn btn-xs btn-ghost p-0 h-4 w-4"
-									>
-										×
-									</button>
-								</div>
-							);
-						})}
-					</div>
-				</div>
-			)}
-
-			<div className="tabs tabs-lift tabs-sm">
-				{keyboards.map((tab, index) => (
-					<React.Fragment key={tab.Name}>
-						<label className="tab">
-							<input
-								type="radio"
-								name={tab.Name}
-								checked={activeTab === index}
-								onChange={() => setActiveTab(index)}
-							/>
-							{tab.Name}
-						</label>
-
-						{activeTab === index && (
-							<div
-								className="tab-content p-6 relative "
-								style={{ height: "auto", minHeight: "350px", marginTop: "1rem" }}
-							>
-								{tab.UsageIds.map((key, keyIndex) => {
-									const keyId = getKeyId(key);
-									return (
-										<Keycode
-											key={key.Id + "-" + keyIndex}
-											id={keyId}
-											label={key.Label}
-											width={key.w / 2 || 50}
-											height={key.h / 2 || 50}
-											x={key.x / 100}
-											y={key.y / 100}
-											keyCode={keyId.toString()}
-											baseKeyValue={keyId}
-											onSelect={handleKeySelect}
-											isSelected={isKeySelected(keyId)}
-										/>
-									);
-								})}
-							</div>
-						)}
-					</React.Fragment>
+							{keyboard.UsageIds.map((key, keyIndex) => {
+								const keyId = getKeyId(key);
+								return (
+									<Keycode
+										key={key.Id + "-" + keyIndex}
+										id={keyId}
+										label={key.Label}
+										width={key.w / 2 || 50}
+										height={key.h / 2 || 50}
+										x={key.x / 100}
+										y={key.y / 100}
+										keyCode={keyId.toString()}
+										baseKeyValue={keyId}
+										onSelect={handleKeySelect}
+										isSelected={isKeySelected(keyId)}
+									/>
+								);
+							})}
+						</div>
+					</TabsContent>
 				))}
-			</div>
+			</Tabs>
 		</>
 	)
 }

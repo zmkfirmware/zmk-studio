@@ -9,7 +9,7 @@
 /*---break---*/
 
 @custom-variant dark (&:is(.dark *));
-@plugin "daisyui";
+/*@plugin "daisyui";*/
 
 @layer base {
   @font-face {
@@ -19,26 +19,26 @@
   }
 }
 
-html {
-  color-scheme: light dark;
-}
+/*html {*/
+/*  color-scheme: light dark;*/
+/*}*/
 
-#root {
-  height: 100%;
-  width: 100%;
-}
+/*#root {*/
+/*  height: 100%;*/
+/*  width: 100%;*/
+/*}*/
 
-body {
-  margin: 0;
-  min-width: 320px;
+/*body {*/
+/*  margin: 0;*/
+/*  min-width: 320px;*/
 
-  width: 100vw;
-  height: 100vh;
-}
+/*  width: 100vw;*/
+/*  height: 100vh;*/
+/*}*/
 
-.tooltip{
-  display: inline-flex;
-}
+/*.tooltip{*/
+/*  display: inline-flex;*/
+/*}*/
 
 :root {
   --background: oklch(1 0 0);

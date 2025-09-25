@@ -6,8 +6,7 @@ import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core'
 import { useModalRef } from '../misc/useModalRef.ts'
 import { ExternalLink } from '../misc/ExternalLink.tsx'
 import useConnectionStore from '../stores/ConnectionStore.ts'
-import useLockStore from '../stores/LockStateStore.ts'
-import { Modal } from "@/components/ui/Modal.tsx"
+import { OldModal } from "@/components/ui/OldModal.tsx"
 
 export type TransportFactory = {
     label: string
@@ -21,8 +20,7 @@ export type TransportFactory = {
 export interface UnlockModalProps {}
 
 export const UnlockModal = ({}: UnlockModalProps) => {
-    const { lockState } = useLockStore()
-    const { connection } = useConnectionStore()
+    const { connection , lockState } = useConnectionStore()
     const open = useMemo(
         () =>
             !!connection &&
@@ -33,7 +31,7 @@ export const UnlockModal = ({}: UnlockModalProps) => {
 
     console.log(open,dialog)
     return (
-            <Modal
+            <OldModal
                 usedFor="unlockModal"
                 modalButton={''}
                 opened={!dialog}
@@ -53,6 +51,6 @@ export const UnlockModal = ({}: UnlockModalProps) => {
                     </ExternalLink>{' '}
                     documentation for more infomation.
                 </p>
-            </Modal>
+            </OldModal>
     )
 }

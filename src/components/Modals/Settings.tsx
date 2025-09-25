@@ -1,19 +1,26 @@
 // import useUserSettingsStore from "../../stores/UserSettingsStore.ts";
 
-import { Modal, ModalProps } from "@/components/ui/Modal.tsx";
+import { OldModal, ModalProps } from "@/components/ui/OldModal.tsx";
 import { Settings as SettingsIcon } from "lucide-react";
 import { DarkModeToggle } from "@/components/DarkModeToggle.tsx"
+import { Modal } from "@/components/ui/Modal.tsx"
 
 interface SettingsProps extends ModalProps{}
 
 export function Settings(props: SettingsProps) {
 
     // const userSettingsStore = useUserSettingsStore()
-    return <>
-        <Modal usedFor="settings" modalButton={<button className="btn btn-ghost btn-circle tooltip tooltip-bottom mx-1" data-tip="Settings"><SettingsIcon /></button>}>
-            <span>
+    return (
+        <Modal
+            customModalBoxClass="w-11/14 max-w-4xl"
+            type='icon'
+            icon={ <SettingsIcon /> }
+            variant='ghost'
+        >
+           <span>
 
             </span>
         </Modal>
-    </>
+    )
+
 }

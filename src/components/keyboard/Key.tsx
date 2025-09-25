@@ -68,7 +68,7 @@ export const Key = ({
                 data-zoomer={hoverZoom}
                 className={`rounded${
                     oneU > 20 ? '-md' : ''
-                } transition-all duration-100 box-border text-base-content bg-base-100 aria-selected:bg-primary aria-selected:text-primary-content grow
+                } transition-all duration-100 box-border text-base-content bg-cyan-950  aria-selected:bg-primary aria-selected:text-primary-content grow
                  flex-col flex items-center justify-evenly w-full h-full `}
             >
                 {header && (

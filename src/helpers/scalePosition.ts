@@ -1,6 +1,14 @@
 import { CSSProperties } from 'react'
 import { PhysicalLayoutPositionLocation } from '../components/keyboard/PhysicalLayout.tsx'
 
+export interface PhysicalLayoutPositionLocation {
+    x: number
+    y: number
+    r?: number
+    rx?: number
+    ry?: number
+}
+
 export function scalePosition(
     { x, y, r, rx, ry }: PhysicalLayoutPositionLocation,
     oneU: number,

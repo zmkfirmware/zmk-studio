@@ -7,16 +7,16 @@ import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core"
 interface ConnectionState {
     connection: RpcConnection | null;
     communication: 'serial' | 'ble' | null;
+    deviceName: string | null;
+    lockState: LockState;
     setConnection: (connection: RpcConnection | null, communication?: 'serial' | 'ble') => void;
+    setDeviceName: (name: string | null) => void;
+    setLockState: (state: LockState) => void;
     resetConnection: () => void;
     showConnectionModal: boolean;
     setShowConnectionModal: (visible: boolean) => void;
 }
-//todo move lockState in connection store
-interface LockStoreState {
-    lockState: LockState;
-    setLockState: (state: LockState) => void;
-}
+
 // Middleware to check if a connection exists and show the modal if not
 const connectionMiddleware = (config) => (
     set,
@@ -40,8 +40,17 @@ const useConnectionStore = create<ConnectionState>()(
         connectionMiddleware((set) => ({
             connection: null,
             communication: null,
+            deviceName: null,
+            lockState: LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED,
             setConnection: (connection, communication = null) => set({ connection, communication }),
-            resetConnection: () => set({ connection: null, communication: null }),
+            setDeviceName: (name) => set({ deviceName: name }),
+            setLockState: (state) => set({ lockState: state }),
+            resetConnection: () => set({ 
+                connection: null, 
+                communication: null, 
+                deviceName: null,
+                lockState: LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED 
+            }),
             showConnectionModal: false,
             setShowConnectionModal: (visible) => set({ showConnectionModal: visible }),
         })),
