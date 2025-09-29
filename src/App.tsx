@@ -10,12 +10,12 @@ import undoRedoStore from "./stores/UndoRedoStore.ts"
 import { createRoot } from "react-dom/client"
 import Alert from "@/components/ui/Alert.tsx"
 import { KeyboardEditor } from "./components/KeyboardEditor.tsx"
-import { Drawer } from "@/layout/Drawer.tsx"
+import { Drawer } from "@/Layout/Drawer.tsx"
 import { SidebarInset, SidebarProvider } from "./components/ui/sidebar.tsx"
 import { ThemeProvider } from "@/providers/ThemeProvider.tsx"
 import { Toaster } from "@/components/ui/sonner.tsx"
-import { Header } from "@/layout/Header.tsx"
-import { Footer } from "@/layout/Footer.tsx"
+import { Header } from "@/Layout/Header.tsx"
+import { Footer } from "@/Layout/Footer.tsx"
 
 function App () {
 	const { connection, setConnection, setDeviceName, deviceName, setLockState } = useConnectionStore()
