@@ -46,9 +46,9 @@ export default function Keyboard({
 		const currentLayout = layouts[selectedPhysicalLayoutIndex]
 		const currentLayer = keymap.layers[selectedLayerIndex]
 		
-		console.log('Key pressed:', keyCode)
-		console.log('Current layer bindings:', currentLayer.bindings)
-		console.log('Behaviors:', behaviors)
+		// console.log('Key pressed:', keyCode)
+		// console.log('Current layer bindings:', currentLayer.bindings)
+		// console.log('Behaviors:', behaviors)
 		
 		// Create a mapping from key codes to HID usage codes
 		const keyCodeToHidMap: Record<string, number> = {
@@ -77,7 +77,7 @@ export default function Keyboard({
 		}
 		
 		const hidUsageCode = keyCodeToHidMap[keyCode]
-		console.log('Looking for HID usage code:', hidUsageCode)
+		// console.log('Looking for HID usage code:', hidUsageCode)
 		
 		if (!hidUsageCode) return null
 		
@@ -91,16 +91,16 @@ export default function Keyboard({
 			// So we need to extract the lower 16 bits to get the HID usage ID
 			const hidUsageIdFromBinding = binding.param1 & 0xFFFF
 			
-			console.log(`Position ${i}:`, {
-				binding,
-				behavior: behavior?.displayName,
-				param1: binding.param1,
-				param1Hex: binding.param1?.toString(16),
-				hidUsageIdFromBinding,
-				hidUsageIdFromBindingHex: hidUsageIdFromBinding.toString(16),
-				expectedHidUsageCode: hidUsageCode,
-				matches: hidUsageIdFromBinding === hidUsageCode
-			})
+			// console.log(`Position ${i}:`, {
+			// 	binding,
+			// 	behavior: behavior?.displayName,
+			// 	param1: binding.param1,
+			// 	param1Hex: binding.param1?.toString(16),
+			// 	hidUsageIdFromBinding,
+			// 	hidUsageIdFromBindingHex: hidUsageIdFromBinding.toString(16),
+			// 	expectedHidUsageCode: hidUsageCode,
+			// 	matches: hidUsageIdFromBinding === hidUsageCode
+			// })
 			
 			// Check if the extracted HID usage ID matches our expected code
 			if (hidUsageIdFromBinding === hidUsageCode) {
@@ -145,7 +145,6 @@ export default function Keyboard({
 	// Keyboard event handlers
 	const handleKeyDown = useCallback((event: KeyboardEvent) => {
 		// Prevent default behavior for certain keys to avoid conflicts
-		console.log(event)
 		if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
 			return
 		}
@@ -154,7 +153,6 @@ export default function Keyboard({
 		if (keyPosition !== null) {
 			setPressedKeys(prev => new Set(prev).add(keyPosition))
 		}
-		console.log(keyPosition)
 	}, [mapKeyCodeToPosition])
 
 	const handleKeyUp = useCallback((event: KeyboardEvent) => {
