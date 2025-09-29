@@ -22,6 +22,7 @@ interface PhysicalLayoutProps {
     hoverZoom?: boolean
     zoom?: LayoutZoom
     onPositionClicked?: (position: number) => void
+    pressedKeys?: Set<number>
 }
 
 export const PhysicalLayout = ({
@@ -30,6 +31,7 @@ export const PhysicalLayout = ({
     oneU = 48,
     hoverZoom = true,
     onPositionClicked,
+    pressedKeys = new Set(),
     ...props
 }: PhysicalLayoutProps) => {
     const ref = useRef<HTMLDivElement>(null)
@@ -77,16 +79,24 @@ export const PhysicalLayout = ({
     );
 
     // console.log(positions)
-    const keysPositions = positions.map((p, idx) => (
-        <div
-            key={p.id}
-            onClick={() => onPositionClicked?.(idx)}
-            className="absolute data-[zoomer=true]:hover:z-[1000] leading-[0]"
-            data-zoomer={hoverZoom}
-            style={scalePosition(p, oneU)}>
-            <Key hoverZoom={hoverZoom} oneU={oneU} selected={idx === selectedPosition}{...p} />
-        </div>
-    ))
+    const keysPositions = positions.map((p, idx) => {
+        return (
+            <div
+                key={ p.id }
+                onClick={ () => onPositionClicked?.( idx ) }
+                className="absolute data-[zoomer=true]:hover:z-[1000] leading-[0]"
+                data-zoomer={ hoverZoom }
+                style={ scalePosition( p, oneU ) }>
+                <Key
+                    hoverZoom={ hoverZoom }
+                    oneU={ oneU }
+                    selected={ idx === selectedPosition }
+                    pressed={ pressedKeys.has( idx ) }
+                    { ...p }
+                />
+            </div>
+        )
+    })
     // console.log( positions, oneU);
     return (
         <div

@@ -18,6 +18,7 @@ export interface KeymapProps {
     selectedLayerIndex: number
     selectedKeyPosition: number | undefined
     onKeyPositionClicked: (keyPosition: number) => void
+    pressedKeys?: Set<number>
 }
 
 export const KeyboardLayout = ({
@@ -28,6 +29,7 @@ export const KeyboardLayout = ({
     selectedLayerIndex,
     selectedKeyPosition,
     onKeyPositionClicked,
+    pressedKeys = new Set(),
 }: KeymapProps) => {
     if (!keymap.layers[selectedLayerIndex]) {
         return <></>
@@ -67,6 +69,7 @@ export const KeyboardLayout = ({
             zoom={scale}
             selectedPosition={selectedKeyPosition}
             onPositionClicked={onKeyPositionClicked}
+            pressedKeys={pressedKeys}
         />
     )
 }

@@ -5,6 +5,7 @@ import { PropsWithChildren, Children, CSSProperties } from 'react'
 interface KeyProps {
 
     selected?: boolean
+    pressed?: boolean
     width: number
     height: number
     oneU: number // Button size
@@ -41,6 +42,7 @@ function makeSize(
 
 export const Key = ({
     selected = false,
+    pressed = false,
     header,
     oneU,
     hoverZoom = true,
@@ -69,7 +71,9 @@ export const Key = ({
                 className={`rounded${
                     oneU > 20 ? '-md' : ''
                 } transition-all duration-100 box-border text-base-content bg-cyan-950  aria-selected:bg-primary aria-selected:text-primary-content grow
-                 flex-col flex items-center justify-evenly w-full h-full `}
+                 flex-col flex items-center justify-evenly w-full h-full ${
+                    pressed ? 'bg-green-600 text-white shadow-lg scale-95' : ''
+                }`}
             >
                 {header && (
                     <span className="text-[0.35rem]">
