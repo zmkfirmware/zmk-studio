@@ -7,7 +7,6 @@ import {
 	Trash2,
 	Undo2
 } from "lucide-react"
-import { RestoreStock } from "../components/RestoreStock.tsx"
 import useConnectionStore from "../stores/ConnectionStore.ts"
 import undoRedoStore from "../stores/UndoRedoStore.ts"
 import { Settings } from "../components/Modals/Settings.tsx"
@@ -21,7 +20,7 @@ import { toast } from "sonner"
 export interface AppHeaderProps {
 }
 
-export const Header = ( {}: AppHeaderProps ) => {
+export function Header ({}: AppHeaderProps) {
 	const { connection, lockState } = useConnectionStore()
 	const { undo, redo, canUndo, canRedo, reset } = undoRedoStore()
 	const [ showSettingsReset, setShowSettingsReset ] = useState( false )
