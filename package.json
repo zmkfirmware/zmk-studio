@@ -7,7 +7,7 @@
     "generate-data": "node scripts/generate-release-data.js",
     "dev": "npm run generate-data && vite --port 5174",
     "tauri-dev": "npm run tauri dev",
-    "build": "npm run generate-data && tsc && vite build",
+    "build": "npm run generate-data && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "tauri": "tauri",

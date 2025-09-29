@@ -95,7 +95,7 @@ export class SerialTransport {
 
   async serialDisconnect(): Promise<void> {
     await this.cleanup();
-    this.eventEmitter.emit('connection_disconnected');
+    this.eventEmitter.emit('connection_disconnected',[]);
   }
 
   async serialListDevices(): Promise<AvailableDevice[]> {
