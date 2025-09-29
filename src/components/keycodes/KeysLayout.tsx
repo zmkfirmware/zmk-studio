@@ -19,6 +19,8 @@ interface KeysLayoutProps {
 	value?: number;
 	label?: string;
 	onValueChanged?: (value?: number) => void;
+	onKeySelected?: (key: number | undefined) => void;
+	onModifiersChanged?: (modifiers: Mods[]) => void;
 }
 
 // Modifier key IDs (from keyboard data)
@@ -150,7 +152,7 @@ function convertZmkToHidUsage(zmkCode: number): number | undefined {
 	return undefined;
 }
 
-export function KeysLayout({ value, label, onValueChanged }: KeysLayoutProps) {
+export function KeysLayout({ value, label, onValueChanged, onKeySelected, onModifiersChanged }: KeysLayoutProps) {
 	const [activeTab, setActiveTab] = useState("0")
 	const [selectedKey, setSelectedKey] = useState<number | undefined>(undefined)
 	const [selectedModifiers, setSelectedModifiers] = useState<Mods[]>([])
@@ -195,6 +197,16 @@ export function KeysLayout({ value, label, onValueChanged }: KeysLayoutProps) {
 			setSelectedModifiers([])
 		}
 	}, [value])
+
+	// Notify parent of key selection changes
+	useEffect(() => {
+		onKeySelected?.(selectedKey);
+	}, [selectedKey, onKeySelected]);
+
+	// Notify parent of modifier changes
+	useEffect(() => {
+		onModifiersChanged?.(selectedModifiers);
+	}, [selectedModifiers, onModifiersChanged]);
 
 	// Handle key selection - this is the main change to work like HidUsagePicker
 	function handleKeySelect(keyCode: string) {

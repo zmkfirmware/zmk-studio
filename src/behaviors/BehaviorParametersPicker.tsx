@@ -9,6 +9,9 @@ export interface BehaviorParametersPickerProps {
     layers: { id: number; name: string }[]
     onParam1Changed: (value?: number) => void
     onParam2Changed: (value?: number) => void
+    onKeysLayoutActive?: (isActive: boolean) => void
+    onKeySelected?: (key: number | undefined) => void
+    onModifiersChanged?: (modifiers: any[]) => void
 }
 
 export const BehaviorParametersPicker = ({
@@ -18,6 +21,9 @@ export const BehaviorParametersPicker = ({
     layers,
     onParam1Changed,
     onParam2Changed,
+    onKeysLayoutActive,
+    onKeySelected,
+    onModifiersChanged,
 }: BehaviorParametersPickerProps) => {
     // console.log(
     //     param1,
@@ -31,6 +37,9 @@ export const BehaviorParametersPicker = ({
                     values={metadata.flatMap((m) => m.param1)}
                     onValueChanged={onParam1Changed}
                     layers={layers}
+                    onKeysLayoutActive={onKeysLayoutActive}
+                    onKeySelected={onKeySelected}
+                    onModifiersChanged={onModifiersChanged}
                 />
             </>
         )
@@ -45,6 +54,9 @@ export const BehaviorParametersPicker = ({
                     value={param1}
                     layers={layers}
                     onValueChanged={onParam1Changed}
+                    onKeysLayoutActive={onKeysLayoutActive}
+                    onKeySelected={onKeySelected}
+                    onModifiersChanged={onModifiersChanged}
                 />
                 {(set?.param2?.length || 0) > 0 && (
                     <ParameterValuePicker
@@ -52,6 +64,9 @@ export const BehaviorParametersPicker = ({
                         value={param2}
                         layers={layers}
                         onValueChanged={onParam2Changed}
+                        onKeysLayoutActive={onKeysLayoutActive}
+                        onKeySelected={onKeySelected}
+                        onModifiersChanged={onModifiersChanged}
                     />
                 )}
             </>
