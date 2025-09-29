@@ -4,19 +4,18 @@ import type { RpcTransport } from "@zmkfirmware/zmk-studio-ts-client/transport/i
 import { useEmitter, useSub } from "./helpers/usePubSub.ts"
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core"
 import { UnlockModal } from "./components/UnlockModal.tsx"
-import { callRemoteProcedureControl, connect, useConnectedDeviceData } from "./services/RpcConnectionService.ts"
-import { Header } from "./layout/Header.tsx"
-import { Footer } from "./layout/Footer.tsx"
+import { callRemoteProcedureControl, connect } from "./services/RpcConnectionService.ts"
 import useConnectionStore from "./stores/ConnectionStore.ts"
 import undoRedoStore from "./stores/UndoRedoStore.ts"
 import { createRoot } from "react-dom/client"
 import Alert from "@/components/ui/Alert.tsx"
-import { Keymap } from "@zmkfirmware/zmk-studio-ts-client/keymap"
 import { KeyboardEditor } from "./components/KeyboardEditor.tsx"
 import { Drawer } from "@/layout/Drawer.tsx"
 import { SidebarInset, SidebarProvider } from "./components/ui/sidebar.tsx"
 import { ThemeProvider } from "@/providers/ThemeProvider.tsx"
 import { Toaster } from "@/components/ui/sonner.tsx"
+import { Header } from "@/layout/Header.tsx"
+import { Footer } from "@/layout/Footer.tsx"
 
 function App () {
 	const { connection, setConnection, setDeviceName, deviceName, setLockState } = useConnectionStore()
