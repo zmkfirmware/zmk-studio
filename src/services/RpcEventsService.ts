@@ -4,10 +4,10 @@ import useConnectionStore from "@/stores/ConnectionStore.ts"
 import { PhysicalLayout } from "@zmkfirmware/zmk-studio-ts-client/keymap"
 import { GetBehaviorDetailsResponse } from "@zmkfirmware/zmk-studio-ts-client/behaviors"
 
-export async function callRemoteProcedureControl (
+export const callRemoteProcedureControl = async (
     request: Omit<Request, "requestId">
-): Promise<RequestResponse> {
-    const { connection } = useConnectionStore()
+): Promise<RequestResponse> => {
+    const { connection } = useConnectionStore.getState()
 
     if ( !connection ){
         toast.error('Connection not found')
@@ -27,10 +27,10 @@ export async function callRemoteProcedureControl (
         } )
 }
 
-export async function getKeymapLayout (
+export const getKeymapLayout = async (
     layoutIndex: number,
     layouts: PhysicalLayout[]
-): Promise<void> {
+): Promise<void> => {
     if ( !layouts ) return
 
     const resp = await callRemoteProcedureControl({
@@ -45,7 +45,7 @@ export async function getKeymapLayout (
     }
 }
 
-export async function getBehaviors (): Promise<RequestResponse> {
+export const getBehaviors = async (): Promise<RequestResponse> => {
 
     const behaviorsRequest: Request = {
         behaviors: { listAllBehaviors: true },
@@ -55,7 +55,7 @@ export async function getBehaviors (): Promise<RequestResponse> {
     return  await callRemoteProcedureControl( behaviorsRequest);
 }
 
-export async function getBehavior (behavior: number): Promise<GetBehaviorDetailsResponse> {
+export const getBehavior = async (behavior: number): Promise<GetBehaviorDetailsResponse> => {
 
     const details_req = {
         behaviors: { getBehaviorDetails: { behaviorId: behavior } },
@@ -65,4 +65,27 @@ export async function getBehavior (behavior: number): Promise<GetBehaviorDetails
         details_req
     );
     return behaviorDetailsResponse?.behaviors?.getBehaviorDetails
+}
+
+export async function setKeymapRequest(layouts: PhysicalLayout[], selectedPhysicalLayoutIndex: number) {
+	if (!layouts) {
+		return
+	}
+
+	console.log(selectedPhysicalLayoutIndex)
+
+	const resp = await callRemoteProcedureControl({
+		keymap: {
+			setActivePhysicalLayout: selectedPhysicalLayoutIndex,
+		},
+	})
+
+	const new_keymap = resp?.keymap?.setActivePhysicalLayout?.ok
+
+	if (!new_keymap) {
+		toast.error('Failed to set the active physical layout err:' + resp?.keymap?.setActivePhysicalLayout?.err)
+		console.error( 'Failed to set the active physical layout err:', resp?.keymap?.setActivePhysicalLayout?.err)
+	}
+
+	return new_keymap
 }

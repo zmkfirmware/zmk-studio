@@ -5,6 +5,7 @@ import { BehaviorBinding, Keymap } from "@zmkfirmware/zmk-studio-ts-client/keyma
 import { useCallback, useMemo } from "react"
 import undoRedoStore from "../stores/UndoRedoStore.ts"
 import useConnectionStore from "../stores/ConnectionStore.ts"
+import useLayerSelectionStore from "../stores/LayerSelectionStore.ts"
 import { produce } from "immer"
 import { SetLayerBindingResponse } from "@zmkfirmware/zmk-studio-ts-client/keymap"
 import { Card, CardContent } from "./ui/card"
@@ -15,7 +16,6 @@ interface KeyEditorProps {
 	selectedKey: boolean;
 	keymap: Keymap | undefined;
 	setKeymap: (keymap: Keymap | ((prev: Keymap) => Keymap)) => void;
-	selectedLayerIndex: number;
 	selectedKeyPosition: number | undefined;
 	setSelectedKeyPosition: (position: number | undefined) => void;
 	setSelectedKey: (value: boolean) => void;
@@ -25,13 +25,13 @@ export function KeyEditor({
 	selectedKey,
 	keymap,
 	setKeymap,
-	selectedLayerIndex,
 	selectedKeyPosition,
 	setSelectedKeyPosition,
 	setSelectedKey,
 }: KeyEditorProps) {
 	const { doIt } = undoRedoStore()
 	const { connection } = useConnectionStore()
+	const { selectedLayerIndex } = useLayerSelectionStore()
 	const behaviors = useBehaviors()
 
 	const sortedBehaviors = useMemo(

@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import path from "path"
 // https://vitejs.dev/config/
 export default defineConfig({
-    base: '/zmk-studio/', //todo remove it after finishing refactoring
+    // base: '/zmk-studio/', //todo remove it after finishing refactoring
     plugins: [
         react(), tailwindcss(),
     ],

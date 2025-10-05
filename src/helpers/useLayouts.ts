@@ -1,7 +1,6 @@
 import { PhysicalLayout } from '@zmkfirmware/zmk-studio-ts-client/keymap';
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core';
-import { Request } from '@zmkfirmware/zmk-studio-ts-client';
 import type { GetBehaviorDetailsResponse } from '@zmkfirmware/zmk-studio-ts-client/behaviors';
 import useConnectionStore from '../stores/ConnectionStore.ts';
 import useLockStore from "../stores/LockStateStore.ts";

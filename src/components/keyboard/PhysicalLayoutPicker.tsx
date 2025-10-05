@@ -30,7 +30,7 @@ export const PhysicalLayoutPicker = ( {
 		},
 		[ onPhysicalLayoutClicked ]
 	)
-	console.log( layouts )
+	// console.log( layouts )
 	return (
 		<SidebarGroupContent>
 			<SidebarGroupLabel>Layouts</SidebarGroupLabel>

@@ -29,7 +29,6 @@ export const UnlockModal = ({}: UnlockModalProps) => {
     );
     const dialog = useModalRef(open, false, false);
 
-    console.log(open,dialog)
     return (
             <OldModal
                 usedFor="unlockModal"

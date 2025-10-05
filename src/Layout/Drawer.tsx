@@ -8,6 +8,7 @@ import {
     // , Layer, SetLayerPropsResponse
 } from '@zmkfirmware/zmk-studio-ts-client/keymap'
 import useConnectionStore from '../stores/ConnectionStore.ts'
+import useLayerSelectionStore from '../stores/LayerSelectionStore.ts'
 import {
     Sidebar,
     SidebarContent,
@@ -17,16 +18,16 @@ import {
     SidebarFooter,
 } from "@/components/ui/sidebar.tsx"
 import { DeviceMenu } from '../components/DeviceMenu.tsx'
-import { callRemoteProcedureControl, useConnectedDeviceData } from "@/services/RpcConnectionService.ts"
+import {  useConnectedDeviceData } from "@/services/RpcConnectionService.ts"
+import { setKeymapRequest } from "@/services/RpcEventsService.ts"
 
 interface DrawerProps {
     children?: React.ReactNode
-    selectedLayerIndex: number
-    setSelectedLayerIndex: (index: number) => void
 }
 
-export function Drawer({ children, selectedLayerIndex, setSelectedLayerIndex }: DrawerProps) {
+export function Drawer({}: DrawerProps) {
     const { connection } = useConnectionStore()
+    const { selectedLayerIndex, setSelectedLayerIndex } = useLayerSelectionStore()
     const {
         layouts,
         selectedPhysicalLayoutIndex,
@@ -43,6 +44,10 @@ export function Drawer({ children, selectedLayerIndex, setSelectedLayerIndex }: 
         true,
     )
 
+	useEffect(() => {
+		setSelectedLayerIndex(0)
+	}, [connection])
+
     const doSelectPhysicalLayout = useCallback(
         (i: number) => {
             const oldLayout = selectedPhysicalLayoutIndex
@@ -57,45 +62,25 @@ export function Drawer({ children, selectedLayerIndex, setSelectedLayerIndex }: 
         [doIt, selectedPhysicalLayoutIndex, setSelectedPhysicalLayoutIndex],
     )
 
-    useEffect(() => {
-        setSelectedLayerIndex(0)
-    }, [connection])
+
 
     useEffect(() => {
-        async function performSetRequest() {
-            if (!connection || !layouts) {
-                return
-            }
-            console.log(connection, selectedPhysicalLayoutIndex)
-            const resp = await callRemoteProcedureControl(connection, {
-                keymap: {
-                    setActivePhysicalLayout: selectedPhysicalLayoutIndex,
-                },
-            })
+	    (async ()=> {
+		    console.log(123123)
+		    setKeymap(await setKeymapRequest(layouts,selectedPhysicalLayoutIndex))
+	    })()
 
-            const new_keymap = resp?.keymap?.setActivePhysicalLayout?.ok
-            if (new_keymap) {
-                setKeymap(new_keymap)
-            } else {
-                console.error(
-                    'Failed to set the active physical layout err:',
-                    resp?.keymap?.setActivePhysicalLayout?.err,
-                )
-            }
-        }
-
-        performSetRequest()
     }, [connection, layouts, selectedPhysicalLayoutIndex, setKeymap])
 
     useEffect(() => {
         if (!keymap?.layers) return
 
-        const layers = keymap.layers.length - 1
-        console.log(selectedLayerIndex, layers, selectedLayerIndex > layers, keymap.layers.length)
+        const layer = keymap.layers.find(layer => layer.id === selectedLayerIndex)
 
-        if (selectedLayerIndex > layers) {
-            setSelectedLayerIndex(layers)
-        }
+        if (!layer) setSelectedLayerIndex(keymap.layers[0].id)
+
+        console.log(selectedLayerIndex, layer, keymap.layers.length, keymap.layers)
+
     }, [keymap, selectedLayerIndex])
 
     return (
@@ -112,22 +97,15 @@ export function Drawer({ children, selectedLayerIndex, setSelectedLayerIndex }: 
                         />
                     </SidebarGroup>
                     <SidebarGroup>
-                        <SidebarMenu>
-                            {keymap && (
-                                // <div className="col-start-1 row-start-1 row-end-2">
-                                    <LayerPicker
-                                        layers={keymap.layers}
-                                        keymap={keymap}
-                                        setKeymap={setKeymap}
-                                        selectedLayerIndex={selectedLayerIndex}
-                                        onLayerClicked={setSelectedLayerIndex}
-                                        canAdd={(keymap.availableLayers || 0) > 0}
-                                        canRemove={(keymap.layers?.length || 0) > 1}
-                                        setSelectedLayerIndex={setSelectedLayerIndex}
-                                    />
-                                // </div>
-                            )}
-                        </SidebarMenu>
+                        {keymap && (
+                            <LayerPicker
+                                layers={keymap.layers}
+                                keymap={keymap}
+                                setKeymap={setKeymap}
+                                canAdd={(keymap.availableLayers || 0) > 0}
+                                canRemove={(keymap.layers?.length || 0) > 1}
+                            />
+                        )}
                     </SidebarGroup>
                 </SidebarContent>
                 <SidebarFooter>

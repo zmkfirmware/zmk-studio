@@ -7,8 +7,6 @@ import { UnlockModal } from "./components/UnlockModal.tsx"
 import { callRemoteProcedureControl, connect } from "./services/RpcConnectionService.ts"
 import useConnectionStore from "./stores/ConnectionStore.ts"
 import undoRedoStore from "./stores/UndoRedoStore.ts"
-import { createRoot } from "react-dom/client"
-import Alert from "@/components/ui/Alert.tsx"
 import { KeyboardEditor } from "./components/KeyboardEditor.tsx"
 import { Drawer } from "@/Layout/Drawer.tsx"
 import { SidebarInset, SidebarProvider } from "./components/ui/sidebar.tsx"
@@ -16,16 +14,13 @@ import { ThemeProvider } from "@/providers/ThemeProvider.tsx"
 import { Toaster } from "@/components/ui/sonner.tsx"
 import { Header } from "@/Layout/Header.tsx"
 import { Footer } from "@/Layout/Footer.tsx"
+import { toast } from "sonner"
 
 function App () {
-	const { connection, setConnection, setDeviceName, deviceName, setLockState } = useConnectionStore()
+	const { connection, setConnection, setDeviceName, setLockState } = useConnectionStore()
 	const { reset } = undoRedoStore()
 	const [ connectionAbort ] = useState( new AbortController() )
-	// Remove this line: const { setLockState } = useLockStore()
-	const { publish, subscribe } = useEmitter()
-	
-	// Shared state for layer selection between Drawer and KeyboardEditor
-	const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0)
+	const { subscribe } = useEmitter()
 
 	useEffect( () => {
 		return subscribe( "rpc_notification.core.lockStateChanged", ( data ) => {
@@ -73,19 +68,10 @@ function App () {
 			communication
 		)
 		if ( typeof connection === "string" ) {
-			renderAlert( connection )
+			toast.error("Failed to connect to the selected device.", {
+				description: connection,
+			})
 		}
-	}
-
-	function renderAlert ( message: string ) {
-		const alertContainer = document.createElement( "div" )
-		document.body.appendChild( alertContainer )
-
-		// Create a React root and render the Alert component
-		const alertRoot = createRoot( alertContainer )
-		alertRoot.render(
-			<Alert message={ message } duration={ 5 } container={ alertContainer } />
-		)
 	}
 
 	return (
@@ -100,10 +86,10 @@ function App () {
 							"--footer-height": "calc(var(--spacing) * 8)",
 						} as React.CSSProperties
 					}>
-						<Drawer selectedLayerIndex={selectedLayerIndex} setSelectedLayerIndex={setSelectedLayerIndex} />
+						<Drawer />
 						<SidebarInset>
 							<Header/>
-							<KeyboardEditor selectedLayerIndex={selectedLayerIndex} setSelectedLayerIndex={setSelectedLayerIndex} />
+							<KeyboardEditor />
 							<Footer />
 						</SidebarInset>
 					</SidebarProvider>

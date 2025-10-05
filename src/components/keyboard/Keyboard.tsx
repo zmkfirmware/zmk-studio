@@ -6,25 +6,46 @@ import { deserializeLayoutZoom, LayoutZoom } from "../../helpers/helpers.ts"
 import { useLayout } from "../../helpers/useLayouts.ts"
 import { Zoom } from "../Zoom.tsx"
 import useConnectionStore from "../../stores/ConnectionStore.ts"
+import useLayerSelectionStore from "../../stores/LayerSelectionStore.ts"
 import { useBehaviors } from "../../helpers/Behaviors.ts"
 import { getKeymapLayout } from "@/services/RpcEventsService.ts"
 
 interface KeyboardProps {
 	keymap: Keymap | undefined;
-	selectedLayerIndex: number;
-	setSelectedLayerIndex: (index: number) => void;
 	selectedKeyPosition: number | undefined;
 	setSelectedKeyPosition: (position: number | undefined) => void;
 }
 
 export default function Keyboard({
 	keymap,
-	selectedLayerIndex,
-	setSelectedLayerIndex,
 	selectedKeyPosition,
 	setSelectedKeyPosition
 }: KeyboardProps) {
 	const { layouts, selectedPhysicalLayoutIndex } = useLayout()
+	const { selectedLayerIndex, setSelectedLayerIndex } = useLayerSelectionStore()
+	const behaviors = useBehaviors()
+	const { connection } = useConnectionStore()
+
+	// Reset layer selection when connection changes
+	useEffect(() => {
+		console.log('Connection changed, resetting layer selection to 0')
+		setSelectedLayerIndex(0)
+		setSelectedKeyPosition(undefined)
+	}, [connection])
+
+
+	useEffect( () => {
+		if ( !keymap?.layers ) return
+
+		const layer = keymap.layers.find(layer => layer.id === selectedLayerIndex)
+
+		console.log('Keymap changed, current layer:', layer, 'layers:', keymap?.layers)
+
+		if (!layer) {
+			setSelectedLayerIndex(keymap.layers[0].id)
+		}
+
+	}, [ keymap, selectedLayerIndex, setSelectedLayerIndex ] )
 
 	//todo change to zustand storing system
 
@@ -33,8 +54,7 @@ export default function Keyboard({
 		"auto",
 		{ deserialize: deserializeLayoutZoom }
 	)
-	const behaviors = useBehaviors()
-	const { connection } = useConnectionStore()
+
 
 	// State for tracking pressed keys
 	const [pressedKeys, setPressedKeys] = useState<Set<number>>(new Set())
@@ -42,14 +62,14 @@ export default function Keyboard({
 	// Function to map key codes to key positions
 	const mapKeyCodeToPosition = useCallback((keyCode: string): number | null => {
 		if (!layouts || !keymap?.layers?.[selectedLayerIndex]) return null
-		
+
 		const currentLayout = layouts[selectedPhysicalLayoutIndex]
 		const currentLayer = keymap.layers[selectedLayerIndex]
-		
+
 		// console.log('Key pressed:', keyCode)
 		// console.log('Current layer bindings:', currentLayer.bindings)
 		// console.log('Behaviors:', behaviors)
-		
+
 		// Create a mapping from key codes to HID usage codes
 		const keyCodeToHidMap: Record<string, number> = {
 			'KeyA': 4, 'KeyB': 5, 'KeyC': 6, 'KeyD': 7, 'KeyE': 8, 'KeyF': 9, 'KeyG': 10,
@@ -75,22 +95,22 @@ export default function Keyboard({
 			'ControlLeft': 224, 'ShiftLeft': 225, 'AltLeft': 226, 'MetaLeft': 227,
 			'ControlRight': 228, 'ShiftRight': 229, 'AltRight': 230, 'MetaRight': 231
 		}
-		
+
 		const hidUsageCode = keyCodeToHidMap[keyCode]
 		// console.log('Looking for HID usage code:', hidUsageCode)
-		
+
 		if (!hidUsageCode) return null
-		
+
 		// Find the key position that matches the HID usage code
 		for (let i = 0; i < currentLayer.bindings.length && i < currentLayout.keys.length; i++) {
 			const binding = currentLayer.bindings[i]
 			const behavior = behaviors[binding.behaviorId]
-			
+
 			// Extract HID usage ID from ZMK binding value
 			// ZMK binding format: (page << 16) | id
 			// So we need to extract the lower 16 bits to get the HID usage ID
 			const hidUsageIdFromBinding = binding.param1 & 0xFFFF
-			
+
 			// console.log(`Position ${i}:`, {
 			// 	binding,
 			// 	behavior: behavior?.displayName,
@@ -101,14 +121,14 @@ export default function Keyboard({
 			// 	expectedHidUsageCode: hidUsageCode,
 			// 	matches: hidUsageIdFromBinding === hidUsageCode
 			// })
-			
+
 			// Check if the extracted HID usage ID matches our expected code
 			if (hidUsageIdFromBinding === hidUsageCode) {
 				console.log('Found match at position:', i)
 				return i
 			}
 		}
-		
+
 		// Fallback: Try to match by behavior display name
 		console.log('Trying fallback matching by behavior name...')
 		const keyNameMap: Record<string, string> = {
@@ -124,20 +144,20 @@ export default function Keyboard({
 			'CapsLock': 'Caps Lock', 'F1': 'F1', 'F2': 'F2', 'F3': 'F3', 'F4': 'F4', 'F5': 'F5', 'F6': 'F6',
 			'F7': 'F7', 'F8': 'F8', 'F9': 'F9', 'F10': 'F10', 'F11': 'F11', 'F12': 'F12'
 		}
-		
+
 		const expectedName = keyNameMap[keyCode]
 		if (expectedName) {
 			for (let i = 0; i < currentLayer.bindings.length && i < currentLayout.keys.length; i++) {
 				const binding = currentLayer.bindings[i]
 				const behavior = behaviors[binding.behaviorId]
-				
+
 				if (behavior?.displayName === expectedName) {
 					console.log('Found fallback match at position:', i, 'for name:', expectedName)
 					return i
 				}
 			}
 		}
-		
+
 		console.log('No match found for key:', keyCode)
 		return null
 	}, [layouts, keymap, selectedLayerIndex, selectedPhysicalLayoutIndex, behaviors])
@@ -148,7 +168,7 @@ export default function Keyboard({
 		if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
 			return
 		}
-		
+
 		const keyPosition = mapKeyCodeToPosition(event.code)
 		if (keyPosition !== null) {
 			setPressedKeys(prev => new Set(prev).add(keyPosition))
@@ -181,10 +201,6 @@ export default function Keyboard({
 		setPressedKeys(new Set())
 	}, [selectedLayerIndex])
 
-	// useEffect( () => {
-	// 	setSelectedLayerIndex( 0 )
-	// 	setSelectedKeyPosition( undefined )
-	// }, [ connection, setSelectedLayerIndex, setSelectedKeyPosition ] )
 
 	useEffect( () => {
 		(async ()=> {
@@ -193,15 +209,6 @@ export default function Keyboard({
 
 	}, [ selectedPhysicalLayoutIndex, connection, layouts ] )
 
-
-	useEffect( () => {
-		if ( !keymap?.layers ) return
-
-		const layers = keymap.layers.length - 1
-
-		if ( selectedLayerIndex > layers ) setSelectedLayerIndex( layers )
-
-	}, [ keymap, selectedLayerIndex, setSelectedLayerIndex ] )
 
 	return (
 		<>
