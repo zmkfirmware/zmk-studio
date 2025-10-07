@@ -105,6 +105,10 @@ export const PhysicalLayout = ({
                 height: bottomMost * oneU + 'px',
                 width: rightMost * oneU + 'px',
                 transform: `scale(${scale})`,
+                transformOrigin: 'center',
+                imageRendering: 'crisp-edges',
+                backfaceVisibility: 'hidden',
+                willChange: 'transform',
             }}
             ref={ref}
             {...props}>

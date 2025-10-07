@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { useEmitter } from "../helpers/usePubSub.ts"
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core"
 import { RestoreStock } from "./RestoreStock.tsx"
@@ -16,10 +16,12 @@ import {
 	DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu.tsx"
 import { SidebarMenu, SidebarMenuItem } from "@/components/ui/sidebar.tsx"
-import { callRemoteProcedureControl, useConnectedDeviceData } from "@/services/RpcConnectionService.ts"
+import { useConnectedDeviceData } from "@/services/RpcConnectionService.ts"
+import { callRemoteProcedureControl } from "@/services/RpcEventsService.ts"
+import { toast } from "sonner"
 
 export const DeviceMenu = () => {
-	const { connection, resetConnection, communication, deviceName, lockState } = useConnectionStore()
+	const { connection, resetConnection, setConnection, deviceName, lockState } = useConnectionStore()
 	const { reset } = undoRedoStore()
 	const [ connectionAbort, setConnectionAbort ] = useState( new AbortController() )
 	const { subscribe } = useEmitter()
@@ -38,7 +40,7 @@ export const DeviceMenu = () => {
 	) => {
 		if ( !connection ) return
 		console.log(connection, payload)
-		const resp = await callRemoteProcedureControl( connection, payload )
+		const resp = await callRemoteProcedureControl( payload )
 		if ( !resp[action] || resp[action].err ) {
 			console.log( `Failed to ${ action }`, resp, resp[action] )
 		}
@@ -50,22 +52,59 @@ export const DeviceMenu = () => {
 		console.log( connection )
 
 		try {
-			if ( !connection ) return
-			console.log( connection )
-			await connection.request_writable.close().finally( () => {
-				connectionAbort.abort( "User disconnected" )
-				setConnectionAbort( new AbortController() )
-			} )
-
+			// Properly close the writable stream by getting a writer and closing it
+			const writer = connection.request_writable.getWriter()
+			await writer.close()
+			writer.releaseLock()
+			
+			// Also close the readable stream if it exists
+			if (connection.notification_readable) {
+				await connection.notification_readable.cancel()
+			}
+			
+			// Abort the connection and reset
+			connectionAbort.abort( "User disconnected" )
+			setConnectionAbort( new AbortController() )
+			
+			// Reset the connection in the store
+			resetConnection()
+			
 		} catch ( error ) {
 			console.warn( "Error during disconnect:", error )
-
-			// Even if there's an error, still reset the connection
-
-			resetConnection()
-			reset()
+			toast.error( "Error during disconnect: " + error.message )
 		}
 	}
+	const resetSettings = useCallback(() => {
+		async function doReset() {
+			if (!connection) {
+				return;
+			}
+
+			let resp = await callRemoteProcedureControl( {
+				core: { resetSettings: true },
+			});
+			if (!resp.core?.resetSettings) {
+				console.error("Failed to settings reset", resp);
+				toast.error("Failed to settings reset");
+				return;
+			}
+
+			// Reset undo/redo stack
+			reset();
+			
+			// Force UI refresh by temporarily clearing and restoring connection
+			// This triggers useConnectedDeviceData hooks to refetch data
+			const currentConnection = connection;
+			setConnection(null);
+			
+			// Use setTimeout to ensure the null state is processed before restoring
+			setTimeout(() => {
+				setConnection(currentConnection);
+			}, 0);
+		}
+
+		doReset();
+	}, [connection, reset, setConnection]);
 
 	const isDisabled = !deviceName || lockState !== LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED
 
@@ -94,7 +133,7 @@ export const DeviceMenu = () => {
 							Disconnect
 						</DropdownMenuItem>
 						<RestoreStock
-							onOk={ () => performAction( "resetSettings", { core: { resetSettings: true } } ) } />
+							onOk={ () => resetSettings() } />
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</SidebarMenuItem>

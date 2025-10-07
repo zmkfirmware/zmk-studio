@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Keyboard from './keyboard/Keyboard.tsx'
 import { KeyEditor } from './KeyEditor.tsx'
 import { Keymap } from '@zmkfirmware/zmk-studio-ts-client/keymap'
-import useConnectionStore from "../stores/ConnectionStore.ts"
-import useLayerSelectionStore from "../stores/LayerSelectionStore.ts"
 
 import { useConnectedDeviceData } from "@/services/RpcConnectionService.ts"
 
