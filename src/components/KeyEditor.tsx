@@ -10,7 +10,8 @@ import { produce } from "immer"
 import { SetLayerBindingResponse } from "@zmkfirmware/zmk-studio-ts-client/keymap"
 import { Card, CardContent } from "./ui/card"
 import { Button } from "./ui/button"
-import { callRemoteProcedureControl } from "@/services/RpcConnectionService.ts"
+import { callRemoteProcedureControl } from "@/services/CallRemoteProcedureControl.ts"
+import { toast } from "sonner"
 
 interface KeyEditorProps {
 	selectedKey: boolean;
@@ -34,13 +35,13 @@ export function KeyEditor({
 	const { selectedLayerIndex } = useLayerSelectionStore()
 	const behaviors = useBehaviors()
 
-	const sortedBehaviors = useMemo(
-		() =>
-			Object.values(behaviors).sort((a, b) =>
-				a.displayName.localeCompare(b.displayName)
-			),
-		[behaviors]
-	)
+	// const sortedBehaviors = useMemo(
+	// 	() =>
+	// 		Object.values(behaviors).sort((a, b) =>
+	// 			a.displayName.localeCompare(b.displayName)
+	// 		),
+	// 	[behaviors]
+	// )
 
 	const doUpdateBinding = useCallback(
 		(binding: BehaviorBinding) => {
@@ -67,9 +68,7 @@ export function KeyEditor({
 			const oldBinding = keymap.layers[layer].bindings[keyPosition]
 
 			doIt?.(async () => {
-				if (!connection) throw new Error("Not connected")
-
-				const resp = await callRemoteProcedureControl(connection, {
+				const resp = await callRemoteProcedureControl({
 					keymap: {
 						setLayerBinding: { layerId, keyPosition, binding }
 					}
@@ -85,13 +84,14 @@ export function KeyEditor({
 						return next
 					})
 				} else {
-					console.error("Failed to set binding", resp.keymap?.setLayerBinding)
+					toast.error("Failed to set binding" + resp.keymap?.setLayerBinding)
 					// Log more details about the failed binding
 					console.error("Failed binding details:", {
 						layerId,
 						keyPosition,
 						binding,
-						response: resp.keymap?.setLayerBinding,
+						setLayerBinding: resp.keymap?.setLayerBinding,
+						response: resp,
 						// Add more debugging info
 						oldBinding,
 						behaviorId: binding.behaviorId,
@@ -103,7 +103,7 @@ export function KeyEditor({
 				return async () => {
 					if (!connection) return
 
-					const resp = await callRemoteProcedureControl(connection, {
+					const resp = await callRemoteProcedureControl({
 						keymap: {
 							setLayerBinding: {
 								layerId,

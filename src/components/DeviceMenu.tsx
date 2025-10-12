@@ -4,14 +4,11 @@ import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core'
 import { RestoreStock } from './RestoreStock.tsx'
 import useConnectionStore from '../stores/ConnectionStore.ts'
 import undoRedoStore from '../stores/UndoRedoStore.ts'
-import { disconnect as disconnectSerial } from '../tauri/serial.ts'
-import { disconnect as disconnectBle } from '../tauri/ble.ts'
 import { Button } from '@/components/ui/button.tsx'
 import { Settings, Power, Sun, Moon } from 'lucide-react'
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu.tsx'
@@ -23,7 +20,6 @@ import { callRemoteProcedureControl } from '@/services/CallRemoteProcedureContro
 export const DeviceMenu = () => {
     const {
         connection,
-        resetConnection,
         setConnection,
         deviceName,
         lockState,
@@ -31,12 +27,6 @@ export const DeviceMenu = () => {
     const { reset } = undoRedoStore()
     const [connectionAbort, setConnectionAbort] = useState(
         new AbortController(),
-    )
-    const { subscribe } = useEmitter()
-
-    const [unsaved, setUnsaved] = useConnectedDeviceData<boolean>(
-        { keymap: { checkUnsavedChanges: true } },
-        (request) => request.keymap?.checkUnsavedChanges,
     )
 
     //todo fix disconnect not working
@@ -61,16 +51,11 @@ export const DeviceMenu = () => {
             return
         }
 
-        // Reset undo/redo stack
         reset()
 
-        //todo make it better
-        // Force UI refresh by temporarily clearing and restoring connection
-        // This triggers useConnectedDeviceData hooks to refetch data
         const currentConnection = connection
         setConnection(null)
 
-        // Use setTimeout to ensure the null state is processed before restoring
         setTimeout(() => {
             setConnection(currentConnection)
         }, 0)

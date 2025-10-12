@@ -472,65 +472,6 @@ export function KeysLayout({
 
     return (
         <>
-            {/*Selected Key Display - shows the currently selected key like HidUsagePicker*/}
-            {/*{(selectedKey !== undefined || selectedModifiers.length > 0) && (*/}
-            {/*	<div className="mb-4 p-3 bg-base-200 rounded-lg">*/}
-            {/*		<div className="flex items-center justify-between mb-2">*/}
-            {/*			<h3 className="text-sm font-semibold">Selected Key & Modifiers:</h3>*/}
-            {/*			<button */}
-            {/*				onClick={clearAllSelected}*/}
-            {/*				className="btn btn-xs btn-ghost"*/}
-            {/*			>*/}
-            {/*				Clear All*/}
-            {/*			</button>*/}
-            {/*		</div>*/}
-            {/*		<div className="flex flex-wrap gap-2">*/}
-            {/*			/!* Display selected key *!/*/}
-            {/*			{selectedKey !== undefined && (*/}
-            {/*				<div className="badge badge-primary gap-1">*/}
-            {/*					{getSelectedKeyDisplayLabel()}*/}
-            {/*					<button */}
-            {/*						onClick={() => setSelectedKey(undefined)}*/}
-            {/*						className="btn btn-xs btn-ghost p-0 h-4 w-4"*/}
-            {/*					>*/}
-            {/*						×*/}
-            {/*					</button>*/}
-            {/*				</div>*/}
-            {/*			)}*/}
-            {/*			/!* Display selected modifiers *!/*/}
-            {/*			{selectedModifiers.map(modifier => {*/}
-            {/*				// Find the key ID that corresponds to this modifier*/}
-            {/*				const keyId = Object.keys(KEY_ID_TO_MOD).find(k => KEY_ID_TO_MOD[parseInt(k)] === modifier);*/}
-            {/*				const keyInfo = keyId ? getKeyInfo(parseInt(keyId)) : null;*/}
-            {/*				*/}
-            {/*				console.log("Displaying modifier:", { */}
-            {/*					modifier, */}
-            {/*					keyId, */}
-            {/*					keyInfo, */}
-            {/*					modLabel: mod_labels[modifier] */}
-            {/*				});*/}
-            {/*				*/}
-            {/*				return (*/}
-            {/*					<div key={`mod-${modifier}`} className="badge badge-secondary gap-1">*/}
-            {/*						{keyInfo?.Label || mod_labels[modifier]}*/}
-            {/*						<button */}
-            {/*							onClick={() => {*/}
-            {/*								console.log("Modifier X button clicked for:", { modifier, keyId });*/}
-            {/*								if (keyId) {*/}
-            {/*									removeSelectedKey(parseInt(keyId));*/}
-            {/*								}*/}
-            {/*							}}*/}
-            {/*							className="btn btn-xs btn-ghost p-0 h-4 w-4"*/}
-            {/*						>*/}
-            {/*							×*/}
-            {/*						</button>*/}
-            {/*					</div>*/}
-            {/*				);*/}
-            {/*			})}*/}
-            {/*		</div>*/}
-            {/*	</div>*/}
-            {/*)}*/}
-
             <Tabs
                 value={activeTab}
                 onValueChange={setActiveTab}

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core"
 import type { GetBehaviorDetailsResponse } from "@zmkfirmware/zmk-studio-ts-client/behaviors"
 import useConnectionStore from "../stores/ConnectionStore.ts"
-import { callRemoteProcedureControl } from "@/services/RpcConnectionService.ts"
+import { callRemoteProcedureControl } from "@/services/CallRemoteProcedureControl.ts"
 
 export type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
@@ -31,7 +31,7 @@ export function useBehaviors (): BehaviorMap {
 					requestId: 0
 				}
 
-				const behaviorListResponse = await callRemoteProcedureControl( connection, listRequest )
+				const behaviorListResponse = await callRemoteProcedureControl( listRequest )
 				if ( isCancelled ) return
 
 				const behaviorMap: BehaviorMap = {}
@@ -45,7 +45,7 @@ export function useBehaviors (): BehaviorMap {
 						requestId: 0
 					}
 
-					const detailsResponse = await callRemoteProcedureControl( connection, detailsRequest )
+					const detailsResponse = await callRemoteProcedureControl( detailsRequest )
 					const details: GetBehaviorDetailsResponse | undefined =
 						detailsResponse?.behaviors?.getBehaviorDetails
 

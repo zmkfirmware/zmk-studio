@@ -4,8 +4,8 @@ import { LockState } from '@zmkfirmware/zmk-studio-ts-client/core';
 import type { GetBehaviorDetailsResponse } from '@zmkfirmware/zmk-studio-ts-client/behaviors';
 import useConnectionStore from '../stores/ConnectionStore.ts';
 import useLockStore from "../stores/LockStateStore.ts";
-import { callRemoteProcedureControl } from "@/services/RpcConnectionService.ts"
 import { getBehavior, getBehaviors } from "@/services/RpcEventsService.ts"
+import { callRemoteProcedureControl } from "@/services/CallRemoteProcedureControl.ts"
 
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
@@ -85,7 +85,7 @@ export function useLayout(): UseLayoutsReturn {
 
             try {
                 console.log('Fetching layouts:', connection, lockState);
-                const response = await callRemoteProcedureControl(connection, {
+                const response = await callRemoteProcedureControl({
                     keymap: { getPhysicalLayouts: true },
                 });
 

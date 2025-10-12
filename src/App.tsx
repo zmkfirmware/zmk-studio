@@ -4,7 +4,7 @@ import type { RpcTransport } from "@zmkfirmware/zmk-studio-ts-client/transport/i
 import { useEmitter, useSub } from "./helpers/usePubSub.ts"
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core"
 import { UnlockModal } from "./components/UnlockModal.tsx"
-import { callRemoteProcedureControl, connect } from "./services/RpcConnectionService.ts"
+import { connect } from "./services/RpcConnectionService.ts"
 import useConnectionStore from "./stores/ConnectionStore.ts"
 import undoRedoStore from "./stores/UndoRedoStore.ts"
 import { KeyboardEditor } from "./components/KeyboardEditor.tsx"
@@ -15,6 +15,7 @@ import { Toaster } from "@/components/ui/sonner.tsx"
 import { Header } from "@/Layout/Header.tsx"
 import { Footer } from "@/Layout/Footer.tsx"
 import { toast } from "sonner"
+import { callRemoteProcedureControl } from "@/services/CallRemoteProcedureControl.ts"
 
 function App () {
 	const { connection, setConnection, setDeviceName, setLockState } = useConnectionStore()
@@ -48,7 +49,7 @@ function App () {
 	async function updateLockState () {
 		if ( !connection ) return
 
-		const locked_resp = await callRemoteProcedureControl( connection, {
+		const locked_resp = await callRemoteProcedureControl({
 			core: { getLockState: true }
 		} )
 		console.log( connection )
