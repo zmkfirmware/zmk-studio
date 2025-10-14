@@ -3,9 +3,10 @@ name: "tauri-build"
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
   release:
     types: [published]
-
 jobs:
   publish-tauri:
     permissions:
