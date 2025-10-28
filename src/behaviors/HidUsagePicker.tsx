@@ -124,7 +124,8 @@ export const HidUsagePicker = ({
     }, [value])
     const selectionChanged = useCallback(
         (e: Key | null) => {
-            let value = typeof e == 'number' ? e : undefined
+	        console.log(e)
+			let value = typeof e == 'number' ? e : undefined
             if (value !== undefined) {
                 const mod_flags = mods_to_flags(mods.map((m) => parseInt(m)))
                 value = value | (mod_flags << 24)
@@ -165,7 +166,7 @@ export const HidUsagePicker = ({
                     </Button>
                 </div>
 
-                <Popover className="w-[var(--trigger-width)] max-h-4 shadow-md text-base-content rounded border-base-content bg-base-100">
+                <Popover isOpen={true} defaultOpen={true} className="w-[var(--trigger-width)] max-h-4 shadow-md text-base-content rounded border-base-content bg-base-100">
                     <ListBox
                         items={usagePages}
                         className="block max-h-[30vh] min-h-[unset] overflow-auto p-2"

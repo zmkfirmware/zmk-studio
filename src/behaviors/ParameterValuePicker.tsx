@@ -3,6 +3,7 @@ import { KeysLayout } from '../components/keycodes/KeysLayout';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select.tsx"
 import { Label } from "@/components/ui/label.tsx"
 import { Input } from "@/components/ui/input.tsx"
+import { HidUsagePicker } from "@/behaviors/HidUsagePicker.tsx"
 
 export interface ParameterValuePickerProps {
     value?: number;
@@ -61,11 +62,11 @@ const LayerValuePicker = ({ value, values, layers, onValueChanged }: ParameterVa
         {/*    ))}*/}
         {/*</select>*/}
         <Label htmlFor="layerValuePicker">{values[0].name}:</Label>
-        <Select id='layerValuePicker' onValueChange={(e) => {
+        <Select onValueChange={(e) => {
             console.log(e)
             onValueChanged( parseInt( e ) )
         }} value={value?.toString()}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger id='layerValuePicker' className="w-[180px]">
                 <SelectValue placeholder="Constant Value Picker" />
             </SelectTrigger>
             <SelectContent>
@@ -103,13 +104,24 @@ export const ParameterValuePicker = ({ value, values, layers, onValueChanged, on
             console.log("KeysLayout with modifier support", values[0].hidUsage);
             onKeysLayoutActive?.(true);
             return (
+				<>
+				{/*<HidUsagePicker*/}
+				{/*	onValueChanged={onValueChanged}*/}
+				{/*	label={values[0].name}*/}
+				{/*	value={value}*/}
+				{/*	usagePages={[*/}
+				{/*		{ id: 7, min: 4, max: values[0].hidUsage.keyboardMax },*/}
+				{/*		{ id: 12, max: values[0].hidUsage.consumerMax },*/}
+				{/*	]}*/}
+				{/*/>*/}
+
                 <KeysLayout
                     onValueChanged={onValueChanged}
                     label={values[0].name}
                     value={value}
                     onKeySelected={onKeySelected}
                     onModifiersChanged={onModifiersChanged}
-                />
+                /></>
             );
         }
 

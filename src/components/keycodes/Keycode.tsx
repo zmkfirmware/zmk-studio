@@ -15,7 +15,7 @@ interface KeycodeProps {
     height?: number;
     x: number;
     y: number;
-    keyCode: string;
+    keyCode: number;
     baseKeyValue?: number;
     onSelect: (keyCode: string) => void;
     isSelected?: boolean;
@@ -44,8 +44,7 @@ export default function Keycode({
         border: isSelected ? '2px solid blue' : '1px solid gray'
     };
 
-    const handleClick = (event) => {
-        console.log(event)
+    const handleClick = () => {
         onSelect(keyCode);
     };
 

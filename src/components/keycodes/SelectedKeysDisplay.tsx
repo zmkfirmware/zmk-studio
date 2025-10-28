@@ -100,6 +100,64 @@ export const SelectedKeysDisplay = ({
 		return null;
 	}
 
+	// function removeSelectedKey(keyId: number) {
+	// 	console.log('removeSelectedKey called with:', {
+	// 		keyId,
+	// 		selectedKey,
+	// 		selectedModifiers,
+	// 	})
+	//
+	// 	// Check if this is a modifier key
+	// 	if (MODIFIER_KEY_IDS.includes(keyId)) {
+	// 		const modifier = KEY_ID_TO_MOD[keyId]
+	// 		if (modifier) {
+	// 			console.log('Removing modifier:', {
+	// 				modifier,
+	// 				currentModifiers: selectedModifiers,
+	// 			})
+	// 			setSelectedModifiers((prev) => {
+	// 				const newModifiers = prev.filter((m) => m !== modifier)
+	// 				console.log('Modifiers after removal:', {
+	// 					prev,
+	// 					newModifiers,
+	// 				})
+	//
+	// 				// Only update parent if we have a selected key
+	// 				if (selectedKey !== undefined) {
+	// 					console.log('Updating parent after modifier removal:', {
+	// 						selectedKey,
+	// 						newModifiers,
+	// 					})
+	// 					updateParentValue(selectedKey, newModifiers)
+	// 				} else {
+	// 					console.log(
+	// 						'No key selected, not updating parent after modifier removal',
+	// 					)
+	// 				}
+	// 				return newModifiers
+	// 			})
+	// 		}
+	// 	} else {
+	// 		// Remove the selected key
+	// 		console.log('Removing selected key:', { keyId, selectedKey })
+	// 		setSelectedKey(undefined)
+	// 		// Update parent component immediately
+	// 		updateParentValue(undefined, selectedModifiers)
+	// 	}
+	// }
+	//
+	// function clearAllSelected() {
+	// 	console.log('clearAllSelected called, current state:', {
+	// 		selectedKey,
+	// 		selectedModifiers,
+	// 	})
+	// 	setSelectedKey(undefined)
+	// 	setSelectedModifiers([])
+	// 	// Update parent component immediately
+	// 	updateParentValue(undefined, [])
+	// 	console.log('clearAllSelected completed')
+	// }
+
 	return (
 		<Card className="mb-4 w-full">
 			<CardHeader className="pb-3">

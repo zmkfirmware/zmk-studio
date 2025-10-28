@@ -21,8 +21,12 @@ export interface UsagePageInfo {
     UsageIds: UsageId[]
 }
 
-export const hidUsageFromPageAndId = (page: number, id: number) =>
-    (page << 16) + id
+export const hidUsageFromPageAndId = (page: number, id: number) => {
+	if ( page == 7 && id ==4 ){
+		console.log(page, id, (page << 16) + id)
+	}
+	return (page << 16) + id
+}
 
 export const hidUsagePageAndIdFromUsage = (
     usage: number,

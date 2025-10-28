@@ -4,6 +4,7 @@ import Keycode from './Keycode.tsx'
 import React from 'react'
 import { Key } from 'react-aria-components'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { hidUsageFromPageAndId, hidUsagePageAndIdFromUsage } from "@/helpers/hid-usages.ts"
 
 /**
  * KeysLayout Component
@@ -176,299 +177,260 @@ export function KeysLayout({
     )
     const [selectedModifiers, setSelectedModifiers] = useState<Mods[]>([])
 
-    // Initialize selectedKey and modifiers from value if provided
-    useEffect(() => {
-        if (value !== undefined && value !== 0) {
-            console.log('KeysLayout received value:', value)
+	const mods = useMemo(() => {
+		const flags = value ? value >> 24 : 0
 
-            // Try to convert ZMK key code to HID usage code
-            const hidUsageCode = convertZmkToHidUsage(value)
-            console.log('Converted to HID usage code:', hidUsageCode)
+		return all_mods.filter((m) => m & flags).map((m) => m.toLocaleString())
+	}, [value])
 
-            if (hidUsageCode !== undefined) {
-                // Use the converted HID usage code
-                setSelectedKey(hidUsageCode)
-                setSelectedModifiers([]) // No modifiers for now
-            } else {
-                // Fallback to the old logic for HID usage behaviors
-                const maskedValue = mask_mods(value)
-                const modifierFlags = value >> 24
+	const handleKeySelect = useCallback(
+		(e: Key | null) => {
 
-                // Set selected key (excluding modifiers)
-                if (maskedValue > 0) {
-                    setSelectedKey(maskedValue)
-                } else {
-                    setSelectedKey(undefined)
-                }
+			let value = typeof e == 'number' ? e : undefined
+			if (value !== undefined) {
+				const mod_flags = mods_to_flags(mods.map((m) => parseInt(m)))
+				value = value | (mod_flags << 24)
+			}
 
-                // Set selected modifiers
-                const mods = all_mods.filter((m) => m & modifierFlags)
-                setSelectedModifiers(mods)
+			console.log(all_mods, mods, value)
+			onValueChanged(value)
+		},
+		[onValueChanged, mods],
+	)
 
-                // If we still couldn't find a valid key, show the raw value for debugging
-                if (maskedValue === 0 && value > 0) {
-                    console.warn(
-                        'Could not convert value to valid key, showing raw value for debugging:',
-                        value,
-                    )
-                    // Don't set selectedKey to undefined here, keep the raw value for display
-                }
-            }
-        } else {
-            setSelectedKey(undefined)
-            setSelectedModifiers([])
-        }
-    }, [value])
 
-    // Notify parent of key selection changes
-    useEffect(() => {
-        onKeySelected?.(selectedKey)
-    }, [selectedKey, onKeySelected])
-
-    // Notify parent of modifier changes
-    useEffect(() => {
-        onModifiersChanged?.(selectedModifiers)
-    }, [selectedModifiers, onModifiersChanged])
-
-    // Handle key selection - this is the main change to work like HidUsagePicker
-    function handleKeySelect(keyCode: string) {
-        const numericValue = parseInt(keyCode)
-        if (!isNaN(numericValue)) {
-            console.log('KeysLayout handleKeySelect:', {
-                keyCode,
-                numericValue,
-                isModifier: MODIFIER_KEY_IDS.includes(numericValue),
-            })
-
-            // Check if this is a modifier key
-            if (MODIFIER_KEY_IDS.includes(numericValue)) {
-                const modifier = KEY_ID_TO_MOD[numericValue]
-                if (modifier) {
-                    console.log('Handling modifier key:', {
-                        numericValue,
-                        modifier,
-                        currentSelectedKey: selectedKey,
-                    })
-                    setSelectedModifiers((prev) => {
-                        const isSelected = prev.includes(modifier)
-                        const newModifiers = isSelected
-                            ? prev.filter((m) => m !== modifier)
-                            : [...prev, modifier]
-
-                        console.log('Modifier state update:', {
-                            prev,
-                            newModifiers,
-                            isSelected,
-                        })
-
-                        // For modifier keys, only update if we have a selected key
-                        // This prevents modifiers from breaking key selection
-                        if (selectedKey !== undefined) {
-                            console.log(
-                                'Updating parent with key + modifiers:',
-                                { selectedKey, newModifiers },
-                            )
-                            // Update parent component with current key + new modifiers
-                            updateParentValue(selectedKey, newModifiers)
-                        } else {
-                            console.log(
-                                'No key selected, not updating parent for modifier',
-                            )
-                        }
-                        return newModifiers
-                    })
-                }
-            } else {
-                console.log('Handling regular key:', {
-                    numericValue,
-                    currentModifiers: selectedModifiers,
-                })
-                // For regular keys, set as the selected key (single selection like HidUsagePicker)
-                setSelectedKey(numericValue)
-
-                // Update parent component immediately like HidUsagePicker
-                // Use current modifiers with the new key
-                updateParentValue(numericValue, selectedModifiers)
-            }
-        }
-    }
-
-    // Helper function to update parent component (like HidUsagePicker's selectionChanged)
-    function updateParentValue(
-        keyValue: number | undefined,
-        modifiers: Mods[],
-    ) {
-        // If no key is selected and no modifiers, don't update parent
-        if (keyValue === undefined && modifiers.length === 0) {
-            console.log('No key or modifiers selected, not updating parent')
-            onValueChanged?.(undefined)
-            return
-        }
-
-        // If modifiers are being updated but no key is selected, don't update parent
-        if (keyValue === undefined && modifiers.length > 0) {
-            console.log('Modifiers selected but no key, not updating parent')
-            return
-        }
-
-        // Convert the key ID back to HID usage format
-        // If the original value was a HID usage (like 458767), we need to maintain that format
-        let finalValue: number
-
-        if (keyValue !== undefined) {
-            // Check if the original value was a HID usage format
-            if (value && value > 0xffff) {
-                // Original value was HID usage format (like 458767), maintain that format
-                const page = (value >> 16) & 0xffff
-                finalValue = (page << 16) | keyValue // Combine page with new key ID
-            } else {
-                // Original value was not HID usage format, use simple key ID
-                finalValue = keyValue
-            }
-
-            // Add modifier flags if any
-            const modifierFlags = mods_to_flags(modifiers) << 24
-            finalValue = finalValue | modifierFlags
-        } else {
-            finalValue = 0
-        }
-
-        console.log('KeysLayout updating parent with value:', {
-            keyValue,
-            modifiers,
-            finalValue,
-            originalValue: value,
-            hidUsageFormat: value && value > 0xffff ? 'yes' : 'no',
-        })
-
-        // Send the properly formatted value
-        if (finalValue >= 0 && finalValue <= 0xffffffff) {
-            console.log('Calling onValueChanged with:', finalValue)
-            onValueChanged?.(finalValue > 0 ? finalValue : undefined)
-        } else {
-            console.error('Invalid value generated:', finalValue)
-            onValueChanged?.(undefined)
-        }
-    }
-
-    function removeSelectedKey(keyId: number) {
-        console.log('removeSelectedKey called with:', {
-            keyId,
-            selectedKey,
-            selectedModifiers,
-        })
-
-        // Check if this is a modifier key
-        if (MODIFIER_KEY_IDS.includes(keyId)) {
-            const modifier = KEY_ID_TO_MOD[keyId]
-            if (modifier) {
-                console.log('Removing modifier:', {
-                    modifier,
-                    currentModifiers: selectedModifiers,
-                })
-                setSelectedModifiers((prev) => {
-                    const newModifiers = prev.filter((m) => m !== modifier)
-                    console.log('Modifiers after removal:', {
-                        prev,
-                        newModifiers,
-                    })
-
-                    // Only update parent if we have a selected key
-                    if (selectedKey !== undefined) {
-                        console.log('Updating parent after modifier removal:', {
-                            selectedKey,
-                            newModifiers,
-                        })
-                        updateParentValue(selectedKey, newModifiers)
-                    } else {
-                        console.log(
-                            'No key selected, not updating parent after modifier removal',
-                        )
-                    }
-                    return newModifiers
-                })
-            }
-        } else {
-            // Remove the selected key
-            console.log('Removing selected key:', { keyId, selectedKey })
-            setSelectedKey(undefined)
-            // Update parent component immediately
-            updateParentValue(undefined, selectedModifiers)
-        }
-    }
-
-    function clearAllSelected() {
-        console.log('clearAllSelected called, current state:', {
-            selectedKey,
-            selectedModifiers,
-        })
-        setSelectedKey(undefined)
-        setSelectedModifiers([])
-        // Update parent component immediately
-        updateParentValue(undefined, [])
-        console.log('clearAllSelected completed')
-    }
-
-    // Helper function to get key info by ID
-    function getKeyInfo(keyId: number) {
-        for (const keyboard of keyboards) {
-            const key = keyboard.UsageIds.find((k) => {
-                const kId = typeof k.Id === 'string' ? parseInt(k.Id) : k.Id
-                return kId === keyId
-            })
-            if (key) {
-                return { ...key, keyboardName: keyboard.Name }
-            }
-        }
-        return null
-    }
-
-    // Helper function to get numeric ID from key
-    function getKeyId(key: any): number {
-        return typeof key.Id === 'string' ? parseInt(key.Id) : key.Id
-    }
-
-    // Helper function to check if a key is selected (including modifiers)
-    function isKeySelected(keyId: number): boolean {
-        if (MODIFIER_KEY_IDS.includes(keyId)) {
-            const modifier = KEY_ID_TO_MOD[keyId]
-            return modifier ? selectedModifiers.includes(modifier) : false
-        }
-        const isSelected = selectedKey === keyId
-        if (isSelected) {
-            console.log(`Key ${keyId} is selected in KeysLayout`)
-        }
-        return isSelected
-    }
-
-    // Helper function to get display label for selected key
-    function getSelectedKeyDisplayLabel(): string {
-        if (selectedKey === undefined) return ''
-
-        const keyInfo = getKeyInfo(selectedKey)
-        if (keyInfo) {
-            // Prefer Label over Name, and ensure we have a readable string
-            const label = keyInfo.Label || keyInfo.Name
-            if (label && label.trim() !== '') {
-                return label
-            }
-        }
-
-        // If we can't get a proper label, try to find it in the keyboard data
-        // This is a fallback for when the conversion might have failed
-        for (const keyboard of keyboards) {
-            const key = keyboard.UsageIds.find((k) => {
-                const kId = typeof k.Id === 'string' ? parseInt(k.Id) : k.Id
-                return kId === selectedKey
-            })
-            if (key && key.Label && key.Label.trim() !== '') {
-                return key.Label
-            }
-        }
-
-        // Last resort: show a generic label
-        return `Key ${selectedKey}`
-    }
+    // // Initialize selectedKey and modifiers from value if provided
+    // useEffect(() => {
+    //     if (value !== undefined && value !== 0) {
+    //         console.log('KeysLayout received value:', value)
+	//
+    //         // Try to convert ZMK key code to HID usage code
+    //         const hidUsageCode = convertZmkToHidUsage(value)
+    //         console.log('Converted to HID usage code:', hidUsageCode)
+	//
+    //         if (hidUsageCode !== undefined) {
+    //             // Use the converted HID usage code
+    //             setSelectedKey(hidUsageCode)
+    //             setSelectedModifiers([]) // No modifiers for now
+    //         } else {
+    //             // Fallback to the old logic for HID usage behaviors
+    //             const maskedValue = mask_mods(value)
+    //             const modifierFlags = value >> 24
+	//
+    //             // Set selected key (excluding modifiers)
+    //             if (maskedValue > 0) {
+    //                 setSelectedKey(maskedValue)
+    //             } else {
+    //                 setSelectedKey(undefined)
+    //             }
+	//
+    //             // Set selected modifiers
+    //             const mods = all_mods.filter((m) => m & modifierFlags)
+    //             setSelectedModifiers(mods)
+	//
+    //             // If we still couldn't find a valid key, show the raw value for debugging
+    //             if (maskedValue === 0 && value > 0) {
+    //                 console.warn(
+    //                     'Could not convert value to valid key, showing raw value for debugging:',
+    //                     value,
+    //                 )
+    //                 // Don't set selectedKey to undefined here, keep the raw value for display
+    //             }
+    //         }
+    //     } else {
+    //         setSelectedKey(undefined)
+    //         setSelectedModifiers([])
+    //     }
+    // }, [value])
+	//
+    // // Notify parent of key selection changes
+    // useEffect(() => {
+    //     onKeySelected?.(selectedKey)
+    // }, [selectedKey, onKeySelected])
+	//
+    // // Notify parent of modifier changes
+    // useEffect(() => {
+    //     onModifiersChanged?.(selectedModifiers)
+    // }, [selectedModifiers, onModifiersChanged])
+	//
+    // // Handle key selection - this is the main change to work like HidUsagePicker
+    // function handleKeySelect(keyCode: string) {
+    //     const numericValue = parseInt(keyCode)
+    //     if (!isNaN(numericValue)) {
+    //         console.log('KeysLayout handleKeySelect:', {
+    //             keyCode,
+    //             numericValue,
+    //             isModifier: MODIFIER_KEY_IDS.includes(numericValue),
+    //         })
+	//
+    //         // Check if this is a modifier key
+    //         if (MODIFIER_KEY_IDS.includes(numericValue)) {
+    //             const modifier = KEY_ID_TO_MOD[numericValue]
+    //             if (modifier) {
+    //                 console.log('Handling modifier key:', {
+    //                     numericValue,
+    //                     modifier,
+    //                     currentSelectedKey: selectedKey,
+    //                 })
+    //                 setSelectedModifiers((prev) => {
+    //                     const isSelected = prev.includes(modifier)
+    //                     const newModifiers = isSelected
+    //                         ? prev.filter((m) => m !== modifier)
+    //                         : [...prev, modifier]
+	//
+    //                     console.log('Modifier state update:', {
+    //                         prev,
+    //                         newModifiers,
+    //                         isSelected,
+    //                     })
+	//
+    //                     // For modifier keys, only update if we have a selected key
+    //                     // This prevents modifiers from breaking key selection
+    //                     if (selectedKey !== undefined) {
+    //                         console.log(
+    //                             'Updating parent with key + modifiers:',
+    //                             { selectedKey, newModifiers },
+    //                         )
+    //                         // Update parent component with current key + new modifiers
+    //                         updateParentValue(selectedKey, newModifiers)
+    //                     } else {
+    //                         console.log(
+    //                             'No key selected, not updating parent for modifier',
+    //                         )
+    //                     }
+    //                     return newModifiers
+    //                 })
+    //             }
+    //         } else {
+    //             console.log('Handling regular key:', {
+    //                 numericValue,
+    //                 currentModifiers: selectedModifiers,
+    //             })
+    //             // For regular keys, set as the selected key (single selection like HidUsagePicker)
+    //             setSelectedKey(numericValue)
+	//
+    //             // Update parent component immediately like HidUsagePicker
+    //             // Use current modifiers with the new key
+    //             updateParentValue(numericValue, selectedModifiers)
+    //         }
+    //     }
+    // }
+	//
+    // // Helper function to update parent component (like HidUsagePicker's selectionChanged)
+    // function updateParentValue(
+    //     keyValue: number | undefined,
+    //     modifiers: Mods[],
+    // ) {
+    //     // If no key is selected and no modifiers, don't update parent
+    //     if (keyValue === undefined && modifiers.length === 0) {
+    //         console.log('No key or modifiers selected, not updating parent')
+    //         onValueChanged?.(undefined)
+    //         return
+    //     }
+	//
+    //     // If modifiers are being updated but no key is selected, don't update parent
+    //     if (keyValue === undefined && modifiers.length > 0) {
+    //         console.log('Modifiers selected but no key, not updating parent')
+    //         return
+    //     }
+	//
+    //     // Convert the key ID back to HID usage format
+    //     // If the original value was a HID usage (like 458767), we need to maintain that format
+    //     let finalValue: number
+	//
+    //     if (keyValue !== undefined) {
+    //         // Check if the original value was a HID usage format
+    //         if (value && value > 0xffff) {
+    //             // Original value was HID usage format (like 458767), maintain that format
+    //             const page = (value >> 16) & 0xffff
+    //             finalValue = (page << 16) | keyValue // Combine page with new key ID
+    //         } else {
+    //             // Original value was not HID usage format, use simple key ID
+    //             finalValue = keyValue
+    //         }
+	//
+    //         // Add modifier flags if any
+    //         const modifierFlags = mods_to_flags(modifiers) << 24
+    //         finalValue = finalValue | modifierFlags
+    //     } else {
+    //         finalValue = 0
+    //     }
+	//
+    //     console.log('KeysLayout updating parent with value:', {
+    //         keyValue,
+    //         modifiers,
+    //         finalValue,
+    //         originalValue: value,
+    //         hidUsageFormat: value && value > 0xffff ? 'yes' : 'no',
+    //     })
+	//
+    //     // Send the properly formatted value
+    //     if (finalValue >= 0 && finalValue <= 0xffffffff) {
+    //         console.log('Calling onValueChanged with:', finalValue)
+    //         onValueChanged?.(finalValue > 0 ? finalValue : undefined)
+    //     } else {
+    //         console.error('Invalid value generated:', finalValue)
+    //         onValueChanged?.(undefined)
+    //     }
+    // }
+	//
+    // // Helper function to get key info by ID
+    // function getKeyInfo(keyId: number) {
+    //     for (const keyboard of keyboards) {
+    //         const key = keyboard.UsageIds.find((k) => {
+    //             const kId = typeof k.Id === 'string' ? parseInt(k.Id) : k.Id
+    //             return kId === keyId
+    //         })
+    //         if (key) {
+    //             return { ...key, keyboardName: keyboard.Name }
+    //         }
+    //     }
+    //     return null
+    // }
+	//
+    // // Helper function to get numeric ID from key
+	//
+    // // Helper function to check if a key is selected (including modifiers)
+    // function isKeySelected(keyId: number): boolean {
+    //     if (MODIFIER_KEY_IDS.includes(keyId)) {
+    //         const modifier = KEY_ID_TO_MOD[keyId]
+    //         return modifier ? selectedModifiers.includes(modifier) : false
+    //     }
+    //     const isSelected = selectedKey === keyId
+    //     if (isSelected) {
+    //         console.log(`Key ${keyId} is selected in KeysLayout`)
+    //     }
+    //     return isSelected
+    // }
+	//
+    // // Helper function to get display label for selected key
+    // function getSelectedKeyDisplayLabel(): string {
+    //     if (selectedKey === undefined) return ''
+	//
+    //     const keyInfo = getKeyInfo(selectedKey)
+    //     if (keyInfo) {
+    //         // Prefer Label over Name, and ensure we have a readable string
+    //         const label = keyInfo.Label || keyInfo.Name
+    //         if (label && label.trim() !== '') {
+    //             return label
+    //         }
+    //     }
+	//
+    //     // If we can't get a proper label, try to find it in the keyboard data
+    //     // This is a fallback for when the conversion might have failed
+    //     for (const keyboard of keyboards) {
+    //         const key = keyboard.UsageIds.find((k) => {
+    //             const kId = typeof k.Id === 'string' ? parseInt(k.Id) : k.Id
+    //             return kId === selectedKey
+    //         })
+    //         if (key && key.Label && key.Label.trim() !== '') {
+    //             return key.Label
+    //         }
+    //     }
+	//
+    //     // Last resort: show a generic label
+    //     return `Key ${selectedKey}`
+    // }
 
     return (
         <>
@@ -499,8 +461,15 @@ export function KeysLayout({
                             style={{ height: 'auto', minHeight: '350px' }}
                         >
                             {keyboard.UsageIds.map((key, keyIndex) => {
-                                const keyId = getKeyId(key)
-                                return (
+
+                                const keyId = hidUsageFromPageAndId(keyboard.Id, (key.Id as number))
+								if ( keyboard.Id == 7 && key.Id ==4 ) console.log(keyboard.Id, key.Id, key.Label, keyId)
+
+	                            function isKeySelected ( keyId: number ) {
+		                            return false
+	                            }
+
+	                            return (
                                     <Keycode
                                         key={key.Id + '-' + keyIndex}
                                         id={keyId}
@@ -509,7 +478,7 @@ export function KeysLayout({
                                         height={key.h / 2 || 50}
                                         x={key.x / 100}
                                         y={key.y / 100}
-                                        keyCode={keyId.toString()}
+                                        keyCode={keyId}
                                         baseKeyValue={keyId}
                                         onSelect={handleKeySelect}
                                         isSelected={isKeySelected(keyId)}
