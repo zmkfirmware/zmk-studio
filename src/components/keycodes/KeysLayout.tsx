@@ -193,6 +193,7 @@ export function KeysLayout({
 			}
 
 			console.log(all_mods, mods, value)
+            setSelectedKey(value)
 			onValueChanged(value)
 		},
 		[onValueChanged, mods],
@@ -244,9 +245,9 @@ export function KeysLayout({
     // }, [value])
 	//
     // // Notify parent of key selection changes
-    // useEffect(() => {
-    //     onKeySelected?.(selectedKey)
-    // }, [selectedKey, onKeySelected])
+    useEffect(() => {
+        setSelectedKey(value)
+    }, [value])
 	//
     // // Notify parent of modifier changes
     // useEffect(() => {
@@ -391,17 +392,13 @@ export function KeysLayout({
     // // Helper function to get numeric ID from key
 	//
     // // Helper function to check if a key is selected (including modifiers)
-    // function isKeySelected(keyId: number): boolean {
-    //     if (MODIFIER_KEY_IDS.includes(keyId)) {
-    //         const modifier = KEY_ID_TO_MOD[keyId]
-    //         return modifier ? selectedModifiers.includes(modifier) : false
-    //     }
-    //     const isSelected = selectedKey === keyId
-    //     if (isSelected) {
-    //         console.log(`Key ${keyId} is selected in KeysLayout`)
-    //     }
-    //     return isSelected
-    // }
+    function isKeySelected(keyId: number): boolean {
+        const isSelected = selectedKey === keyId
+        if (isSelected) {
+            console.log(`Key ${keyId} is selected in KeysLayout`)
+        }
+        return isSelected
+    }
 	//
     // // Helper function to get display label for selected key
     // function getSelectedKeyDisplayLabel(): string {
@@ -465,21 +462,16 @@ export function KeysLayout({
                                 const keyId = hidUsageFromPageAndId(keyboard.Id, (key.Id as number))
 								if ( keyboard.Id == 7 && key.Id ==4 ) console.log(keyboard.Id, key.Id, key.Label, keyId)
 
-	                            function isKeySelected ( keyId: number ) {
-		                            return false
-	                            }
-
 	                            return (
                                     <Keycode
                                         key={key.Id + '-' + keyIndex}
-                                        id={keyId}
+                                        value={keyId}
                                         label={key.Label}
                                         width={key.w / 2 || 50}
                                         height={key.h / 2 || 50}
                                         x={key.x / 100}
                                         y={key.y / 100}
-                                        keyCode={keyId}
-                                        baseKeyValue={keyId}
+                                        baseKeyValue={key.Id}
                                         onSelect={handleKeySelect}
                                         isSelected={isKeySelected(keyId)}
                                     />

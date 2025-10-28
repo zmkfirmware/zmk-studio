@@ -124,7 +124,6 @@ export const HidUsagePicker = ({
     }, [value])
     const selectionChanged = useCallback(
         (e: Key | null) => {
-	        console.log(e)
 			let value = typeof e == 'number' ? e : undefined
             if (value !== undefined) {
                 const mod_flags = mods_to_flags(mods.map((m) => parseInt(m)))
