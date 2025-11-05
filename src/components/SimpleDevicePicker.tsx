@@ -33,6 +33,7 @@ export function SimpleDevicePicker({
         } catch (e) {
             if (!ignore) {
                 if (e instanceof Error && !(e instanceof UserCancelledError)) {
+	                console.error(e.message)
                     toast.error("Failed to connect to the selected device.", {
                         description: e.message,
                     })

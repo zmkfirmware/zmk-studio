@@ -24,6 +24,10 @@ interface KeysLayoutProps {
     onModifiersChanged?: (modifiers: Mods[]) => void
 }
 
+// Container dimensions - easily configurable
+const CONTAINER_MAX_HEIGHT = 400 // Maximum height in pixels
+const CONTAINER_MAX_WIDTH = '100%' // Maximum width (can be changed to a pixel value if needed)
+
 // Modifier key IDs (from keyboard data)
 const MODIFIER_KEY_IDS = [224, 225, 226, 227, 228, 229, 230, 231] // Left/Right Control, Shift, Alt, GUI
 
@@ -447,39 +451,141 @@ export function KeysLayout({
                     ))}
                 </TabsList>
 
-                {keyboards.map((keyboard, index) => (
-                    <TabsContent
-                        key={keyboard.Name}
-                        value={index.toString()}
-                        className="mt-4"
-                    >
-                        <div
-                            className="relative p-6"
-                            style={{ height: 'auto', minHeight: '350px' }}
+                {keyboards.map((keyboard, index) => {
+                    // Separate keys with positions from keys without positions
+                    const keysWithPositions = keyboard.UsageIds.filter(
+                        (key) => key.x !== undefined && key.y !== undefined && key.x !== null && key.y !== null
+                    )
+                    const keysWithoutPositions = keyboard.UsageIds.filter(
+                        (key) => key.x === undefined || key.y === undefined || key.x === null || key.y === null
+                    )
+
+                    // Calculate the maximum bottom position needed for keys with positions
+                    const keySize = 50 // base key size used in Keycode component
+                    let maxBottomPosition = 0
+                    keysWithPositions.forEach((key) => {
+                        const keyHeight = ('h' in key && key.h) ? key.h / 2 : 50
+                        const bottomPosition = (key.y / 100) * keySize + keyHeight
+                        if (bottomPosition > maxBottomPosition) {
+                            maxBottomPosition = bottomPosition
+                        }
+                    })
+
+                    // Calculate approximate height needed for keys without positions (wrapping)
+                    // Estimate based on average key width and container width
+                    // Keys wrap, so we estimate rows needed
+                    let keysWithoutPosHeight = 0
+                    if (keysWithoutPositions.length > 0) {
+                        const avgKeyWidth = 60 // average key width in pixels
+                        const containerWidth = 800 // approximate container width
+                        const keysPerRow = Math.floor(containerWidth / avgKeyWidth)
+                        const numRows = Math.ceil(keysWithoutPositions.length / keysPerRow)
+                        keysWithoutPosHeight = numRows * 60 // 60px per row (key height + gap)
+                    }
+
+                    // Set container height to accommodate all content, with padding
+                    const calculatedHeight = Math.max(maxBottomPosition + 48, keysWithoutPosHeight + 48, 350) // +48 for padding (24px top + 24px bottom)
+
+                    return (
+                        <TabsContent
+                            key={keyboard.Name}
+                            value={index.toString()}
+                            className="mt-4"
                         >
-                            {keyboard.UsageIds.map((key, keyIndex) => {
+                            <div
+                                className="relative p-6"
+                                style={{ 
+                                    minHeight: `${Math.min(calculatedHeight, CONTAINER_MAX_HEIGHT)}px`,
+                                    maxHeight: `${CONTAINER_MAX_HEIGHT}px`,
+                                    overflowY: 'auto',
+                                    overflowX: 'hidden'
+                                }}
+                            >
+                                {/* Render keys with positions using absolute positioning */}
+                                {keysWithPositions.map((key, keyIndex) => {
+                                    const keyId = hidUsageFromPageAndId(keyboard.Id, (key.Id as number))
+                                    if (keyboard.Id == 7 && key.Id == 4) console.log(keyboard.Id, key.Id, key.Label, keyId)
+                                    
+                                    const keyWidth = ('w' in key && key.w) ? key.w / 2 : 50
+                                    const keyHeight = ('h' in key && key.h) ? key.h / 2 : 50
 
-                                const keyId = hidUsageFromPageAndId(keyboard.Id, (key.Id as number))
-								if ( keyboard.Id == 7 && key.Id ==4 ) console.log(keyboard.Id, key.Id, key.Label, keyId)
+                                    return (
+                                        <Keycode
+                                            key={key.Id + '-' + keyIndex}
+                                            value={keyId}
+                                            label={key.Label}
+                                            width={keyWidth}
+                                            height={keyHeight}
+                                            x={key.x / 100}
+                                            y={key.y / 100}
+                                            baseKeyValue={key.Id}
+                                            onSelect={handleKeySelect}
+                                            isSelected={isKeySelected(keyId)}
+                                        />
+                                    )
+                                })}
 
-	                            return (
-                                    <Keycode
-                                        key={key.Id + '-' + keyIndex}
-                                        value={keyId}
-                                        label={key.Label}
-                                        width={key.w / 2 || 50}
-                                        height={key.h / 2 || 50}
-                                        x={key.x / 100}
-                                        y={key.y / 100}
-                                        baseKeyValue={key.Id}
-                                        onSelect={handleKeySelect}
-                                        isSelected={isKeySelected(keyId)}
+                                {/* Render keys without positions in a horizontal flow with wrapping */}
+                                {keysWithoutPositions.length > 0 && (
+                                    <div
+                                        style={{
+                                            position: 'absolute',
+                                            top: '0px',
+                                            left: '0px',
+                                            display: 'flex',
+                                            flexWrap: 'wrap',
+                                            gap: '4px',
+                                            width: '100%',
+                                            maxWidth: '100%',
+                                        }}
+                                    >
+                                        {keysWithoutPositions.map((key, keyIndex) => {
+                                            const keyId = hidUsageFromPageAndId(keyboard.Id, (key.Id as number))
+                                            const keyWidth = ('w' in key && key.w) ? key.w / 2 : 50
+                                            const keyHeight = ('h' in key && key.h) ? key.h / 2 : 50
+
+                                            return (
+                                                <div
+                                                    key={key.Id + '-' + keyIndex}
+                                                    style={{
+                                                        position: 'relative',
+                                                        width: `${keyWidth}px`,
+                                                        height: `${keyHeight}px`,
+                                                        flexShrink: 0,
+                                                    }}
+                                                >
+                                                    <Keycode
+                                                        value={keyId}
+                                                        label={key.Label}
+                                                        width={keyWidth}
+                                                        height={keyHeight}
+                                                        x={0}
+                                                        y={0}
+                                                        baseKeyValue={key.Id}
+                                                        onSelect={handleKeySelect}
+                                                        isSelected={isKeySelected(keyId)}
+                                                    />
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                )}
+                                {/* Spacer to ensure container scroll height includes all absolutely positioned content */}
+                                {calculatedHeight > CONTAINER_MAX_HEIGHT && (
+                                    <div
+                                        style={{
+                                            position: 'relative',
+                                            width: '1px',
+                                            height: `${calculatedHeight - CONTAINER_MAX_HEIGHT}px`,
+                                            pointerEvents: 'none',
+                                            opacity: 0
+                                        }}
                                     />
-                                )
-                            })}
-                        </div>
-                    </TabsContent>
-                ))}
+                                )}
+                            </div>
+                        </TabsContent>
+                    )
+                })}
             </Tabs>
         </>
     )
