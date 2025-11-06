@@ -483,7 +483,7 @@ export function KeysLayout({
                 className="w-full"
             >
                 <div className="flex items-center gap-4 mb-4">
-                    <TabsList className="grid flex-1 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <TabsList className="flex-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {keyboards.map((keyboard, index) => {
                             const keyboardMatch = keyboardsWithMatches[index]
                             const isDisabled = searchQuery.trim() !== '' && !keyboardMatch?.hasMatches
@@ -504,7 +504,7 @@ export function KeysLayout({
                         placeholder="Search keycodes by label..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-64 flex-shrink-0"
+                        className="w-64 flex-shrink-0 flex"
                     />
                 </div>
 
