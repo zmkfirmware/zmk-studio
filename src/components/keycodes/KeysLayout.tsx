@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { keyboards } from '../../data/keys'
 import Keycode from './Keycode.tsx'
-import React from 'react'
 import { Key } from 'react-aria-components'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { hidUsageFromPageAndId, hidUsagePageAndIdFromUsage } from "@/helpers/hid-usages.ts"
+import { Input } from '@/components/ui/input'
+import { hidUsageFromPageAndId } from "@/helpers/hid-usages.ts"
 
 /**
  * KeysLayout Component
@@ -180,6 +180,7 @@ export function KeysLayout({
         undefined,
     )
     const [selectedModifiers, setSelectedModifiers] = useState<Mods[]>([])
+    const [searchQuery, setSearchQuery] = useState('')
 
 	const mods = useMemo(() => {
 		const flags = value ? value >> 24 : 0
@@ -196,7 +197,7 @@ export function KeysLayout({
 				value = value | (mod_flags << 24)
 			}
 
-			console.log(all_mods, mods, value)
+			// console.log(all_mods, mods, value)
             setSelectedKey(value)
 			onValueChanged(value)
 		},
@@ -433,6 +434,47 @@ export function KeysLayout({
     //     return `Key ${selectedKey}`
     // }
 
+    // Helper function to filter keys by search query
+    const filterKeysBySearch = useCallback((keys: typeof keyboards[0]['UsageIds'], query: string) => {
+        if (!query.trim()) {
+            return keys
+        }
+        const lowerQuery = query.toLowerCase()
+        return keys.filter((key) => {
+            const label = key.Label || ''
+            // Remove HTML tags for search comparison
+            const textContent = label.replace(/<[^>]*>/g, '').toLowerCase()
+            return textContent.includes(lowerQuery)
+        })
+    }, [])
+
+    // Check which keyboards have matching keycodes for the search query
+    const keyboardsWithMatches = useMemo(() => {
+        return keyboards.map((keyboard, index) => {
+            const filteredKeys = filterKeysBySearch(keyboard.UsageIds, searchQuery)
+            return {
+                index,
+                hasMatches: filteredKeys.length > 0
+            }
+        })
+    }, [searchQuery, filterKeysBySearch])
+
+    // Switch to first enabled tab if current tab becomes disabled
+    useEffect(() => {
+        if (searchQuery.trim()) {
+            const currentTabIndex = parseInt(activeTab)
+            const currentKeyboard = keyboardsWithMatches[currentTabIndex]
+            
+            // If current tab has no matches, switch to first tab with matches
+            if (currentKeyboard && !currentKeyboard.hasMatches) {
+                const firstEnabledTab = keyboardsWithMatches.find(k => k.hasMatches)
+                if (firstEnabledTab) {
+                    setActiveTab(firstEnabledTab.index.toString())
+                }
+            }
+        }
+    }, [searchQuery, activeTab, keyboardsWithMatches])
+
     return (
         <>
             <Tabs
@@ -440,23 +482,41 @@ export function KeysLayout({
                 onValueChange={setActiveTab}
                 className="w-full"
             >
-                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {keyboards.map((keyboard, index) => (
-                        <TabsTrigger
-                            key={keyboard.Name}
-                            value={index.toString()}
-                        >
-                            {keyboard.Name}
-                        </TabsTrigger>
-                    ))}
-                </TabsList>
+                <div className="flex items-center gap-4 mb-4">
+                    <TabsList className="grid flex-1 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {keyboards.map((keyboard, index) => {
+                            const keyboardMatch = keyboardsWithMatches[index]
+                            const isDisabled = searchQuery.trim() !== '' && !keyboardMatch?.hasMatches
+                            
+                            return (
+                                <TabsTrigger
+                                    key={keyboard.Name}
+                                    value={index.toString()}
+                                    disabled={isDisabled}
+                                >
+                                    {keyboard.Name}
+                                </TabsTrigger>
+                            )
+                        })}
+                    </TabsList>
+                    <Input
+                        type="text"
+                        placeholder="Search keycodes by label..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-64 flex-shrink-0"
+                    />
+                </div>
 
                 {keyboards.map((keyboard, index) => {
+                    // Filter keys by search query first
+                    const filteredKeys = filterKeysBySearch(keyboard.UsageIds, searchQuery)
+                    
                     // Separate keys with positions from keys without positions
-                    const keysWithPositions = keyboard.UsageIds.filter(
+                    const keysWithPositions = filteredKeys.filter(
                         (key) => key.x !== undefined && key.y !== undefined && key.x !== null && key.y !== null
                     )
-                    const keysWithoutPositions = keyboard.UsageIds.filter(
+                    const keysWithoutPositions = filteredKeys.filter(
                         (key) => key.x === undefined || key.y === undefined || key.x === null || key.y === null
                     )
 
@@ -504,8 +564,7 @@ export function KeysLayout({
                                 {/* Render keys with positions using absolute positioning */}
                                 {keysWithPositions.map((key, keyIndex) => {
                                     const keyId = hidUsageFromPageAndId(keyboard.Id, (key.Id as number))
-                                    if (keyboard.Id == 7 && key.Id == 4) console.log(keyboard.Id, key.Id, key.Label, keyId)
-                                    
+
                                     const keyWidth = ('w' in key && key.w) ? key.w / 2 : 50
                                     const keyHeight = ('h' in key && key.h) ? key.h / 2 : 50
 

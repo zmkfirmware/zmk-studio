@@ -87,6 +87,7 @@ function App () {
 							"--footer-height": "calc(var(--spacing) * 8)",
 						} as React.CSSProperties
 					}>
+
 						<Drawer />
 						<SidebarInset>
 							<Header/>

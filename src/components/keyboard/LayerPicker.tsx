@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu.tsx"
 import { addLayer, changeName, removeLayer, restore } from "@/services/RpcEventsLayerService.ts"
 import { toast } from "sonner"
+import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip.tsx";
 
 
 interface Layer {
@@ -207,9 +208,12 @@ export const LayerPicker = ( {
 		<>
 			<SidebarGroupLabel>Layers</SidebarGroupLabel>
 			<SidebarGroupAction title="Add Layer" onClick={ add } disabled={ !canAdd }>
-				{/*<Button onClick={addLayer} disabled={ !canAdd } variant="ghost" size="icon" className="size-8" >*/ }
-				<Plus className="size-4" /> <span className="sr-only">Add Layer</span>
-				{/*</Button>*/ }
+				<Tooltip>
+					<TooltipTrigger><Plus className="size-4" /></TooltipTrigger>
+					<TooltipContent>
+						<p>Add Layer</p>
+					</TooltipContent>
+				</Tooltip>
 			</SidebarGroupAction>
 			<SidebarMenu>
 				{ layersArray.map( ( item ) => (

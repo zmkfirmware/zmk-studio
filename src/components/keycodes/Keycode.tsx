@@ -1,5 +1,5 @@
-import { CSSProperties, useCallback, useState } from "react"
-import { Key } from "react-aria-components"
+import { CSSProperties } from "react"
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 
 /**
  * Keycode Component
@@ -40,7 +40,12 @@ export default function Keycode({
         width: `${width - 2}px`,
         height: `${height - 2}px`,
         overflow: 'hidden',
-        border: isSelected ? '2px solid blue' : '1px solid gray'
+        border: isSelected ? '2px solid blue' : '1px solid gray',
+        // display: 'flex',
+        // alignItems: 'center',
+        justifyContent: 'center',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
     };
 
     const handleClick = () => {
@@ -48,13 +53,20 @@ export default function Keycode({
     };
 
     return (
-        <button
-            className={`btn btn-square btn-outline absolute ${isSelected ? 'btn-active' : ''}`}
-            style={style}
-            dangerouslySetInnerHTML={{ __html: label }}
-            value={value}
-            data-base-key-value={baseKeyValue}
-            onClick={handleClick}
-        ></button>
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <button
+                    className={`btn btn-square btn-outline absolute ${isSelected ? 'btn-active' : ''}`}
+                    style={style}
+                    dangerouslySetInnerHTML={{ __html: label }}
+                    value={value}
+                    data-base-key-value={baseKeyValue}
+                    onClick={handleClick}
+                ></button>
+            </TooltipTrigger>
+            <TooltipContent>
+                <div dangerouslySetInnerHTML={{ __html: label }} />
+            </TooltipContent>
+        </Tooltip>
     );
 }

@@ -197,7 +197,7 @@
   body {
     @apply bg-background text-foreground;
   }
-  
+
   /* Ensure crisp rendering for scaled elements */
   [data-zoomer="true"] {
     image-rendering: crisp-edges;

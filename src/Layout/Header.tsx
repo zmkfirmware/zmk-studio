@@ -5,13 +5,14 @@ import { Redo2, Save, Trash2, Undo2 } from 'lucide-react'
 import useConnectionStore from '../stores/ConnectionStore.ts'
 import undoRedoStore from '../stores/UndoRedoStore.ts'
 import { Settings } from '../components/Modals/Settings.tsx'
+import { Download as DownloadModal } from '../components/Modals/Download.tsx'
 import { SidebarTrigger } from '@/components/ui/sidebar.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Separator } from '@/components/ui/separator.tsx'
-import { DarkModeToggle } from '@/components/DarkModeToggle.tsx'
 import { useConnectedDeviceData } from '@/services/RpcConnectionService.ts'
 import { toast } from 'sonner'
 import { callRemoteProcedureControl } from '@/services/CallRemoteProcedureControl.ts'
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip.tsx'
 
 export interface AppHeaderProps {}
 
@@ -87,49 +88,99 @@ export function Header({}: AppHeaderProps) {
                 />{' '}
                 <span className="px-3">Studio</span>
                 <div className="ml-auto flex items-center gap-2">
-                    <DarkModeToggle></DarkModeToggle>
-                    <Settings />
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        disabled={!canUndo()}
-                        onClick={undo}
-                        data-tip="Undo"
-                    >
-                        <Undo2 aria-label="Undo" />
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        disabled={!canRedo()}
-                        onClick={redo}
-                        data-tip="Undo"
-                    >
-                        <Redo2 aria-label="Undo" />
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        disabled={
-                            !unsaved ||
-                            !connection ||
-                            lockState !==
-                                LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED
-                        }
-                        data-tip="Save"
-                        onClick={save}
-                    >
-                        <Save aria-label="Save" />
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        disabled={!unsaved}
-                        data-tip="Discard"
-                        onClick={discard}
-                    >
-                        <Trash2 aria-label="Discard" />
-                    </Button>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <div>
+                                <DownloadModal />
+                            </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Download Config</p>
+                        </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <div>
+                                <Settings />
+                            </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Settings</p>
+                        </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <span>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    disabled={!canUndo()}
+                                    onClick={undo}
+                                >
+                                    <Undo2 aria-label="Undo" />
+                                </Button>
+                            </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Undo</p>
+                        </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <span>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    disabled={!canRedo()}
+                                    onClick={redo}
+                                >
+                                    <Redo2 aria-label="Redo" />
+                                </Button>
+                            </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Redo</p>
+                        </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <span>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    disabled={
+                                        !unsaved ||
+                                        !connection ||
+                                        lockState !==
+                                            LockState.ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED
+                                    }
+                                    onClick={save}
+                                >
+                                    <Save aria-label="Save" />
+                                </Button>
+                            </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Save</p>
+                        </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <span>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    disabled={!unsaved}
+                                    onClick={discard}
+                                >
+                                    <Trash2 aria-label="Discard" />
+                                </Button>
+                            </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Discard</p>
+                        </TooltipContent>
+                    </Tooltip>
                 </div>
             </div>
         </header>

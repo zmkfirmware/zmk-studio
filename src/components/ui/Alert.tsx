@@ -1,36 +1,59 @@
-import { useState, useEffect } from "react";
-import {  } from 'react-dom';
+import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
 
-interface AlertProps {
-    message: string;
-    duration: number;
-    container: HTMLElement;
-}
+import { cn } from "@/lib/utils"
 
-export default function Alert({ message, duration, container }: AlertProps) {
-    const [visible, setVisible] = useState(true);
+const alertVariants = cva(
+  "relative w-full rounded-lg border px-4 py-3 text-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground [&>svg~*]:pl-7",
+  {
+    variants: {
+      variant: {
+        default: "bg-background text-foreground",
+        destructive:
+          "border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setVisible(false);
-        }, duration * 1000);
+const Alert = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof alertVariants>
+>(({ className, variant, ...props }, ref) => (
+  <div
+    ref={ref}
+    role="alert"
+    className={cn(alertVariants({ variant }), className)}
+    {...props}
+  />
+))
+Alert.displayName = "Alert"
 
-        return () => clearTimeout(timer);
-    }, [duration]);
+const AlertTitle = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLHeadingElement>
+>(({ className, ...props }, ref) => (
+  <h5
+    ref={ref}
+    className={cn("mb-1 font-medium leading-none tracking-tight", className)}
+    {...props}
+  />
+))
+AlertTitle.displayName = "AlertTitle"
 
-    useEffect(() => {
-        if (!visible) {
-            document.body.removeChild(container);
-        }
-    }, [visible, container]);
+const AlertDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("text-sm [&_p]:leading-relaxed", className)}
+    {...props}
+  />
+))
+AlertDescription.displayName = "AlertDescription"
 
-    if (!visible) return null;
-
-    return (
-        <div className="toast toast-top toast-end z-[99999]">
-            <div className="alert alert-error">
-                <span className="text-white">{message}</span>
-            </div>
-        </div>
-    );
-}
+export { Alert, AlertTitle, AlertDescription }

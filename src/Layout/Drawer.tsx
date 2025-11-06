@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useLayout } from '../helpers/useLayouts.ts'
 import { PhysicalLayoutPicker } from '../components/keyboard/PhysicalLayoutPicker.tsx'
 import { LayerPicker } from '../components/keyboard/LayerPicker.tsx'
@@ -14,7 +14,6 @@ import {
     SidebarContent,
     SidebarGroup,
     SidebarHeader,
-    SidebarMenu,
     SidebarFooter,
 } from "@/components/ui/sidebar.tsx"
 import { DeviceMenu } from '../components/DeviceMenu.tsx'
@@ -84,7 +83,7 @@ export function Drawer({}: DrawerProps) {
     }, [keymap, selectedLayerIndex])
 
     return (
-            <Sidebar collapsible="icon" variant='inset'>
+            <Sidebar collapsible="icon" variant='inset' >
                 <SidebarHeader><img src="/zmk.svg" alt="ZMK Logo" className="h-8 rounded" />
                     {/*<span className="px-3">Studio</span>*/}
                 </SidebarHeader>
