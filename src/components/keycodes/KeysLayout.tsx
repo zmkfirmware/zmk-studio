@@ -25,7 +25,7 @@ interface KeysLayoutProps {
 }
 
 // Container dimensions - easily configurable
-const CONTAINER_MAX_HEIGHT = 400 // Maximum height in pixels
+const CONTAINER_MAX_HEIGHT = 350 // Maximum height in pixels
 const CONTAINER_MAX_WIDTH = '100%' // Maximum width (can be changed to a pixel value if needed)
 
 // Modifier key IDs (from keyboard data)

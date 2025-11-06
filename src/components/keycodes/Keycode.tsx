@@ -41,11 +41,6 @@ export default function Keycode({
         height: `${height - 2}px`,
         overflow: 'hidden',
         border: isSelected ? '2px solid blue' : '1px solid gray',
-        // display: 'flex',
-        // alignItems: 'center',
-        justifyContent: 'center',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
     };
 
     const handleClick = () => {
