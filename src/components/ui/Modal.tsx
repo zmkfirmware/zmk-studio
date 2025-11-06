@@ -115,7 +115,7 @@ export function Modal ( {
 					<Button variant={ variant } size="icon" className="cursor-pointer">{ icon }</Button>
 				</DialogTrigger>
 			) }
-			<DialogContent className={ `${ customModalBoxClass }` } showCloseButton={ xButton }
+			<DialogContent className={ customModalBoxClass } showCloseButton={ xButton }
 			               { ...(isDismissable
 				               ? {
 					               onEscapeKeyDown: blockDismiss,
