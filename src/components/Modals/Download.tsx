@@ -91,7 +91,7 @@ export function Download({ opened = false, onClose }: DownloadProps) {
             <div className="space-y-6">
                 {/* ZMK Config Generation */}
                 <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">ZMK Configuration</h3>
+                    <h3 className="text-lg font-semibold">ZMK Configuration <span className={'text-red-600'}>(This is not a functional system yet!!)</span></h3>
                     <p className="text-sm text-muted-foreground">
                         Generate ZMK configuration files for your keyboard layout
                     </p>
