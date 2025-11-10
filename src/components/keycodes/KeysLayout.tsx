@@ -4,7 +4,7 @@ import Keycode from './Keycode.tsx'
 import { Key } from 'react-aria-components'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Input } from '@/components/ui/input'
-import { hidUsageFromPageAndId } from "@/helpers/hid-usages.ts"
+import { hidUsageFromPageAndId, hidUsagePageAndIdFromUsage } from "@/helpers/hid-usages.ts"
 
 /**
  * KeysLayout Component
@@ -252,6 +252,52 @@ export function KeysLayout({
     // // Notify parent of key selection changes
     useEffect(() => {
         setSelectedKey(value)
+    }, [value])
+
+    // Set the active tab based on the selected key's HID usage page
+    useEffect(() => {
+        if (value !== undefined && value !== 0) {
+            // Extract HID usage page and ID from value
+            // HID usage format: (page << 16) | id
+            // Modifiers are stored in bits 24-31, so we mask them out first
+            const maskedValue = value & 0x00FFFFFF // Mask out modifier flags in upper 8 bits
+            const [page, id] = hidUsagePageAndIdFromUsage(maskedValue)
+
+            // Find which keyboard tab contains this key
+            for (let i = 0; i < keyboards.length; i++) {
+                const keyboard = keyboards[i]
+                // Check if this keyboard's page matches
+                if (keyboard.Id === page) {
+                    // Verify the key ID exists in this keyboard
+                    const key = keyboard.UsageIds.find((k) => {
+                        const kId = typeof k.Id === 'string' ? parseInt(k.Id) : k.Id
+                        return kId === id
+                    })
+                    if (key) {
+                        // Found the matching keyboard tab
+                        setActiveTab(i.toString())
+                        return
+                    }
+                }
+            }
+
+            // Fallback: if page doesn't match, try to find by key ID only
+            // This handles cases where the value might be just the key ID (1-231)
+            // or where the page format is different
+            if (id >= 1 && id <= 231) {
+                for (let i = 0; i < keyboards.length; i++) {
+                    const keyboard = keyboards[i]
+                    const key = keyboard.UsageIds.find((k) => {
+                        const kId = typeof k.Id === 'string' ? parseInt(k.Id) : k.Id
+                        return kId === id
+                    })
+                    if (key) {
+                        setActiveTab(i.toString())
+                        return
+                    }
+                }
+            }
+        }
     }, [value])
 	//
     // // Notify parent of modifier changes

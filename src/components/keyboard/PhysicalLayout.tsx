@@ -80,13 +80,20 @@ export const PhysicalLayout = ( {
 
 	// console.log(positions)
 	const keysPositions = positions.map( ( p, idx ) => {
+		const posStyle = scalePosition( p, oneU )
+		const existingTransform = posStyle.transform || ''
+		
 		return (
 			<div
 				key={ p.id }
 				onClick={ () => onPositionClicked?.( idx ) }
 				className="absolute data-[zoomer=true]:hover:z-[1000] leading-[0]"
 				data-zoomer={ hoverZoom }
-				style={ scalePosition( p, oneU ) }>
+				style={{ 
+					...posStyle,
+					backfaceVisibility: 'hidden',
+					transform: existingTransform ? `${existingTransform} translateZ(0)` : 'translateZ(0)',
+				}}>
 				<Key
 					hoverZoom={ hoverZoom }
 					oneU={ oneU }
@@ -105,12 +112,15 @@ export const PhysicalLayout = ( {
 				style={ {
 					height: bottomMost * oneU + "px",
 					width: rightMost * oneU + "px",
-					transform: `scale(${ scale })`,
+					transform: `scale(${ scale }) translateZ(0)`,
 					transformOrigin: "center",
-					imageRendering: "crisp-edges",
+					WebkitFontSmoothing: "subpixel-antialiased",
+					MozOsxFontSmoothing: "grayscale",
 					backfaceVisibility: "hidden",
-					willChange: "transform"
-				} }
+					perspective: 1000,
+					willChange: "transform",
+					imageRendering: "auto"
+				} as React.CSSProperties }
 				ref={ ref }
 				{ ...props }>
 				{ keysPositions }
