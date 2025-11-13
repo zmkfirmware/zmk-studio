@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { keyboards } from '../../data/keys'
+import {KeyboardKeys, keyboards} from '../../data/keys'
 import Keycode from './Keycode.tsx'
 import { Key } from 'react-aria-components'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
@@ -521,7 +521,37 @@ export function KeysLayout({
         }
     }, [searchQuery, activeTab, keyboardsWithMatches])
 
-    return (
+	function keysList ( keyboard: KeyboardKeys, key, keyIndex: number ) {
+		const keyId = hidUsageFromPageAndId( keyboard.Id, (key.Id as number) )
+		const keyWidth = ('w' in key && key.w) ? key.w / 2 : 50
+		const keyHeight = ('h' in key && key.h) ? key.h / 2 : 50
+
+		return (
+			<div
+				key={key.Id + '-' + keyIndex}
+				style={{
+					position: 'relative',
+					width: `${keyWidth}px`,
+					height: `${keyHeight}px`,
+					flexShrink: 0,
+				}}
+			>
+				<Keycode
+					value={keyId}
+					label={key.Label}
+					width={keyWidth}
+					height={keyHeight}
+					x={0}
+					y={0}
+					baseKeyValue={key.Id}
+					onSelect={handleKeySelect}
+					isSelected={isKeySelected( keyId )}
+				/>
+			</div>
+		)
+	}
+
+	return (
         <>
             <Tabs
                 value={activeTab}
@@ -610,7 +640,6 @@ export function KeysLayout({
                                 {/* Render keys with positions using absolute positioning */}
                                 {keysWithPositions.map((key, keyIndex) => {
                                     const keyId = hidUsageFromPageAndId(keyboard.Id, (key.Id as number))
-
                                     const keyWidth = ('w' in key && key.w) ? key.w / 2 : 50
                                     const keyHeight = ('h' in key && key.h) ? key.h / 2 : 50
 
@@ -645,33 +674,7 @@ export function KeysLayout({
                                         }}
                                     >
                                         {keysWithoutPositions.map((key, keyIndex) => {
-                                            const keyId = hidUsageFromPageAndId(keyboard.Id, (key.Id as number))
-                                            const keyWidth = ('w' in key && key.w) ? key.w / 2 : 50
-                                            const keyHeight = ('h' in key && key.h) ? key.h / 2 : 50
-
-                                            return (
-                                                <div
-                                                    key={key.Id + '-' + keyIndex}
-                                                    style={{
-                                                        position: 'relative',
-                                                        width: `${keyWidth}px`,
-                                                        height: `${keyHeight}px`,
-                                                        flexShrink: 0,
-                                                    }}
-                                                >
-                                                    <Keycode
-                                                        value={keyId}
-                                                        label={key.Label}
-                                                        width={keyWidth}
-                                                        height={keyHeight}
-                                                        x={0}
-                                                        y={0}
-                                                        baseKeyValue={key.Id}
-                                                        onSelect={handleKeySelect}
-                                                        isSelected={isKeySelected(keyId)}
-                                                    />
-                                                </div>
-                                            )
+	                                        return keysList( keyboard, key, keyIndex );
                                         })}
                                     </div>
                                 )}

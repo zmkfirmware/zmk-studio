@@ -11,7 +11,7 @@ async function generateReleaseData() {
       "https://api.github.com/repos/zmkfirmware/zmk-studio/releases/latest",
       {
         headers: process.env.GITHUB_TOKEN
-          ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` }
+          ? {Authorization: `Bearer ${process.env.GITHUB_TOKEN}`}
           : {},
       },
     );
@@ -26,7 +26,7 @@ async function generateReleaseData() {
       "data",
       "release-data.json",
     );
-    await fs.mkdir(path.dirname(dataFilePath), { recursive: true });
+    await fs.mkdir(path.dirname(dataFilePath), {recursive: true});
     await fs.writeFile(dataFilePath, JSON.stringify(data));
 
     console.log("Release data generated successfully!");
