@@ -54,12 +54,12 @@ export const Key = ({
   const size = makeSize(props, oneU);
 
   const children = Children.map(props.children, (c) => (
-    <div
+    <span
       data-zoomer={hoverZoom}
-      className="justify-self-center self-center row-start-2 row-end-3 col-start-2 col-end-3 font-keycap text-lg data-[zoomer=true]:group-hover:text-2xl"
+      className="bg-gray-700 rounded-sm place-content-around text-base-content"
     >
       {c}
-    </div>
+    </span>
   ));
 
   return (
@@ -81,7 +81,11 @@ export const Key = ({
             {header}
           </span>
         )}
-        {children}
+        <div className="row-start-2 row-span-1 col-start-2 w-full h-full p-1 pt-0.5">
+         <div className="h-full overflow-hidden rounded-md grid grid-cols-1 gap-y-0.5">
+          {children}
+         </div>
+        </div>
       </button>
     </div>
   );
