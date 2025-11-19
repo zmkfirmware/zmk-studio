@@ -10,7 +10,7 @@ export const AppFooter = ({
   return (
     <div className="grid justify-center p-1 bg-base-200">
       <div>
-        <span>&copy; 2024 - The ZMK Contributors</span> -{" "}
+        <span>&copy; 2025 - The ZMK Contributors</span> -{" "}
         <a className="hover:text-primary hover:cursor-pointer" onClick={onShowAbout}>
           About ZMK Studio
         </a>{" "}
