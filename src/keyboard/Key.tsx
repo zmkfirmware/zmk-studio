@@ -9,6 +9,14 @@ interface KeyProps {
   onClick?: () => void;
 }
 
+const shortenHeader = (header: string) => {
+  if(header.length > 9){
+    return header?.split(/[\s,-]+/).map((word) => (word.substring(0,3))).join("");
+  }else {
+    return header;
+  }
+}
+
 export const Key = ({
   selected = false,
   width,
@@ -31,6 +39,7 @@ export const Key = ({
       }}
       onClick={onClick}
     >
+      <div className={`absolute text-xs ${selected ? "text-primary-content" : "z1text-base-content"} opacity-80 group-hover:opacity-0 top-1 text-nowrap left-1/2 font-light -translate-x-1/2 text-center transition-opacity`}>{header ? shortenHeader(header) : ""}</div>
       <div className={`absolute text-xs ${selected ? "text-primary-content" : "z1text-base-content"} opacity-0 group-hover:opacity-80 top-1 text-nowrap left-1/2 font-light -translate-x-1/2 text-center transition-opacity`}>{header}</div>
       {children}
     </button>
