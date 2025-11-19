@@ -1,0 +1,14 @@
+{
+    "Key Press": {"short": ""},
+    "Bootloader": {"short": "Bootloadr"},
+    "External Power": {"short": "Ext Pwr"},
+    "Grave/Escape": {"short": "Grv/Esc"},
+    "Key Repeat": {"short": "Key Rept"},
+    "Key Toggle": {"short": "Key Togg"},
+    "Momentary Layer": {"short": "MLayer"},
+    "Output Selection": {"short": "OutputSel"},
+    "Sticky Key": {"short": "Stcky Key"},
+    "Studio Unlock": {"short": "Unlock"},
+    "Toggle Layer": {"short": "Togg Layr"},
+    "Transparent": {"short": "Transprnt"}
+}
