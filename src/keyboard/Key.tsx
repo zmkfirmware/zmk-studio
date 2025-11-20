@@ -1,4 +1,5 @@
 import { PropsWithChildren } from "react";
+import BehaviorShortNames from "./behavior-short-names.json";
 
 interface KeyProps {
   selected?: boolean;
@@ -9,10 +10,17 @@ interface KeyProps {
   onClick?: () => void;
 }
 
+interface BehaviorShortName {
+  short?: string | null;
+  icon?: string | null;
+}
+
+const shortNames: Record<string, BehaviorShortName> = BehaviorShortNames;
+
 const shortenHeader = (header: string) => {
   const maxHeaderLength = 9;
-  if(header === "Key Press" ){
-    return "";
+  if(shortNames[header]?.short != null){
+    return shortNames[header].short;
   } else if(header.length > maxHeaderLength){
     const words = header.split(/[\s,-]+/);
     const lettersPerWord = Math.trunc(maxHeaderLength / words.length);
