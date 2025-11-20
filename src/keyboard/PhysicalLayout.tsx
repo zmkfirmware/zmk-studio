@@ -53,6 +53,7 @@ function scalePosition(
   let top = y * oneU;
   let transformOrigin = undefined;
   let transform = undefined;
+  const transformStyle = "preserve-3d";
 
   if (r) {
     let transformX = ((rx || x) - x) * oneU;
@@ -66,7 +67,7 @@ function scalePosition(
     left,
     transformOrigin,
     transform,
-    willChange: "transform",
+    transformStyle,
   };
 }
 
@@ -74,7 +75,6 @@ export const PhysicalLayout = ({
   positions,
   selectedPosition,
   oneU = 48,
-  hoverZoom = true,
   onPositionClicked,
   ...props
 }: PhysicalLayoutProps) => {
@@ -124,19 +124,18 @@ export const PhysicalLayout = ({
     .reduce((a, b) => Math.max(a, b), 0);
 
   const positionItems = positions.map((p, idx) => (
-    <div
-      key={p.id}
-      onClick={() => onPositionClicked?.(idx)}
-      className="absolute data-[zoomer=true]:hover:z-[1000] leading-[0]"
-      data-zoomer={hoverZoom}
-      style={scalePosition(p, oneU)}
-    >
-      <Key
-        hoverZoom={hoverZoom}
-        oneU={oneU}
-        selected={idx === selectedPosition}
-        {...p}
-      />
+    <div className="absolute" style={scalePosition(p, oneU)}>
+      <div
+        key={p.id}
+        onClick={() => onPositionClicked?.(idx)}
+        className="hover:[transform:translateZ(100px)] transition-transform duration-200"
+      >
+        <Key
+          oneU={oneU}
+          selected={idx === selectedPosition}
+          {...p}
+        />
+      </div>
     </div>
   ));
 
@@ -147,6 +146,7 @@ export const PhysicalLayout = ({
         height: bottomMost * oneU + "px",
         width: rightMost * oneU + "px",
         transform: `scale(${scale})`,
+        transformStyle: "preserve-3d",
       }}
       ref={ref}
       {...props}
