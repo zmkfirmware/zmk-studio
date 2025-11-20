@@ -1,4 +1,5 @@
 import { PropsWithChildren } from "react";
+import BehaviorShortNames from "./behavior-short-names.json";
 
 interface KeyProps {
   selected?: boolean;
@@ -7,6 +8,29 @@ interface KeyProps {
   oneU: number;
   header?: string;
   onClick?: () => void;
+}
+
+interface BehaviorShortName {
+  short?: string | null;
+  icon?: string | null;
+}
+
+const shortNames: Record<string, BehaviorShortName> = BehaviorShortNames;
+
+const shortenHeader = (header: string | undefined) => {
+  if(typeof header === "undefined"){
+    return "";
+  }
+  const maxHeaderLength = 9;
+  if(shortNames[header]?.short != null){
+    return shortNames[header].short;
+  } else if(header.length > maxHeaderLength){
+    const words = header.split(/[\s,-]+/);
+    const lettersPerWord = Math.trunc(maxHeaderLength / words.length);
+    return words.map((word) => (word.substring(0,lettersPerWord))).join("");
+  } else {
+    return header;
+  }
 }
 
 export const Key = ({
@@ -31,7 +55,7 @@ export const Key = ({
       }}
       onClick={onClick}
     >
-      <div className={`absolute text-xs ${selected ? "text-primary-content" : "z1text-base-content"} opacity-0 group-hover:opacity-80 top-1 text-nowrap left-1/2 font-light -translate-x-1/2 text-center transition-opacity`}>{header}</div>
+      <div className={`absolute text-xs ${selected ? "text-primary-content" : "z1text-base-content"} opacity-80 top-1 text-nowrap left-1/2 font-light -translate-x-1/2 text-center`}>{shortenHeader(header)}</div>
       {children}
     </button>
   );

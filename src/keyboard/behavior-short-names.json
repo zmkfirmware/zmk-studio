@@ -1,0 +1,15 @@
+{
+    "Key Press": {"short": "", "icon": null},
+    "Bluetooth": {"short": null, "icon": null},
+    "Bootloader": {"short": "Bootloadr", "icon": null},
+    "External Power": {"short": "Ext Pwr", "icon": null},
+    "Grave/Escape": {"short": "Grv/Esc", "icon": null},
+    "Key Repeat": {"short": "Key Rept", "icon": null},
+    "Key Toggle": {"short": "Key Togg", "icon": null},
+    "Momentary Layer": {"short": "MomntLayr", "icon": null},
+    "Output Selection": {"short": "OutputSel", "icon": null},
+    "Sticky Key": {"short": "Stcky Key", "icon": null},
+    "Studio Unlock": {"short": "StdioUnlk", "icon": null},
+    "Toggle Layer": {"short": "Togg Layr", "icon": null},
+    "Transparent": {"short": "Trans", "icon": null}
+}
