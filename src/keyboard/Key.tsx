@@ -10,9 +10,12 @@ interface KeyProps {
 }
 
 const shortenHeader = (header: string) => {
-  if(header.length > 9){
-    return header?.split(/[\s,-]+/).map((word) => (word.substring(0,3))).join("");
-  }else {
+  const maxHeaderLength = 9;
+  if(header.length > maxHeaderLength){
+    const words = header.split(/[\s,-]+/);
+    const lettersPerWord = Math.trunc(maxHeaderLength / words.length);
+    return words.map((word) => (word.substring(0,lettersPerWord))).join("");
+  } else {
     return header;
   }
 }
