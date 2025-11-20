@@ -11,7 +11,9 @@ interface KeyProps {
 
 const shortenHeader = (header: string) => {
   const maxHeaderLength = 9;
-  if(header.length > maxHeaderLength){
+  if(header === "Key Press" ){
+    return "";
+  } else if(header.length > maxHeaderLength){
     const words = header.split(/[\s,-]+/);
     const lettersPerWord = Math.trunc(maxHeaderLength / words.length);
     return words.map((word) => (word.substring(0,lettersPerWord))).join("");
