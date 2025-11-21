@@ -29,7 +29,7 @@ export function useUndoRedo(): [
 
   const doIt = async (doCb: DoCallback, preserveRedo?: boolean) => {
     setLocked(true);
-    let undo = await doCb();
+    const undo = await doCb();
 
     setUndoStack([[doCb, undo], ...undoStack]);
     if (!preserveRedo) {
@@ -48,7 +48,7 @@ export function useUndoRedo(): [
     }
 
     setLocked(true);
-    let [doCb, undoCb] = undoStack[0];
+    const [doCb, undoCb] = undoStack[0];
     setUndoStack(undoStack.slice(1));
     setRedoStack([doCb, ...redoStack]);
 
@@ -66,7 +66,7 @@ export function useUndoRedo(): [
       throw new Error("redo invoked with no operations to redo");
     }
 
-    let doCb = redoStack[0];
+    const doCb = redoStack[0];
 
     setRedoStack(redoStack.slice(1));
 
