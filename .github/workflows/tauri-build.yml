@@ -81,6 +81,12 @@ jobs:
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
         run: npm ci
 
+      - uses: azure/login@v2
+        if: matrix.platform == 'windows-latest'
+        with:
+          enable-AzPSSession: true
+          creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
+
       - uses: tauri-apps/tauri-action@v0
         name: build
         env:
