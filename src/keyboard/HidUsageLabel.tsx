@@ -1,5 +1,5 @@
 import {
-  hid_usage_get_labels,
+  hid_usage_get_metadata,
   hid_usage_page_and_id_from_usage,
 } from "../hid-usages";
 
@@ -17,13 +17,13 @@ export const HidUsageLabel = ({ hid_usage }: HidUsageLabelProps) => {
   // TODO: Do something with implicit mods!
   page &= 0xff;
 
-  let labels = hid_usage_get_labels(page, id);
+  let labels = hid_usage_get_metadata(page, id);
 
   return (
     <span
       className="@[10em]:before:content-[attr(data-long-content)] @[6em]:before:content-[attr(data-med-content)] before:content-[attr(aria-label)]"
-      aria-label={remove_prefix(labels.short)}
-      data-med-content={remove_prefix(labels.med || labels.short)}
+      aria-label={labels.short}
+      data-med-content={labels.med || labels.short}
       data-long-content={remove_prefix(
         labels.long || labels.med || labels.short
       )}
