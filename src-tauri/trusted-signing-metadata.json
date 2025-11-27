@@ -8,7 +8,6 @@
       "SharedTokenCacheCredential",
       "VisualStudioCredential",
       "VisualStudioCodeCredential",
-
       "AzurePowerShellCredential",
       "AzureCliCredential",
       "AzureDeveloperCliCredential",
