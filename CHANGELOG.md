@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.0](https://github.com/zmkfirmware/zmk-studio/compare/v0.3.1...v0.4.0) (2025-11-27)
+
+
+### Features
+
+* Add headers to key in resting / non hover state ([#157](https://github.com/zmkfirmware/zmk-studio/issues/157)) ([0f965ed](https://github.com/zmkfirmware/zmk-studio/commit/0f965ed8b744f487ab68c5d9ac03865f01ecef69))
+
+
+### Bug Fixes
+
+* **app:** Show "Unnamed device" rather than "TODO" ([#146](https://github.com/zmkfirmware/zmk-studio/issues/146)) ([de19db3](https://github.com/zmkfirmware/zmk-studio/commit/de19db3f1e2d8dd35cd9cfa61d60707a336f8451))
+* keys not rerendering between layers ([#132](https://github.com/zmkfirmware/zmk-studio/issues/132)) ([84f1e3b](https://github.com/zmkfirmware/zmk-studio/commit/84f1e3bb3bc550ed314dea95ea93c611e4184bdb))
+
 ## [0.3.1](https://github.com/zmkfirmware/zmk-studio/compare/v0.3.0...v0.3.1) (2025-01-20)
 
 
