@@ -144,7 +144,7 @@ const HidUsageGrid = ({
     return categories;
   }, [allUsages]);
 
-  const categoryOrder = ["Basic", "Numpad", "Apps/Media/Special", "ISO/JIS", "Other"];
+  const categoryOrder = ["Basic", "Numpad", "Apps/Media/Special", "International", "Other"];
   const sortedCategories = Object.keys(categorizedUsages).sort((a, b) => {
     const indexA = categoryOrder.indexOf(a);
     const indexB = categoryOrder.indexOf(b);
