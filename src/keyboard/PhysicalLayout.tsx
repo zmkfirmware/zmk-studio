@@ -116,10 +116,10 @@ export const PhysicalLayout = ({
   }, [props.zoom]);
 
   // TODO: Add a bit of padding for rotation when supported
-  const rightMost = positions
+  let rightMost = positions
     .map((k) => k.x + k.width)
     .reduce((a, b) => Math.max(a, b), 0);
-  const bottomMost = positions
+  let bottomMost = positions
     .map((k) => k.y + k.height)
     .reduce((a, b) => Math.max(a, b), 0);
 
