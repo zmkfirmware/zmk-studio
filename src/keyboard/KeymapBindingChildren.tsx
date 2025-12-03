@@ -20,41 +20,32 @@ export const getBindingChildren = (
     );
   }
 
-  // Find the matching parameter set for param1 (critical for getting param2 type!)
+  // Find the matching parameter set for param1 (critical for getting param2 type)
   const layerIds = layers.map(l => l.id);
   const matchingSet = findMatchingParameterSet(binding.param1, behavior.metadata, layerIds);
 
-  // If both parameters are zero
-  if (binding.param1 === 0 && binding.param2 === 0) {
-    return (
-      <div className="relative text-xs">
-      </div>
-    );
-  }
-
   // Get displays for both parameters
-  const param1Display = binding.param1 !== 0 ?
-    getParameterDisplay(binding.param1, behavior.metadata.flatMap(m => m.param1), layers) :
-    null;
+  const param1Display = 
+    getParameterDisplay(binding.param1, behavior.metadata.flatMap(m => m.param1), layers);
 
-  const param2Display = binding.param2 !== 0 && matchingSet ?
+  const param2Display = matchingSet ?
     getParameterDisplay(binding.param2, matchingSet.param2, layers) :
     null;
 
   // Both parameters present and should be displayed
-  if (param1Display && param2Display) {
+  if (param1Display !== null && param2Display !== null) {
     return [
-      <div key="p2" className="relative text-sm">
+      <div key="p2" className="relative text-s">
         {param2Display}
       </div>,
-      <div key="p1" className="text-xs truncate relative">
+      <div key="p1" className="relative text-xs truncate ml-1 mt-2">
         {param1Display}
       </div>
     ];
   }
 
   // Only param1 should be displayed
-  if (param1Display) {
+  if (param1Display !== null) {
     return (
       <div className="relative text-base">
         {param1Display}
@@ -63,7 +54,7 @@ export const getBindingChildren = (
   }
 
   // Only param2 should be displayed (unusual but handle it)
-  if (param2Display) {
+  if (param2Display !== null) {
     return (
       <div className="relative text-base">
         {param2Display}
@@ -71,9 +62,6 @@ export const getBindingChildren = (
     );
   }
 
-  // Nothing to display - show behavior name or empty
-  return (
-    <div className="relative text-xs">
-    </div>
-  );
+  // Nothing to display
+  return <div className="relative"></div>;
 };
