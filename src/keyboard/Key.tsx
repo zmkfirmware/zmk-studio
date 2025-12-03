@@ -53,6 +53,7 @@ export const Key = ({
       style={{
         width: `${pixelWidth}px`,
         height: `${pixelHeight}px`,
+        lineHeight: 1,
       }}
       onClick={onClick}
     >
