@@ -27,8 +27,6 @@ import { LockStateContext } from "./rpc/LockStateContext";
 import { UnlockModal } from "./UnlockModal";
 import { valueAfter } from "./misc/async";
 import { AppFooter } from "./AppFooter";
-import { AboutModal } from "./AboutModal";
-import { LicenseNoticeModal } from "./misc/LicenseNoticeModal";
 
 declare global {
   interface Window {
@@ -166,8 +164,6 @@ function App() {
     string | undefined
   >(undefined);
   const [doIt, undo, redo, canUndo, canRedo, reset] = useUndoRedo();
-  const [showAbout, setShowAbout] = useState(false);
-  const [showLicenseNotice, setShowLicenseNotice] = useState(false);
   const [connectionAbort, setConnectionAbort] = useState(new AbortController());
 
   const [lockState, setLockState] = useState<LockState>(
@@ -290,11 +286,6 @@ function App() {
             transports={TRANSPORTS}
             onTransportCreated={onConnect}
           />
-          <AboutModal open={showAbout} onClose={() => setShowAbout(false)} />
-          <LicenseNoticeModal
-            open={showLicenseNotice}
-            onClose={() => setShowLicenseNotice(false)}
-          />
           <div className="bg-base-100 text-base-content h-full max-h-[100vh] w-full max-w-[100vw] inline-grid grid-cols-[auto] grid-rows-[auto_1fr_auto] overflow-hidden">
             <AppHeader
               connectedDeviceLabel={connectedDeviceName}
@@ -308,10 +299,7 @@ function App() {
               onResetSettings={resetSettings}
             />
             <Keyboard />
-            <AppFooter
-              onShowAbout={() => setShowAbout(true)}
-              onShowLicenseNotice={() => setShowLicenseNotice(true)}
-            />
+            <AppFooter />
           </div>
         </UndoRedoContext.Provider>
       </LockStateContext.Provider>
