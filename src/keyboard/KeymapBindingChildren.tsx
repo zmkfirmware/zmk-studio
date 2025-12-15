@@ -38,7 +38,7 @@ export const getBindingChildren = (
       <div key="p2" className="relative text-s">
         {param2Display}
       </div>,
-      <div key="p1" className="relative text-xs truncate ml-1 mt-2">
+      <div key="p1" className="relative text-xs ml-1 mt-2">
         {param1Display}
       </div>
     ];

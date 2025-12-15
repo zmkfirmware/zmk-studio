@@ -28,7 +28,7 @@ function validateBinding(
     return true;
   }
 
-  const matchingSet = metadata.find((s) =>
+  let matchingSet = metadata.find((s) =>
     validateValue(layerIds, param1, s.param1)
   );
 
