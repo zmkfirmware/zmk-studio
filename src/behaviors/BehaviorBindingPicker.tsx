@@ -2,16 +2,41 @@ import { useEffect, useMemo, useState } from "react";
 
 import {
   GetBehaviorDetailsResponse,
+  BehaviorBindingParametersSet,
 } from "@zmkfirmware/zmk-studio-ts-client/behaviors";
 import { BehaviorBinding } from "@zmkfirmware/zmk-studio-ts-client/keymap";
 import { BehaviorParametersPicker } from "./BehaviorParametersPicker";
-import { validateBinding } from "./behaviorBindingUtils";
+import { validateValue } from "./parameters";
 
 export interface BehaviorBindingPickerProps {
   binding: BehaviorBinding;
   behaviors: GetBehaviorDetailsResponse[];
   layers: { id: number; name: string }[];
   onBindingChanged: (binding: BehaviorBinding) => void;
+}
+
+function validateBinding(
+  metadata: BehaviorBindingParametersSet[],
+  layerIds: number[],
+  param1?: number,
+  param2?: number
+): boolean {
+  if (
+    (param1 === undefined || param1 === 0) &&
+    metadata.every((s) => !s.param1 || s.param1.length === 0)
+  ) {
+    return true;
+  }
+
+  const matchingSet = metadata.find((s) =>
+    validateValue(layerIds, param1, s.param1)
+  );
+
+  if (!matchingSet) {
+    return false;
+  }
+
+  return validateValue(layerIds, param2, matchingSet.param2);
 }
 
 export const BehaviorBindingPicker = ({

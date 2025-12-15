@@ -15,31 +15,6 @@ export function findMatchingParameterSet(
 }
 
 /**
- * Validate that a binding's parameters match the behavior's metadata.
- */
-export function validateBinding(
-  metadata: BehaviorBindingParametersSet[],
-  layerIds: number[],
-  param1?: number,
-  param2?: number
-): boolean {
-  if (
-    (param1 === undefined || param1 === 0) &&
-    metadata.every((s) => !s.param1 || s.param1.length === 0)
-  ) {
-    return true;
-  }
-
-  const matchingSet = findMatchingParameterSet(param1, metadata, layerIds);
-
-  if (!matchingSet) {
-    return false;
-  }
-
-  return validateValue(layerIds, param2, matchingSet.param2);
-}
-
-/**
  * Get a readable display for a parameter value based on its metadata.
  * Returns a JSX element, string, number, or null if nothing should be displayed.
  * Returns null when the parameter shouldn't be displayed (empty metadata or nil type).

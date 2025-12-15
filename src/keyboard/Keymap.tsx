@@ -50,7 +50,6 @@ export const Keymap = ({
 
     const binding = keymap.layers[selectedLayerIndex].bindings[i];
     const behavior = behaviors[binding.behaviorId];
-    const header = behavior?.displayName || "Unknown";
 
     // Get layers for metadata-driven rendering
     const layers = keymap.layers.map(layer => ({ id: layer.id, name: layer.name }));
@@ -59,7 +58,7 @@ export const Keymap = ({
 
     return {
       id: `${keymap.layers[selectedLayerIndex].id}-${i}`,
-      header: header,
+      header: behavior?.displayName || "Unknown",
       x: k.x / 100.0,
       y: k.y / 100.0,
       width: k.width / 100,
