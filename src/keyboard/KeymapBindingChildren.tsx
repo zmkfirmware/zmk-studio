@@ -11,11 +11,11 @@ export const getBindingChildren = (
   binding: KeyBinding,
   layers: { id: number; name: string }[] = []
 ): JSX.Element | JSX.Element[] => {
-  // If no behavior metadata, show behavior name
+  // If no behavior metadata, try to show behavior name
   if (!behavior || !behavior.metadata) {
     return (
       <div className="relative text-xs opacity-50">
-        {behavior?.displayName || "?"}
+        {behavior?.displayName || ""}
       </div>
     );
   }
