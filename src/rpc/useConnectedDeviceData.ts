@@ -12,9 +12,9 @@ export function useConnectedDeviceData<T>(
   response_mapper: (resp: RequestResponse) => T | undefined,
   requireUnlock?: boolean
 ): [T | undefined, React.Dispatch<SetStateAction<T | undefined>>] {
-  let connection = useContext(ConnectionContext);
-  let lockState = useContext(LockStateContext);
-  let [data, setData] = useState<T | undefined>(undefined);
+  const connection = useContext(ConnectionContext);
+  const lockState = useContext(LockStateContext);
+  const [data, setData] = useState<T | undefined>(undefined);
 
   useEffect(
     () => {
@@ -33,7 +33,7 @@ export function useConnectedDeviceData<T>(
           return;
         }
 
-        let response = response_mapper(await call_rpc(connection.conn, req));
+        const response = response_mapper(await call_rpc(connection.conn, req));
 
         if (!ignore) {
           setData(response);
