@@ -8,7 +8,7 @@ import {
   IconDefinition,
 } from "@fortawesome/free-brands-svg-icons";
 import { DownloadIcon } from "lucide-react";
-import releaseData from "./data/release-data.json";
+import releaseData from "./data/release-data.json" with { type: 'json' };
 
 type Platform = "windows" | "mac" | "linux" | "ios" | "android" | "unknown";
 
@@ -79,8 +79,8 @@ const PlatformLinks: Record<Platform, DownloadLink[]> = {
   unknown: [],
 };
 
-const ReleaseAssets = releaseData.assets.map((asset: any) => asset.browser_download_url);
-const ReleaseVersion = releaseData.tag_name;
+const ReleaseVersion = releaseData.version;
+const ReleaseAssets = releaseData.assets;
 
 function detectPlatform(): Platform {
   if (typeof window === "undefined") return "unknown";

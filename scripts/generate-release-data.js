@@ -27,7 +27,11 @@ async function generateReleaseData() {
       "release-data.json",
     );
     await fs.mkdir(path.dirname(dataFilePath), { recursive: true });
-    await fs.writeFile(dataFilePath, JSON.stringify(data));
+
+    await fs.writeFile(dataFilePath, JSON.stringify({
+      version: data.tag_name,
+      assets: data.assets.map(asset => asset.browser_download_url),
+    }));
 
     console.log("Release data generated successfully!");
   } catch (error) {
