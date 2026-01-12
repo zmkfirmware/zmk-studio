@@ -5,21 +5,8 @@ import url from "url";
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.resolve(__filename, "../..");
 
-async function generateReleaseData() {
+async function generateReleaseData(version) {
   try {
-    const response = await fetch(
-      "https://api.github.com/repos/zmkfirmware/zmk-studio/releases/latest",
-      {
-        headers: process.env.GITHUB_TOKEN
-          ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` }
-          : {},
-      },
-    );
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
     const dataFilePath = path.resolve(
       __dirname,
       "src",
@@ -29,8 +16,16 @@ async function generateReleaseData() {
     await fs.mkdir(path.dirname(dataFilePath), { recursive: true });
 
     await fs.writeFile(dataFilePath, JSON.stringify({
-      version: data.tag_name,
-      assets: data.assets.map(asset => asset.browser_download_url),
+      version: `v${version}`,
+      assets: [
+        `https://github.com/zmkfirmware/zmk-studio/releases/download/v${version}/ZMK.Studio-${version}-1.x86_64.rpm`,
+        `https://github.com/zmkfirmware/zmk-studio/releases/download/v${version}/ZMK.Studio_${version}_amd64.AppImage`,
+        `https://github.com/zmkfirmware/zmk-studio/releases/download/v${version}/ZMK.Studio_${version}_amd64.deb`,
+        `https://github.com/zmkfirmware/zmk-studio/releases/download/v${version}/ZMK.Studio_${version}_universal.dmg`,
+        `https://github.com/zmkfirmware/zmk-studio/releases/download/v${version}/ZMK.Studio_${version}_x64-setup.exe`,
+        `https://github.com/zmkfirmware/zmk-studio/releases/download/v${version}/ZMK.Studio_${version}_x64_en-US.msi`,
+        `https://github.com/zmkfirmware/zmk-studio/releases/download/v${version}/ZMK.Studio_universal.app.tar.gz`,
+      ]
     }));
 
     console.log("Release data generated successfully!");
@@ -40,4 +35,9 @@ async function generateReleaseData() {
   }
 }
 
-generateReleaseData();
+const argv = process.argv.slice(2)
+if (argv.length < 1) {
+    console.error("No version wasd specified for version data generation");
+    process.exit(1);
+}
+generateReleaseData(argv[0]);
