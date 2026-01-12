@@ -20,6 +20,9 @@ jobs:
           - platform: "ubuntu-24.04"
             name: linux
             args: ""
+          - platform: "ubuntu-24.04-arm"
+            name: linux-arm64
+            args: ""
           - platform: "windows-latest"
             name: windows
             args: ""
@@ -29,7 +32,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-24.04' # This must match the platform value defined above.
+        if: matrix.platform == 'ubuntu-24.04' || matrix.platform == 'ubuntu-24.04-arm' # This must match the platform value defined above.
         run: |
           sudo apt-get update
           sudo apt-get install -y libappindicator3-dev librsvg2-dev libudev-dev patchelf \
@@ -55,7 +58,7 @@ jobs:
       - name: Set up Windows Kit into PATH (windows only)
         if: matrix.platform == 'windows-latest'
         run: |
-          echo "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.22621.0\x64\" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          echo "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.26100.0\x64\" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: setup node
         uses: actions/setup-node@v4
@@ -77,6 +80,12 @@ jobs:
       - name: install frontend dependencies
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
         run: npm ci
+
+      - uses: azure/login@v2
+        if: matrix.platform == 'windows-latest'
+        with:
+          enable-AzPSSession: true
+          creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
 
       - uses: tauri-apps/tauri-action@v0
         name: build
@@ -105,3 +114,10 @@ jobs:
             src-tauri/target/*/release/bundle/**/*.app
             src-tauri/target/release/bundle/**/*.msi
             src-tauri/target/release/bundle/**/*.exe
+  deploy-netlify:
+    if: github.event_name == 'release'
+    needs: publish-tauri
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Netlify
+        run: curl -X POST -d '{}' ${{ secrets.NETLIFY_DEPLOY_HOOK }}
