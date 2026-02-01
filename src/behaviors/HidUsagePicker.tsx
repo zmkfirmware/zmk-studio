@@ -16,7 +16,6 @@ import {
 import { hid_usage_page_get_ids, hid_usage_get_metadata } from "../hid-usages";
 import { useCallback, useMemo } from "react";
 import { ChevronDown } from "lucide-react";
- 
 
 export interface HidUsagePage {
   id: number;
@@ -96,7 +95,7 @@ const HidUsageGrid = ({
           (i) =>
             (i.Id <= (page.max || Number.MAX_SAFE_INTEGER) &&
               i.Id >= (page.min || 0)) ||
-            (page.id === 7 && i.Id >= 0xe0 && i.Id <= 0xe7)
+            (page.id === 7 && i.Id >= 0xe0 && i.Id <= 0xe7),
         );
       }
 
@@ -144,7 +143,15 @@ const HidUsageGrid = ({
     return categories;
   }, [allUsages]);
 
-  const categoryOrder = ["Basic", "Numpad", "Apps/Media/Special", "International", "Other"];
+  const categoryOrder = [
+    "Letters",
+    "Numbers + Punctuation",
+    "Function + Navigation",
+    "Numpad",
+    "Apps/Media/Special",
+    "International",
+    "Other",
+  ];
   const sortedCategories = Object.keys(categorizedUsages).sort((a, b) => {
     const indexA = categoryOrder.indexOf(a);
     const indexB = categoryOrder.indexOf(b);
@@ -158,7 +165,11 @@ const HidUsageGrid = ({
     <Tabs className="flex flex-col">
       <TabList className="flex border-b">
         {sortedCategories.map((category) => (
-          <Tab key={category} id={category} className="px-4 py-2 cursor-default outline-none rac-selected:border-b-2 rac-selected:border-primary rac-focus-visible:ring-2 rac-focus-visible:ring-primary rounded-t-md">
+          <Tab
+            key={category}
+            id={category}
+            className="px-4 py-2 cursor-default outline-none rac-selected:border-b-2 rac-selected:border-primary rac-focus-visible:ring-2 rac-focus-visible:ring-primary rounded-t-md"
+          >
             {category}
           </Tab>
         ))}
@@ -166,7 +177,7 @@ const HidUsageGrid = ({
       {sortedCategories.map((category) => (
         <TabPanel
           key={category}
-          id={category} 
+          id={category}
           className="min-h-56 max-h-56 overflow-y-auto flex flex-wrap justify-start content-start gap-1 p-1 border border-t-0 rounded-b rac-focus-visible:ring-2 rac-focus-visible:ring-primary"
         >
           {category === "Other" ? (
@@ -244,7 +255,7 @@ export const HidUsagePicker = ({
 
       onValueChanged(value);
     },
-    [onValueChanged, mods]
+    [onValueChanged, mods],
   );
 
   const modifiersChanged = useCallback(
@@ -257,7 +268,7 @@ export const HidUsagePicker = ({
       let new_value = mask_mods(value) | (mod_flags << 24);
       onValueChanged(new_value);
     },
-    [value]
+    [value],
   );
 
   return (
