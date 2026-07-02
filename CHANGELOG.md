@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.4.0](https://github.com/zmkfirmware/zmk-studio/compare/v0.3.1...v0.4.0) (2026-07-02)
+
+
+### Features
+
+* Add headers to key in resting / non hover state ([#157](https://github.com/zmkfirmware/zmk-studio/issues/157)) ([0f965ed](https://github.com/zmkfirmware/zmk-studio/commit/0f965ed8b744f487ab68c5d9ac03865f01ecef69))
+
+
+### Bug Fixes
+
+* **app:** Show "Unnamed device" rather than "TODO" ([#146](https://github.com/zmkfirmware/zmk-studio/issues/146)) ([de19db3](https://github.com/zmkfirmware/zmk-studio/commit/de19db3f1e2d8dd35cd9cfa61d60707a336f8451))
+* honor an explicit zero rotation origin for keys ([#175](https://github.com/zmkfirmware/zmk-studio/issues/175)) ([1bb6bb8](https://github.com/zmkfirmware/zmk-studio/commit/1bb6bb84a370c8917d8e4db15207087b26b3a844)), closes [#97](https://github.com/zmkfirmware/zmk-studio/issues/97)
+* keys not rerendering between layers ([#132](https://github.com/zmkfirmware/zmk-studio/issues/132)) ([84f1e3b](https://github.com/zmkfirmware/zmk-studio/commit/84f1e3bb3bc550ed314dea95ea93c611e4184bdb))
+* Prevent keys from disappearing after hover in Firefox ([#176](https://github.com/zmkfirmware/zmk-studio/issues/176)) ([908a6f7](https://github.com/zmkfirmware/zmk-studio/commit/908a6f7200e62ebd98f634259c601e3ec56f9572))
+* Update copyright year from 2024 to 2026 ([#170](https://github.com/zmkfirmware/zmk-studio/issues/170)) ([67c9c3d](https://github.com/zmkfirmware/zmk-studio/commit/67c9c3d7afb61947b4b04c3d8ba81c2156b5dc4d))
+
 ## [0.3.1](https://github.com/zmkfirmware/zmk-studio/compare/v0.3.0...v0.3.1) (2025-01-20)
 
 
