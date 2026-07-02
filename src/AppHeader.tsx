@@ -24,6 +24,8 @@ export interface AppHeaderProps {
   onRedo?: () => Promise<void>;
   onResetSettings?: () => void | Promise<void>;
   onDisconnect?: () => void | Promise<void>;
+  onExportKeymap?: () => void | Promise<void>;
+  onImportKeymap?: () => void | Promise<void>;
   canUndo?: boolean;
   canRedo?: boolean;
 }
@@ -38,6 +40,8 @@ export const AppHeader = ({
   onDiscard,
   onDisconnect,
   onResetSettings,
+  onExportKeymap,
+  onImportKeymap,
 }: AppHeaderProps) => {
   const [showSettingsReset, setShowSettingsReset] = useState(false);
 
@@ -164,6 +168,24 @@ export const AppHeader = ({
             <Trash2 className="inline-block w-4 mx-1" aria-label="Discard" />
           </Button>
         </Tooltip>
+        {onExportKeymap && (
+          <Button
+            className="flex items-center justify-center px-2 py-1 text-sm rounded enabled:hover:bg-base-300 disabled:opacity-50"
+            isDisabled={!connectedDeviceLabel}
+            onPress={onExportKeymap}
+          >
+            Download
+          </Button>
+        )}
+        {onImportKeymap && (
+          <Button
+            className="flex items-center justify-center px-2 py-1 text-sm rounded enabled:hover:bg-base-300 disabled:opacity-50"
+            isDisabled={!connectedDeviceLabel}
+            onPress={onImportKeymap}
+          >
+            Upload
+          </Button>
+        )}
       </div>
     </header>
   );

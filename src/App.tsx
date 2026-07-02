@@ -5,7 +5,8 @@ import { call_rpc } from "./rpc/logging";
 
 import type { Notification } from "@zmkfirmware/zmk-studio-ts-client/studio";
 import { ConnectionState, ConnectionContext } from "./rpc/ConnectionContext";
-import { Dispatch, useCallback, useEffect, useState } from "react";
+import { Dispatch, useCallback, useEffect, useRef, useState } from "react";
+import { parseKeymapFile } from "./keymap-parser";
 import { ConnectModal, TransportFactory } from "./ConnectModal";
 
 import type { RpcTransport } from "@zmkfirmware/zmk-studio-ts-client/transport/index";
@@ -271,6 +272,150 @@ function App() {
     doDisconnect();
   }, [conn]);
 
+  const exportKeymap = useCallback(() => {
+    async function doExport() {
+      if (!conn.conn) {
+        return;
+      }
+
+      let keymapResp = await call_rpc(conn.conn, { keymap: { getKeymap: true } });
+      let keymap = keymapResp?.keymap?.getKeymap;
+      if (!keymap) {
+        console.error("Failed to fetch keymap for export", keymapResp);
+        return;
+      }
+
+      let behaviorList = await call_rpc(conn.conn, { behaviors: { listAllBehaviors: true } });
+      let behaviorIds = behaviorList?.behaviors?.listAllBehaviors?.behaviors || [];
+
+      const behaviors: Record<number, string> = {};
+      for (const id of behaviorIds) {
+        let details = await call_rpc(conn.conn, { behaviors: { getBehaviorDetails: { behaviorId: id } } });
+        let d = details?.behaviors?.getBehaviorDetails;
+        if (d) {
+          behaviors[d.id] = d.displayName;
+        }
+      }
+
+      let content = `#include <behaviors.dtsi>\n#include <dt-bindings/zmk/keys.h>\n\n/ {\n  keymap {\n    compatible = "zmk,keymap";\n\n`;
+
+      for (const layer of keymap.layers) {
+        const layerName = layer.name?.replace(/[^a-zA-Z0-9_]/g, "_") || `layer_${layer.id}`;
+        content += `    ${layerName} {\n      bindings = <\n`;
+        const bindingStrs = layer.bindings.map((b: { behaviorId: number; param1: number; param2: number }) => {
+          const name = behaviors[b.behaviorId] || `&unknown_${b.behaviorId}`;
+          const base = name.replace(/^&/, "");
+          const parts = [`&${base}`];
+          if (b.param1 !== 0) parts.push(String(b.param1));
+          if (b.param2 !== 0) parts.push(String(b.param2));
+          return parts.join(" ");
+        });
+        // Pad all bindings to the same width for column alignment
+        const maxLen = Math.max(...bindingStrs.map((s: string) => s.length));
+        const padded = bindingStrs.map((s: string) => s.padEnd(maxLen));
+        content += padded.map((s: string) => `        ${s}`).join("\n") + "\n";
+        content += `      >;\n    };\n\n`;
+      }
+
+      content += `  };\n};\n`;
+
+      const blob = new Blob([content], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${connectedDeviceName || "zmk"}.keymap`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    doExport();
+  }, [conn, connectedDeviceName]);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const importKeymap = useCallback(() => {
+    if (!conn.conn) return;
+    fileInputRef.current?.click();
+  }, [conn]);
+
+  const handleFileImport = useCallback(() => {
+    async function doImport(file: File) {
+      if (!conn.conn) return;
+
+      const text = await file.text();
+      const parsedLayers = parseKeymapFile(text);
+      if (parsedLayers.length === 0) {
+        console.error("No layers found in imported keymap");
+        return;
+      }
+
+      // Fetch current keymap to get layer IDs
+      let keymapResp = await call_rpc(conn.conn, { keymap: { getKeymap: true } });
+      let keymap = keymapResp?.keymap?.getKeymap;
+      if (!keymap) {
+        console.error("Failed to fetch current keymap", keymapResp);
+        return;
+      }
+
+      // Fetch behavior list to map names to IDs
+      let behaviorList = await call_rpc(conn.conn, { behaviors: { listAllBehaviors: true } });
+      let behaviorIds = behaviorList?.behaviors?.listAllBehaviors?.behaviors || [];
+
+      const behaviorNameToId: Record<string, number> = {};
+      for (const id of behaviorIds) {
+        let details = await call_rpc(conn.conn, { behaviors: { getBehaviorDetails: { behaviorId: id } } });
+        let d = details?.behaviors?.getBehaviorDetails;
+        if (d) {
+          const name = d.displayName.replace(/^&/, "");
+          behaviorNameToId[name.toLowerCase()] = d.id;
+          behaviorNameToId[d.displayName.toLowerCase()] = d.id;
+        }
+      }
+
+      // Apply each parsed layer's bindings
+      for (let li = 0; li < parsedLayers.length && li < keymap.layers.length; li++) {
+        const parsedLayer = parsedLayers[li];
+        const targetLayer = keymap.layers[li];
+
+        for (let ki = 0; ki < parsedLayer.bindings.length && ki < targetLayer.bindings.length; ki++) {
+          const parsedBinding = parsedLayer.bindings[ki];
+          const behaviorName = parsedBinding.behavior.toLowerCase();
+
+          // Handle special behaviors
+          if (behaviorName === "trans" || behaviorName === "transparent") {
+            continue; // Skip transparent, keep existing
+          }
+          if (behaviorName === "none") {
+            continue; // Skip none, keep existing
+          }
+
+          const behaviorId = behaviorNameToId[behaviorName];
+          if (behaviorId === undefined) {
+            console.warn(`Unknown behavior: &${parsedBinding.behavior}, skipping`);
+            continue;
+          }
+
+          const param1 = parsedBinding.params[0] || 0;
+          const param2 = parsedBinding.params[1] || 0;
+
+          await call_rpc(conn.conn, {
+            keymap: { setLayerBinding: { layerId: targetLayer.id, keyPosition: ki, binding: { behaviorId, param1, param2 } } },
+          });
+        }
+      }
+
+      // Refresh the keymap state
+      setConn({ conn: conn.conn });
+    }
+
+    const file = fileInputRef.current?.files?.[0];
+    if (file) {
+      doImport(file);
+      // Reset input so same file can be re-imported
+      fileInputRef.current!.value = "";
+    }
+  }, [conn]);
+
   const onConnect = useCallback(
     (t: RpcTransport) => {
       const ac = new AbortController();
@@ -284,6 +429,13 @@ function App() {
     <ConnectionContext.Provider value={conn}>
       <LockStateContext.Provider value={lockState}>
         <UndoRedoContext.Provider value={doIt}>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".keymap"
+            className="hidden"
+            onChange={handleFileImport}
+          />
           <UnlockModal />
           <ConnectModal
             open={!conn.conn}
@@ -306,6 +458,8 @@ function App() {
               onDiscard={discard}
               onDisconnect={disconnect}
               onResetSettings={resetSettings}
+              onExportKeymap={exportKeymap}
+              onImportKeymap={importKeymap}
             />
             <Keyboard />
             <AppFooter
