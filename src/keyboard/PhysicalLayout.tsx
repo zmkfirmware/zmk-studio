@@ -124,11 +124,10 @@ export const PhysicalLayout = ({
     .reduce((a, b) => Math.max(a, b), 0);
 
   const positionItems = positions.map((p, idx) => (
-    <div className="absolute" style={scalePosition(p, oneU)}>
+    <div className="absolute hover:z-10" style={scalePosition(p, oneU)}>
       <div
         key={p.id}
         onClick={() => onPositionClicked?.(idx)}
-        className="hover:[transform:translateZ(100px)] transition-transform duration-200"
       >
         <Key
           oneU={oneU}
