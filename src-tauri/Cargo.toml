@@ -6,26 +6,26 @@ authors = ["you"]
 license = ""
 repository = ""
 default-run = "app"
-edition = "2021"
-rust-version = "1.60"
+edition = "2024"
+rust-version = "1.91.1"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "2.0.0", features = [] }
+tauri-build = { version = "2.5", features = [] }
 
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "2.0.0", features = [] }
-bluest = { version = "0.6.6", features = ["serde"] }
-async-std = "1.12.0"
-uuid = "1.6.1"
-futures = "0.3.30"
-blocking = "1.6.0"
-tokio-serial = { version ="5.4.1", features = ["libudev"] }
-serialport = "4.5.0"
-tokio = { version = "1.37.0", features = ["io-util"] }
+tauri = { version = "2.9", features = [] }
+bluest = { version = "0.6.9", features = ["serde"] }
+async-std = "1.13"
+uuid = "1.19"
+futures = "0.3.31"
+blocking = "1.6"
+tokio-serial = { version = "5.4", features = ["libudev"] }
+serialport = "4.8"
+tokio = { version = "1.49.0", features = ["io-util"] }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.
@@ -34,4 +34,4 @@ tokio = { version = "1.37.0", features = ["io-util"] }
 custom-protocol = [ "tauri/custom-protocol" ]
 
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
-tauri-plugin-cli = "2.0.0"
+tauri-plugin-cli = "2.4"
