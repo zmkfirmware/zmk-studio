@@ -1,0 +1,314 @@
+{
+  "7": {
+    "4": { "category": "Letters" },
+    "5": { "category": "Letters" },
+    "6": { "category": "Letters" },
+    "7": { "category": "Letters" },
+    "8": { "category": "Letters" },
+    "9": { "category": "Letters" },
+    "10": { "category": "Letters" },
+    "11": { "category": "Letters" },
+    "12": { "category": "Letters" },
+    "13": { "category": "Letters" },
+    "14": { "category": "Letters" },
+    "15": { "category": "Letters" },
+    "16": { "category": "Letters" },
+    "17": { "category": "Letters" },
+    "18": { "category": "Letters" },
+    "19": { "category": "Letters" },
+    "20": { "category": "Letters" },
+    "21": { "category": "Letters" },
+    "22": { "category": "Letters" },
+    "23": { "category": "Letters" },
+    "24": { "category": "Letters" },
+    "25": { "category": "Letters" },
+    "26": { "category": "Letters" },
+    "27": { "category": "Letters" },
+    "28": { "category": "Letters" },
+    "29": { "category": "Letters" },
+    "30": { "short": "1 !", "category": "Numbers + Punctuation" },
+    "31": { "short": "2 @", "category": "Numbers + Punctuation" },
+    "32": { "short": "3 #", "category": "Numbers + Punctuation" },
+    "33": { "short": "4 $", "category": "Numbers + Punctuation" },
+    "34": { "short": "5 %", "category": "Numbers + Punctuation" },
+    "35": { "short": "6 ^", "category": "Numbers + Punctuation" },
+    "36": { "short": "7 &", "category": "Numbers + Punctuation" },
+    "37": { "short": "8 *", "category": "Numbers + Punctuation" },
+    "38": { "short": "9 (", "category": "Numbers + Punctuation" },
+    "39": { "short": "0 )", "category": "Numbers + Punctuation" },
+    "40": {
+      "short": "Ret",
+      "med": "Return",
+      "category": "Function + Navigation"
+    },
+    "41": {
+      "short": "Esc",
+      "long": "Escape",
+      "category": "Function + Navigation"
+    },
+    "42": {
+      "short": "BkSp",
+      "med": "BkSpc",
+      "long": "Backspace",
+      "category": "Function + Navigation"
+    },
+    "43": { "category": "Function + Navigation" },
+    "44": { "short": "␣", "med": "Space", "category": "Function + Navigation" },
+    "45": {
+      "short": "- _",
+      "med": "Dash",
+      "category": "Numbers + Punctuation"
+    },
+    "46": {
+      "short": "= +",
+      "med": "Equals",
+      "category": "Numbers + Punctuation"
+    },
+    "47": { "short": "[ {", "category": "Numbers + Punctuation" },
+    "48": { "short": "] }", "category": "Numbers + Punctuation" },
+    "49": { "short": "\\ |", "category": "Numbers + Punctuation" },
+    "50": {
+      "short": "NUHS",
+      "long": "NonUS Hash",
+      "category": "International"
+    },
+    "51": { "short": "; :", "category": "Numbers + Punctuation" },
+    "52": { "short": "' \"", "category": "Numbers + Punctuation" },
+    "53": { "short": "` ~", "category": "Numbers + Punctuation" },
+    "54": { "short": ", <", "category": "Numbers + Punctuation" },
+    "55": { "short": ". >", "category": "Numbers + Punctuation" },
+    "56": { "short": "/ ?", "category": "Numbers + Punctuation" },
+    "57": {
+      "short": "Cap",
+      "med": "CapsLk",
+      "long": "Caps Lock",
+      "category": "Function + Navigation"
+    },
+    "58": { "category": "Function + Navigation" },
+    "59": { "category": "Function + Navigation" },
+    "60": { "category": "Function + Navigation" },
+    "61": { "category": "Function + Navigation" },
+    "62": { "category": "Function + Navigation" },
+    "63": { "category": "Function + Navigation" },
+    "64": { "category": "Function + Navigation" },
+    "65": { "category": "Function + Navigation" },
+    "66": { "category": "Function + Navigation" },
+    "67": { "category": "Function + Navigation" },
+    "68": { "category": "Function + Navigation" },
+    "69": { "category": "Function + Navigation" },
+    "70": {
+      "short": "PrSc",
+      "long": "Print Scr",
+      "category": "Function + Navigation"
+    },
+    "71": {
+      "short": "ScLk",
+      "long": "ScrollLock",
+      "category": "Function + Navigation"
+    },
+    "72": {
+      "short": "Paus",
+      "med": "Pause",
+      "category": "Function + Navigation"
+    },
+    "73": {
+      "short": "Ins",
+      "med": "Insert",
+      "category": "Function + Navigation"
+    },
+    "74": { "category": "Function + Navigation" },
+    "75": {
+      "short": "PgUp",
+      "med": "PageUp",
+      "long": "Page Up",
+      "category": "Function + Navigation"
+    },
+    "76": {
+      "short": "Del",
+      "med": "Delete",
+      "category": "Function + Navigation"
+    },
+    "77": { "category": "Function + Navigation" },
+    "78": {
+      "short": "PgDn",
+      "med": "PageDn",
+      "long": "Page Down",
+      "category": "Function + Navigation"
+    },
+    "79": { "short": "→", "category": "Function + Navigation" },
+    "80": { "short": "←", "category": "Function + Navigation" },
+    "81": { "short": "↓", "category": "Function + Navigation" },
+    "82": { "short": "↑", "category": "Function + Navigation" },
+    "83": {
+      "short": "Num",
+      "med": "NumLck",
+      "long": "Num Lock",
+      "category": "Numpad"
+    },
+    "84": { "short": "/", "category": "Numpad" },
+    "85": { "short": "*", "category": "Numpad" },
+    "86": { "short": "-", "category": "Numpad" },
+    "87": { "short": "+", "category": "Numpad" },
+    "88": {
+      "short": "Ent",
+      "med": "KP Ent",
+      "long": "KP Enter",
+      "category": "Numpad"
+    },
+    "89": { "short": "1 En", "med": "1 End", "category": "Numpad" },
+    "90": { "short": "2 ↓", "category": "Numpad" },
+    "91": { "short": "3 PD", "med": "3 PgDn", "category": "Numpad" },
+    "92": { "short": "4 ←", "category": "Numpad" },
+    "93": { "short": "5", "category": "Numpad" },
+    "94": { "short": "6 →", "category": "Numpad" },
+    "95": { "short": "7 Hm", "med": "7 Home", "category": "Numpad" },
+    "96": { "short": "8 ↑", "category": "Numpad" },
+    "97": { "short": "9 PU", "med": "9 PgUp", "category": "Numpad" },
+    "98": {
+      "short": "0 In",
+      "med": "0 Ins",
+      "long": "0 Insert",
+      "category": "Numpad"
+    },
+    "99": {
+      "short": ". Dl",
+      "med": ". Del",
+      "long": ". Delete",
+      "category": "Numpad"
+    },
+    "101": {
+      "short": "Menu",
+      "med": "Menu",
+      "long": "Applicat'n (Menu)",
+      "category": "Function + Navigation"
+    },
+    "102": {
+      "short": "Power",
+      "med": "Power",
+      "category": "Apps/Media/Special"
+    },
+    "100": { "short": "NUBS", "category": "International" },
+    "103": { "short": "=", "category": "Numpad" },
+    "104": { "category": "Apps/Media/Special" },
+    "105": { "category": "Apps/Media/Special" },
+    "106": { "category": "Apps/Media/Special" },
+    "107": { "category": "Apps/Media/Special" },
+    "108": { "category": "Apps/Media/Special" },
+    "109": { "category": "Apps/Media/Special" },
+    "110": { "category": "Apps/Media/Special" },
+    "111": { "category": "Apps/Media/Special" },
+    "112": { "category": "Apps/Media/Special" },
+    "113": { "category": "Apps/Media/Special" },
+    "114": { "category": "Apps/Media/Special" },
+    "115": { "category": "Apps/Media/Special" },
+    "118": { "category": "Apps/Media/Special" },
+    "133": { "short": ",", "category": "Numpad" },
+    "135": { "short": "Intl1", "med": "Int1 ろ", "category": "International" },
+    "136": {
+      "short": "Intl2",
+      "med": "Int2 かな",
+      "category": "International"
+    },
+    "137": { "short": "Intl3", "med": "Int3 ¥", "category": "International" },
+    "138": {
+      "short": "Intl4",
+      "med": "Int4 変換",
+      "category": "International"
+    },
+    "139": {
+      "short": "Intl5",
+      "med": "Int5 無変換",
+      "category": "International"
+    },
+    "140": { "short": "Intl6", "med": "Int6 ,", "category": "International" },
+    "141": { "short": "Intl7", "category": "International" },
+    "142": { "short": "Intl8", "category": "International" },
+    "143": { "short": "Intl9", "category": "International" },
+    "144": {
+      "short": "Lang1",
+      "med": "Lang1 한/영",
+      "category": "International"
+    },
+    "145": {
+      "short": "Lang2",
+      "med": "Lang2 한자",
+      "category": "International"
+    },
+    "146": {
+      "short": "Lang3",
+      "med": "Lang3 カタカナ",
+      "category": "International"
+    },
+    "147": {
+      "short": "Lang4",
+      "med": "Lang4 ひらがな",
+      "category": "International"
+    },
+    "148": {
+      "short": "Lang5",
+      "med": "Lang5 半角/全角",
+      "category": "International"
+    },
+    "149": { "short": "Lang6", "category": "International" },
+    "150": { "short": "Lang7", "category": "International" },
+    "151": { "short": "Lang8", "category": "International" },
+    "152": { "short": "Lang9", "category": "International" },
+    "176": { "short": "00", "category": "Numpad" },
+    "177": { "short": "000" },
+    "224": {
+      "short": "Ctrl",
+      "med": "L Ctrl",
+      "category": "Function + Navigation"
+    },
+    "225": {
+      "short": "Shft",
+      "med": "L Shft",
+      "long": "L Shift",
+      "category": "Function + Navigation"
+    },
+    "226": {
+      "short": "Alt",
+      "med": "L Alt",
+      "long": "Left Alt",
+      "category": "Function + Navigation"
+    },
+    "227": {
+      "short": "GUI",
+      "med": "L GUI",
+      "long": "Left GUI",
+      "category": "Function + Navigation"
+    },
+    "228": {
+      "short": "Ctrl",
+      "med": "R Ctrl",
+      "category": "Function + Navigation"
+    },
+    "229": {
+      "short": "Shft",
+      "med": "R Shft",
+      "long": "R Shift",
+      "category": "Function + Navigation"
+    },
+    "230": {
+      "short": "AltG",
+      "med": "AltGr",
+      "category": "Function + Navigation"
+    },
+    "231": {
+      "short": "GUI",
+      "med": "R GUI",
+      "long": "Right GUI",
+      "category": "Function + Navigation"
+    }
+  },
+  "12": {
+    "111": { "short": "🔆", "category": "Apps/Media/Special" },
+    "112": { "short": "🔅", "category": "Apps/Media/Special" },
+    "181": { "short": "⇥", "category": "Apps/Media/Special" },
+    "182": { "short": "⇤", "category": "Apps/Media/Special" },
+    "205": { "short": "⏯️", "category": "Apps/Media/Special" },
+    "226": { "short": "🔇", "category": "Apps/Media/Special" },
+    "233": { "short": "🔊", "category": "Apps/Media/Special" },
+    "234": { "short": "🔉", "category": "Apps/Media/Special" }
+  }
+}
