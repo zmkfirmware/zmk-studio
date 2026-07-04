@@ -3424,14 +3424,14 @@
         },
         {
           "Id": 38,
-          "Name": "Keyboard 9 and Left Bracket",
+          "Name": "Keyboard 9 and Left Parenthesis",
           "Kinds": [
             "Sel"
           ]
         },
         {
           "Id": 39,
-          "Name": "Keyboard 0 and Right Bracket",
+          "Name": "Keyboard 0 and Right Parenthesis",
           "Kinds": [
             "Sel"
           ]
@@ -3487,14 +3487,14 @@
         },
         {
           "Id": 47,
-          "Name": "Keyboard Left Brace",
+          "Name": "Keyboard Left Bracket and Left Brace",
           "Kinds": [
             "Sel"
           ]
         },
         {
           "Id": 48,
-          "Name": "Keyboard Right Brace",
+          "Name": "Keyboard Right Bracket and Right Brace",
           "Kinds": [
             "Sel"
           ]
