@@ -184,8 +184,15 @@ export const LEGEND_LAYOUTS: Record<string, LegendLayout> = {
 
 export type LegendLayoutId = keyof typeof LEGEND_LAYOUTS;
 
+export const ALL_LEGEND_LAYOUT_IDS: LegendLayoutId[] = Object.keys(LEGEND_LAYOUTS);
+
+/** Maps each layout ID to its human-readable display name. */
+export const LEGEND_LAYOUT_LABELS: Record<string, string> = Object.fromEntries(
+  Object.entries(LEGEND_LAYOUTS).map(([id, layout]) => [id, layout.name]),
+);
+
 // ---------------------------------------------------------------------------
-// Resolution helper
+// Resolution helpers
 // ---------------------------------------------------------------------------
 
 /**
@@ -207,4 +214,22 @@ export function resolveLayoutLegend(
   if (!entry) return null;
   if (isShifted) return entry.shifted ?? null;
   return entry.unshifted ?? null;
+}
+
+/**
+ * Convenience wrapper that looks up a layout by ID and resolves the legend.
+ * Returns `undefined` if no override exists for the given key/state.
+ *
+ * @param layoutId  - Layout identifier string (e.g. "us", "uk", "de")
+ * @param hidUsageId - HID keyboard usage ID (low 16 bits)
+ * @param shifted   - Whether the Shift modifier is active
+ */
+export function resolveLegend(
+  layoutId: LegendLayoutId,
+  hidUsageId: number,
+  shifted: boolean,
+): string | undefined {
+  const layout = LEGEND_LAYOUTS[layoutId];
+  const result = resolveLayoutLegend(hidUsageId, shifted, layout);
+  return result ?? undefined;
 }

@@ -10,7 +10,7 @@ import {
 } from "./PhysicalLayout";
 import { HidUsageLabel } from "./HidUsageLabel";
 import { resolveKeyDisplayInfo } from "./keyDisplayInfo";
-import { useLegendLayout } from "./LegendLayoutContext";
+import { LegendLayoutId } from "./legendLayouts";
 
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
@@ -25,6 +25,7 @@ export interface KeymapProps {
   selectedKeyPosition: number | undefined;
   onKeyPositionClicked: (keyPosition: number) => void;
   displayFormatters?: KeyDisplayFormatters;
+  legendLayout?: LegendLayoutId;
 }
 
 export const Keymap = ({
@@ -36,9 +37,8 @@ export const Keymap = ({
   selectedKeyPosition,
   onKeyPositionClicked,
   displayFormatters,
+  legendLayout = "us",
 }: KeymapProps) => {
-  const legendLayout = useLegendLayout();
-
   if (!keymap.layers[selectedLayerIndex]) {
     return <></>;
   }
@@ -69,7 +69,6 @@ export const Keymap = ({
       behavior,
       layers,
       displayFormatters,
-      legendLayout,
     );
 
     return {
@@ -86,7 +85,7 @@ export const Keymap = ({
       r: (k.r || 0) / 100.0,
       rx: (k.rx || 0) / 100.0,
       ry: (k.ry || 0) / 100.0,
-      children: <HidUsageLabel hid_usage={displayInfo.centerHidUsage} />,
+      children: <HidUsageLabel hid_usage={displayInfo.centerHidUsage} legendLayout={legendLayout} />,
     };
   });
 

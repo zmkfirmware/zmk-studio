@@ -29,9 +29,6 @@ import { valueAfter } from "./misc/async";
 import { AppFooter } from "./AppFooter";
 import { AboutModal } from "./AboutModal";
 import { LicenseNoticeModal } from "./misc/LicenseNoticeModal";
-import { LegendLayoutContext } from "./keyboard/LegendLayoutContext";
-import { LEGEND_LAYOUTS } from "./keyboard/legendLayouts";
-import { useLocalStorageState } from "./misc/useLocalStorageState";
 
 declare global {
   interface Window {
@@ -172,10 +169,6 @@ function App() {
   const [showAbout, setShowAbout] = useState(false);
   const [showLicenseNotice, setShowLicenseNotice] = useState(false);
   const [connectionAbort, setConnectionAbort] = useState(new AbortController());
-  const [legendLayoutId, setLegendLayoutId] = useLocalStorageState<string>(
-    "legendLayout",
-    "us",
-  );
 
   const [lockState, setLockState] = useState<LockState>(
     LockState.ZMK_STUDIO_CORE_LOCK_STATE_LOCKED
@@ -288,45 +281,41 @@ function App() {
   );
 
   return (
-    <LegendLayoutContext.Provider value={LEGEND_LAYOUTS[legendLayoutId] ?? LEGEND_LAYOUTS.us}>
-      <ConnectionContext.Provider value={conn}>
-        <LockStateContext.Provider value={lockState}>
-          <UndoRedoContext.Provider value={doIt}>
-            <UnlockModal />
-            <ConnectModal
-              open={!conn.conn}
-              transports={TRANSPORTS}
-              onTransportCreated={onConnect}
+    <ConnectionContext.Provider value={conn}>
+      <LockStateContext.Provider value={lockState}>
+        <UndoRedoContext.Provider value={doIt}>
+          <UnlockModal />
+          <ConnectModal
+            open={!conn.conn}
+            transports={TRANSPORTS}
+            onTransportCreated={onConnect}
+          />
+          <AboutModal open={showAbout} onClose={() => setShowAbout(false)} />
+          <LicenseNoticeModal
+            open={showLicenseNotice}
+            onClose={() => setShowLicenseNotice(false)}
+          />
+          <div className="bg-base-100 text-base-content h-full max-h-[100vh] w-full max-w-[100vw] inline-grid grid-cols-[auto] grid-rows-[auto_1fr_auto] overflow-hidden">
+            <AppHeader
+              connectedDeviceLabel={connectedDeviceName}
+              canUndo={canUndo}
+              canRedo={canRedo}
+              onUndo={undo}
+              onRedo={redo}
+              onSave={save}
+              onDiscard={discard}
+              onDisconnect={disconnect}
+              onResetSettings={resetSettings}
             />
-            <AboutModal open={showAbout} onClose={() => setShowAbout(false)} />
-            <LicenseNoticeModal
-              open={showLicenseNotice}
-              onClose={() => setShowLicenseNotice(false)}
+            <Keyboard />
+            <AppFooter
+              onShowAbout={() => setShowAbout(true)}
+              onShowLicenseNotice={() => setShowLicenseNotice(true)}
             />
-            <div className="bg-base-100 text-base-content h-full max-h-[100vh] w-full max-w-[100vw] inline-grid grid-cols-[auto] grid-rows-[auto_1fr_auto] overflow-hidden">
-              <AppHeader
-                connectedDeviceLabel={connectedDeviceName}
-                canUndo={canUndo}
-                canRedo={canRedo}
-                onUndo={undo}
-                onRedo={redo}
-                onSave={save}
-                onDiscard={discard}
-                onDisconnect={disconnect}
-                onResetSettings={resetSettings}
-              />
-              <Keyboard />
-              <AppFooter
-                onShowAbout={() => setShowAbout(true)}
-                onShowLicenseNotice={() => setShowLicenseNotice(true)}
-                legendLayoutId={legendLayoutId}
-                onLegendLayoutChange={setLegendLayoutId}
-              />
-            </div>
-          </UndoRedoContext.Provider>
-        </LockStateContext.Provider>
-      </ConnectionContext.Provider>
-    </LegendLayoutContext.Provider>
+          </div>
+        </UndoRedoContext.Provider>
+      </LockStateContext.Provider>
+    </ConnectionContext.Provider>
   );
 }
 
