@@ -129,10 +129,11 @@ export const FR_LAYOUT: LegendLayout = {
     49: { unshifted: "*", shifted: "µ" }, // \ → *
     50: { unshifted: "<", shifted: ">" }, // Non-US# → <
     52: { unshifted: "ù", shifted: "%" }, // ' → ù
-    53: { unshifted: "²", shifted: "" }, // ` → ²
-    54: { unshifted: ";", shifted: "." }, // , → ;
-    55: { unshifted: ":", shifted: "/" }, // . → :
-    56: { unshifted: "!", shifted: "§" }, // / → !
+    53: { unshifted: "²" }, // ` → ² (shifted is a dead key; no override)
+    54: { unshifted: ",", shifted: "?" }, // , → ,/?
+    55: { unshifted: ";", shifted: "." }, // . → ;/.
+    56: { unshifted: ":", shifted: "/" }, // / → :/
+    100: { unshifted: "<", shifted: ">" }, // Non-US \ → < (extra ISO key)
   },
 };
 
@@ -160,7 +161,7 @@ export const DE_CH_LAYOUT: LegendLayout = {
     48: { unshifted: "¨", shifted: "!" }, // ] → ¨
     49: { unshifted: "$", shifted: "£" }, // \ → $
     50: { unshifted: "<", shifted: ">" }, // Non-US# → <
-    51: { unshifted: "é", shifted: "É" }, // ; → é  (actually ü on Swiss)
+    51: { unshifted: "ü", shifted: "Ü" }, // ; → ü
     52: { unshifted: "à", shifted: "À" }, // ' → à
     53: { unshifted: "§", shifted: "°" }, // ` → §
     54: { unshifted: ",", shifted: ";" }, // , → ,
