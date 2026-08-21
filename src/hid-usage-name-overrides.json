@@ -19,7 +19,11 @@
     "47": { "short": "{" },
     "48": { "short": "}" },
     "49": { "short": "\\" },
-    "50": { "short": "NUHS", "long": "NonUS Hash" },
+    "50": {
+        "short": "#",
+        "med": "Hash",
+        "long": "Non-US Hash"
+    },
     "51": { "short": ";" },
     "52": { "short": "'" },
     "53": { "short": "`" },
@@ -57,7 +61,7 @@
     "99": { "short": ". Dl", "med": ". Del", "long": ". Delete" },
     "101": { "short": "Appl", "med": "Appl", "long": "Applicat'n" },
     "102": { "short": "Power", "med": "Power" },
-    "100": { "short": "NUBS" },
+    "100": { "short": "\\", "med": "Bksl", "long": "Non-US Backslash" },
     "103": { "short": "=" },
     "133": { "short": "," },
     "134": { "short": "=" },

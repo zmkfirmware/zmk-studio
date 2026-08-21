@@ -19,6 +19,7 @@ import {
 } from "../hid-usages";
 import { useCallback, useMemo } from "react";
 import { ChevronDown } from "lucide-react";
+import { mod_labels, all_mods, mods_to_flags, mask_mods } from "./modifiers";
 
 export interface HidUsagePage {
   id: number;
@@ -44,7 +45,7 @@ const UsageSection = ({ id, min, max }: UsageSectionProps) => {
       usages = usages.filter(
         (i) =>
           (i.Id <= (max || Number.MAX_SAFE_INTEGER) && i.Id >= (min || 0)) ||
-          (id === 7 && i.Id >= 0xe0 && i.Id <= 0xe7)
+          (id === 7 && i.Id >= 0xe0 && i.Id <= 0xe7),
       );
     }
 
@@ -68,47 +69,6 @@ const UsageSection = ({ id, min, max }: UsageSectionProps) => {
   );
 };
 
-enum Mods {
-  LeftControl = 0x01,
-  LeftShift = 0x02,
-  LeftAlt = 0x04,
-  LeftGUI = 0x08,
-  RightControl = 0x10,
-  RightShift = 0x20,
-  RightAlt = 0x40,
-  RightGUI = 0x80,
-}
-
-const mod_labels: Record<Mods, string> = {
-  [Mods.LeftControl]: "L Ctrl",
-  [Mods.LeftShift]: "L Shift",
-  [Mods.LeftAlt]: "L Alt",
-  [Mods.LeftGUI]: "L GUI",
-  [Mods.RightControl]: "R Ctrl",
-  [Mods.RightShift]: "R Shift",
-  [Mods.RightAlt]: "R Alt",
-  [Mods.RightGUI]: "R GUI",
-};
-
-const all_mods = [
-  Mods.LeftControl,
-  Mods.LeftShift,
-  Mods.LeftAlt,
-  Mods.LeftGUI,
-  Mods.RightControl,
-  Mods.RightShift,
-  Mods.RightAlt,
-  Mods.RightGUI,
-];
-
-function mods_to_flags(mods: Mods[]): number {
-  return mods.reduce((a, v) => a + v, 0);
-}
-
-function mask_mods(value: number) {
-  return value & ~(mods_to_flags(all_mods) << 24);
-}
-
 export const HidUsagePicker = ({
   label,
   value,
@@ -131,7 +91,7 @@ export const HidUsagePicker = ({
 
       onValueChanged(value);
     },
-    [onValueChanged, mods]
+    [onValueChanged, mods],
   );
 
   const modifiersChanged = useCallback(
@@ -144,7 +104,7 @@ export const HidUsagePicker = ({
       let new_value = mask_mods(value) | (mod_flags << 24);
       onValueChanged(new_value);
     },
-    [value]
+    [value],
   );
 
   return (

@@ -9,8 +9,12 @@ import {
   PhysicalLayout as PhysicalLayoutComp,
 } from "./PhysicalLayout";
 import { HidUsageLabel } from "./HidUsageLabel";
+import { resolveKeyDisplayInfo } from "./keyDisplayInfo";
+import { LegendLayoutId } from "./legendLayouts";
 
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
+
+import type { KeyDisplayFormatters, LayerInfo } from "./keyDisplayInfo";
 
 export interface KeymapProps {
   layout: PhysicalLayout;
@@ -20,6 +24,8 @@ export interface KeymapProps {
   selectedLayerIndex: number;
   selectedKeyPosition: number | undefined;
   onKeyPositionClicked: (keyPosition: number) => void;
+  displayFormatters?: KeyDisplayFormatters;
+  legendLayout?: LegendLayoutId;
 }
 
 export const Keymap = ({
@@ -30,10 +36,17 @@ export const Keymap = ({
   selectedLayerIndex,
   selectedKeyPosition,
   onKeyPositionClicked,
+  displayFormatters,
+  legendLayout = "us",
 }: KeymapProps) => {
   if (!keymap.layers[selectedLayerIndex]) {
     return <></>;
   }
+
+  const layers: LayerInfo[] = keymap.layers.map(({ id, name }, i) => ({
+    id,
+    name: name || `Layer ${i}`,
+  }));
 
   const positions = layout.keys.map((k, i) => {
     if (i >= keymap.layers[selectedLayerIndex].bindings.length) {
@@ -48,11 +61,23 @@ export const Keymap = ({
       };
     }
 
+    const binding = keymap.layers[selectedLayerIndex].bindings[i];
+    const behavior = behaviors[binding.behaviorId];
+
+    const displayInfo = resolveKeyDisplayInfo(
+      binding,
+      behavior,
+      layers,
+      displayFormatters,
+    );
+
     return {
       id: `${keymap.layers[selectedLayerIndex].id}-${i}`,
-      header:
-        behaviors[keymap.layers[selectedLayerIndex].bindings[i].behaviorId]
-          ?.displayName || "Unknown",
+      header: displayInfo.behaviorName,
+      tooltip: displayInfo.tooltipText,
+      holdLabel: displayInfo.holdLabel || undefined,
+      layerColor: displayInfo.layerColor,
+      icon: displayInfo.icon,
       x: k.x / 100.0,
       y: k.y / 100.0,
       width: k.width / 100,
@@ -60,11 +85,7 @@ export const Keymap = ({
       r: (k.r || 0) / 100.0,
       rx: (k.rx || 0) / 100.0,
       ry: (k.ry || 0) / 100.0,
-      children: (
-        <HidUsageLabel
-          hid_usage={keymap.layers[selectedLayerIndex].bindings[i].param1}
-        />
-      ),
+      children: <HidUsageLabel hid_usage={displayInfo.centerHidUsage} legendLayout={legendLayout} />,
     };
   });
 

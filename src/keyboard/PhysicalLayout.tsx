@@ -5,11 +5,16 @@ import {
   useRef,
   useState,
 } from "react";
+import { LucideIcon } from "lucide-react";
 import { Key } from "./Key";
 
 export type KeyPosition = PropsWithChildren<{
   id: string;
   header?: string;
+  tooltip?: string;
+  holdLabel?: string;
+  layerColor?: string;
+  icon?: LucideIcon;
   width: number;
   height: number;
   x: number;
@@ -128,15 +133,8 @@ export const PhysicalLayout = ({
 
   const positionItems = positions.map((p, idx) => (
     <div className="absolute hover:z-10" style={scalePosition(p, oneU)}>
-      <div
-        key={p.id}
-        onClick={() => onPositionClicked?.(idx)}
-      >
-        <Key
-          oneU={oneU}
-          selected={idx === selectedPosition}
-          {...p}
-        />
+      <div key={p.id} onClick={() => onPositionClicked?.(idx)}>
+        <Key oneU={oneU} selected={idx === selectedPosition} {...p} />
       </div>
     </div>
   ));

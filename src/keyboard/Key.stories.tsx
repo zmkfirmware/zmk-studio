@@ -1,35 +1,28 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 import { Key } from "./Key";
+import { Hand, Layers, Pin } from "lucide-react";
 
-// More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
   title: "Keyboard/Key",
   component: Key,
   parameters: {
-    // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
     layout: "centered",
   },
-  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
   tags: ["autodocs"],
-  // More on argTypes: https://storybook.js.org/docs/api/argtypes
-  argTypes: {
-    // backgroundColor: { control: 'color' },
-  },
-  // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
+  argTypes: {},
   args: { oneU: 48, onClick: fn() },
 } satisfies Meta<typeof Key>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Normal: Story = {
   args: {
     width: 1,
     height: 1,
     header: "Key Press",
-    children: [<span>A</span>],
+    children: [<span key="a">A</span>],
   },
 };
 
@@ -39,7 +32,7 @@ export const Selected: Story = {
     width: 1,
     height: 1,
     header: "Key Press",
-    children: [<span>B</span>],
+    children: [<span key="b">B</span>],
   },
 };
 
@@ -48,6 +41,80 @@ export const Large: Story = {
     width: 2,
     height: 1,
     header: "Key Press",
-    children: [<span>C</span>],
+    children: [<span key="c">C</span>],
+  },
+};
+
+export const WithIcon: Story = {
+  name: "With Behavior Icon",
+  args: {
+    width: 1,
+    height: 1,
+    header: "Hold Tap",
+    icon: Hand,
+    children: [<span key="a">A</span>],
+  },
+};
+
+export const WithHoldLabel: Story = {
+  name: "With Hold Label",
+  args: {
+    width: 1,
+    height: 1,
+    header: "Hold Tap",
+    icon: Hand,
+    holdLabel: "Shift",
+    children: [<span key="a">A</span>],
+  },
+};
+
+export const WithLayerColor: Story = {
+  name: "Layer Color (blue)",
+  args: {
+    width: 1,
+    height: 1,
+    header: "Hold Tap",
+    icon: Layers,
+    holdLabel: "Lower",
+    layerColor: "#3b82f620",
+    children: [<span key="a">A</span>],
+  },
+};
+
+export const ModTapFull: Story = {
+  name: "Mod-Tap (all features)",
+  args: {
+    width: 1,
+    height: 1,
+    header: "Hold Tap",
+    icon: Hand,
+    tooltip: "Hold Tap: A, Hold: L Shift",
+    holdLabel: "Shift",
+    children: [<span key="a">A</span>],
+  },
+};
+
+export const LayerTapFull: Story = {
+  name: "Layer-Tap (all features)",
+  args: {
+    width: 1,
+    height: 1,
+    header: "Hold Tap",
+    icon: Layers,
+    tooltip: "Hold Tap: Space, Hold: Raise",
+    holdLabel: "Raise",
+    layerColor: "#22c55e20",
+    children: [<span key="spc">Spc</span>],
+  },
+};
+
+export const StickyKey: Story = {
+  name: "Sticky Key",
+  args: {
+    width: 1,
+    height: 1,
+    header: "Stcky Key",
+    icon: Pin,
+    children: [<span key="shft">⇧</span>],
   },
 };
