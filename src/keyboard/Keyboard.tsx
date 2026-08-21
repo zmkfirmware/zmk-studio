@@ -31,6 +31,11 @@ import { LockStateContext } from "../rpc/LockStateContext";
 import { LockState } from "@zmkfirmware/zmk-studio-ts-client/core";
 import { deserializeLayoutZoom, LayoutZoom } from "./PhysicalLayout";
 import { useLocalStorageState } from "../misc/useLocalStorageState";
+import {
+  ALL_LEGEND_LAYOUT_IDS,
+  LEGEND_LAYOUT_LABELS,
+  LegendLayoutId,
+} from "./legendLayouts";
 
 type BehaviorMap = Record<number, GetBehaviorDetailsResponse>;
 
@@ -177,6 +182,11 @@ export default function Keyboard() {
   const [keymapScale, setKeymapScale] = useLocalStorageState<LayoutZoom>("keymapScale", "auto", {
     deserialize: deserializeLayoutZoom,
   });
+
+  const [legendLayout, setLegendLayout] = useLocalStorageState<LegendLayoutId>(
+    "keyboard.legendLayout",
+    "us"
+  );
 
   const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0);
   const [selectedKeyPosition, setSelectedKeyPosition] = useState<
@@ -539,24 +549,39 @@ export default function Keyboard() {
             selectedLayerIndex={selectedLayerIndex}
             selectedKeyPosition={selectedKeyPosition}
             onKeyPositionClicked={setSelectedKeyPosition}
+            legendLayout={legendLayout}
           />
-          <select
-            className="absolute top-2 right-2 h-8 rounded px-2"
-            value={keymapScale}
-            onChange={(e) => {
-              const value = deserializeLayoutZoom(e.target.value);
-              setKeymapScale(value);
-            }}
-          >
-            <option value="auto">Auto</option>
-            <option value={0.25}>25%</option>
-            <option value={0.5}>50%</option>
-            <option value={0.75}>75%</option>
-            <option value={1}>100%</option>
-            <option value={1.25}>125%</option>
-            <option value={1.5}>150%</option>
-            <option value={2}>200%</option>
-          </select>
+          <div className="absolute top-2 right-2 flex gap-2">
+            <select
+              className="h-8 rounded px-2"
+              value={legendLayout}
+              onChange={(e) => setLegendLayout(e.target.value as LegendLayoutId)}
+              aria-label="Legend layout"
+            >
+              {ALL_LEGEND_LAYOUT_IDS.map((id) => (
+                <option key={id} value={id}>
+                  {LEGEND_LAYOUT_LABELS[id]}
+                </option>
+              ))}
+            </select>
+            <select
+              className="h-8 rounded px-2"
+              value={keymapScale}
+              onChange={(e) => {
+                const value = deserializeLayoutZoom(e.target.value);
+                setKeymapScale(value);
+              }}
+            >
+              <option value="auto">Auto</option>
+              <option value={0.25}>25%</option>
+              <option value={0.5}>50%</option>
+              <option value={0.75}>75%</option>
+              <option value={1}>100%</option>
+              <option value={1.25}>125%</option>
+              <option value={1.5}>150%</option>
+              <option value={2}>200%</option>
+            </select>
+          </div>
         </div>
       )}
       {keymap && selectedBinding && (
