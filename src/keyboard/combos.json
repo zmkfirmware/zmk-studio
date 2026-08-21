@@ -1,0 +1,11 @@
+{
+  "combos": [
+    {
+      "id": "unlock",
+      "name": "Studio Unlock",
+      "keys": [36, 37],
+      "color": "#f59e0b",
+      "label": "1"
+    }
+  ]
+}

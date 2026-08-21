@@ -61,7 +61,7 @@
     "99": { "short": ". Dl", "med": ". Del", "long": ". Delete" },
     "101": { "short": "Appl", "med": "Appl", "long": "Applicat'n" },
     "102": { "short": "Power", "med": "Power" },
-    "100": { "short": "NUBS" },
+    "100": { "short": "\\", "med": "Bksl", "long": "Non-US Backslash" },
     "103": { "short": "=" },
     "133": { "short": "," },
     "134": { "short": "=" },
