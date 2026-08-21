@@ -87,6 +87,7 @@ const SHIFTED_CHAR_MAP: Record<number, string> = {
   0x36: "<",
   0x37: ">",
   0x38: "?",
+  0x64: "|",
 };
 
 export function resolveShiftedChar(hidUsage: number): string | null {

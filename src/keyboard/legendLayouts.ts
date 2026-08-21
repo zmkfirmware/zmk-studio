@@ -60,6 +60,7 @@ export const UK_LAYOUT: LegendLayout = {
     // ISO key positions
     49: { unshifted: "\\", shifted: "|" }, // Non-US# position → \ / |
     50: { unshifted: "#", shifted: "~" }, // backslash position → # / ~
+    100: { unshifted: "\\", shifted: "|" }, // Non-US \ → \ / |
     // Quote / backtick row
     52: { shifted: "@" }, // ' → @
     53: { shifted: "¬" }, // ` → ¬
