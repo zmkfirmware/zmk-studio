@@ -9,9 +9,10 @@ import {
   hid_usage_get_labels,
   hid_usage_page_and_id_from_usage,
 } from "../hid-usages";
-import { resolveModifierLabel, mask_mods, resolveShiftedChar } from "../behaviors/modifiers";
+import { resolveModifierLabel, mask_mods, resolveShiftedChar, Mods } from "../behaviors/modifiers";
 import { LucideIcon } from "lucide-react";
 import { getBehaviorIcon } from "./behaviorIcons";
+import { LegendLayout, resolveLayoutLegend } from "./legendLayouts";
 
 export interface LayerInfo {
   id: number;
@@ -70,11 +71,20 @@ function removePrefix(s?: string) {
   return s?.replace(/^Keyboard /, "");
 }
 
-function resolveHidLabel(hidUsage: number): string {
+function resolveHidLabel(hidUsage: number, layout?: LegendLayout): string {
+  const [page, id] = hid_usage_page_and_id_from_usage(hidUsage);
+  const flags = (hidUsage >> 24) & 0xff;
+  const isShifted = !!(flags & Mods.LeftShift);
+
+  // Layout-specific override takes priority (keyboard page only)
+  if ((page & 0xff) === 7) {
+    const layoutLabel = resolveLayoutLegend(id, isShifted, layout);
+    if (layoutLabel !== null) return layoutLabel;
+  }
+
   const shifted = resolveShiftedChar(hidUsage);
   if (shifted) return shifted;
 
-  const [page, id] = hid_usage_page_and_id_from_usage(hidUsage);
   const labels = hid_usage_get_labels(page & 0xff, id);
   return removePrefix(labels.short || labels.med || labels.long) || "???";
 }
@@ -178,9 +188,10 @@ export function resolveKeyDisplayInfo(
   behavior: GetBehaviorDetailsResponse | undefined,
   layers: LayerInfo[],
   formatters?: KeyDisplayFormatters,
+  layout?: LegendLayout,
 ): KeyDisplayInfo {
   let behaviorName = behavior?.displayName || "Unknown";
-  let tapLabel = resolveHidLabel(binding.param1);
+  let tapLabel = resolveHidLabel(binding.param1, layout);
   let icon = getBehaviorIcon(behaviorName);
 
   let holdLabel = "";
@@ -217,7 +228,7 @@ export function resolveKeyDisplayInfo(
     const layer = layers.find((l) => l.id === binding.param1);
     behaviorName = `LT-${layer?.name || `Layer ${binding.param1}`}`;
     centerHidUsage = binding.param2;
-    tapLabel = resolveHidLabel(binding.param2);
+    tapLabel = resolveHidLabel(binding.param2, layout);
     icon = undefined;
     holdLabel = "";
   } else if (bn.includes("homerow") || bn.includes("nomerow")) {
@@ -238,7 +249,7 @@ export function resolveKeyDisplayInfo(
     if (modName) {
       behaviorName = `MT-${modName}`;
       centerHidUsage = binding.param2;
-      tapLabel = resolveHidLabel(binding.param2);
+      tapLabel = resolveHidLabel(binding.param2, layout);
       icon = undefined;
       holdLabel = "";
     }
