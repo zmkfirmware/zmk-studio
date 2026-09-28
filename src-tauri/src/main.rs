@@ -5,7 +5,9 @@ use std::env;
 
 use futures::lock::Mutex;
 
+mod export;
 mod transport;
+use export::export_text_file;
 use transport::commands::{transport_close, transport_send_data, ActiveConnection};
 
 use transport::gatt::{gatt_connect, gatt_list_devices};
@@ -14,6 +16,7 @@ use transport::serial::{serial_connect, serial_list_devices};
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_cli::init())
+        .plugin(tauri_plugin_dialog::init())
         .manage(ActiveConnection {
             conn: Mutex::new(None),
         })
@@ -24,6 +27,7 @@ fn main() {
             gatt_connect,
             serial_list_devices,
             serial_connect,
+            export_text_file,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
