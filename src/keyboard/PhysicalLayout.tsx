@@ -5,11 +5,14 @@ import {
   useRef,
   useState,
 } from "react";
+import type { LucideIcon } from "lucide-react";
 import { Key } from "./Key";
 
 export type KeyPosition = PropsWithChildren<{
   id: string;
   header?: string;
+  headerIcon?: LucideIcon;
+  headerTitle?: string;
   width: number;
   height: number;
   x: number;
