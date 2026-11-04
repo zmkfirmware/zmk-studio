@@ -1,5 +1,6 @@
 import { PropsWithChildren } from "react";
-import BehaviorShortNames from "./behavior-short-names.json";
+import type { LucideIcon } from "lucide-react";
+import { shortenHeader } from "./shorten-header";
 
 interface KeyProps {
   selected?: boolean;
@@ -7,31 +8,11 @@ interface KeyProps {
   height: number;
   oneU: number;
   header?: string;
+  /** Icon drawn in place of the header text. */
+  headerIcon?: LucideIcon;
+  /** Full name for the header, used as its tooltip. */
+  headerTitle?: string;
   onClick?: () => void;
-}
-
-interface BehaviorShortName {
-  short?: string;
-}
-
-const MAX_HEADER_LENGTH = 9;
-const shortNames: Record<string, BehaviorShortName> = BehaviorShortNames;
-
-const shortenHeader = (header: string | undefined) => {
-  if(typeof header === "undefined"){
-    return "";
-  }
-  // Empty string is a valid header for behaviors where we don't want to see a header, which is falsy
-  // So we use an undefined check here
-  if(typeof shortNames[header]?.short !== "undefined"){
-    return shortNames[header].short;
-  } else if(header.length > MAX_HEADER_LENGTH){
-    const words = header.split(/[\s,-]+/);
-    const lettersPerWord = Math.trunc(MAX_HEADER_LENGTH / words.length);
-    return words.map((word) => (word.substring(0,lettersPerWord))).join("");
-  } else {
-    return header;
-  }
 }
 
 export const Key = ({
@@ -40,6 +21,8 @@ export const Key = ({
   height,
   oneU,
   header,
+  headerIcon: HeaderIcon,
+  headerTitle,
   onClick,
   children,
 }: PropsWithChildren<KeyProps>) => {
@@ -56,7 +39,16 @@ export const Key = ({
       }}
       onClick={onClick}
     >
-      <div className={`absolute text-xs ${selected ? "text-primary-content" : "z1text-base-content"} opacity-80 top-1 text-nowrap left-1/2 font-light -translate-x-1/2 text-center`}>{shortenHeader(header)}</div>
+      <div
+        title={headerTitle}
+        className={`absolute top-0.5 left-1 text-[0.45rem] leading-none font-semibold tracking-tight text-nowrap ${selected ? "text-primary-content" : "text-base-content"} opacity-30`}
+      >
+        {HeaderIcon ? (
+          <HeaderIcon size={10} aria-label={headerTitle ?? header} />
+        ) : (
+          shortenHeader(header)
+        )}
+      </div>
       {children}
     </button>
   );
