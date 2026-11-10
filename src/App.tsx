@@ -126,8 +126,9 @@ async function connect(
   transport: RpcTransport,
   setConn: Dispatch<ConnectionState>,
   setConnectedDeviceName: Dispatch<string | undefined>,
-  signal: AbortSignal
+  abort: AbortController
 ) {
+  const { signal } = abort;
   let conn = await create_rpc_connection(transport, { signal });
 
   let details = await Promise.race([
@@ -141,6 +142,9 @@ async function connect(
   ]);
 
   if (!details) {
+    // Release the failed connection so the device can be selected again.
+    abort.abort("Failed to connect");
+
     // TODO: Show a proper toast/alert not using `window.alert`
     window.alert("Failed to connect to the chosen device");
     return;
@@ -275,7 +279,7 @@ function App() {
     (t: RpcTransport) => {
       const ac = new AbortController();
       setConnectionAbort(ac);
-      connect(t, setConn, setConnectedDeviceName, ac.signal);
+      connect(t, setConn, setConnectedDeviceName, ac);
     },
     [setConn, setConnectedDeviceName, setConnectedDeviceName]
   );
